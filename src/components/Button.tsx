@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native'
+import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native'
 
 import { COLORS, FONT_SIZES } from '@util/globals';
 
@@ -7,16 +7,19 @@ import { COLORS, FONT_SIZES } from '@util/globals';
 interface ButtonProps {
     children: React.ReactNode;
     onPress: () => void;
-    color?: string;
+    disabled?: boolean;
     containerStyle?: ViewStyle;
+    textStyle?: TextStyle;
 }
 
 
 
-export default function Button({ children, onPress, color, containerStyle }: ButtonProps) {
+export default function Button({ children, onPress, disabled, textStyle, containerStyle }: ButtonProps) {
+    const disabledStyle = (disabled) ? {backgroundColor: '#9bacb0'} : {};
+
     return (
-        <TouchableOpacity onPress={onPress} style={containerStyle}>
-            <Text style={styles.text}>
+        <TouchableOpacity onPress={disabled ? ()=>{} : onPress} style={containerStyle}>
+            <Text style={[styles.text, disabledStyle, textStyle]}>
                 {children}
             </Text>
         </TouchableOpacity>
