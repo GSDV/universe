@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native'
 
-import { COLORS, FONT_SIZES } from '@util/globals';
+import { COLORS, FONT_SIZES } from '@util/global-client';
 
 
 
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         borderRadius: 10,
         backgroundColor: COLORS.secondary_1,
-        fontSize: FONT_SIZES.m,
+        fontSize: FONT_SIZES.l,
         color: COLORS.white,
         overflow: 'hidden'
     }

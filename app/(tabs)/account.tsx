@@ -1,24 +1,29 @@
 import { useEffect, useState } from 'react';
 
-import { View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, ScrollView } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
-import Acccount from '@components/Account';
+import { useUser } from '@components/providers/UserProvider';
+
+import Acccount from '@screens/account/Account';
+
 import { CheckIfLoading } from '@components/Loading';
-
-import { AUTH_TOKEN_COOKIE_KEY, BRAND, COLORS, DOMAIN, FONT_SIZES } from '@util/globals';
-
-import { RedactedUserType } from '@util/types';
 import { SafeAreaTop } from '@components/SafeArea';
-import GoBackHeader from '@components/GoBackHeader';
 import Button from '@components/Button';
 
+import { AUTH_TOKEN_COOKIE_KEY, BRAND, DOMAIN } from '@util/global';
+import { COLORS, FONT_SIZES } from '@util/global-client';
+
+import { getAuthCookie } from '@util/storage';
+
+import { RedactedUserType } from '@util/types';
 
 
-export default function Screen() {
-    const [test, settest] = useState<string>('');
+
+export default function Index() {
+    const userContext = useUser();
+
     const [loading, setLoading] = useState<boolean>(true);
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const [userPrisma, setUserPrisma] = useState<RedactedUserType>();
@@ -26,8 +31,7 @@ export default function Screen() {
 
     const loadProfile = async () => {
         setLoading(true);
-        const authTokenCookie = await AsyncStorage.getItem(AUTH_TOKEN_COOKIE_KEY);
-        console.log("LOAIDNG PROFILE: ", authTokenCookie);
+        const authTokenCookie = await getAuthCookie();
         if (!authTokenCookie) {
             setLoggedIn(false);
             setLoading(false);
@@ -44,8 +48,8 @@ export default function Screen() {
 
         const resJson = await res.json();
         if (resJson.cStatus == 200) {
-            console.log("Got it: ", resJson.user);
             setUserPrisma(resJson.user);
+            userContext.setUser(resJson.user);
             setLoggedIn(true);
         } else {
             setLoggedIn(false);
@@ -54,7 +58,6 @@ export default function Screen() {
     }
 
     useEffect(() => {
-        console.log("NAjVi TO ACCOUNT");
         loadProfile();
     }, []);
 
@@ -63,8 +66,8 @@ export default function Screen() {
         <View style={{ flex: 1, backgroundColor: COLORS.background }}>
             <SafeAreaTop />
             <CheckIfLoading loading={loading}>
-                {loggedIn ?
-                    <Acccount userPrisma={userPrisma as RedactedUserType} />
+                {!loggedIn ?
+                    <Acccount userPrisma={userPrisma as RedactedUserType} ownAccount={true} found={false} />
                 :
                     <NotLoggedIn />
                 }

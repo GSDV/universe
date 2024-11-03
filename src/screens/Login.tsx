@@ -9,7 +9,8 @@ import { CheckIfLoading } from '@components/Loading';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
 
-import { AUTH_TOKEN_COOKIE_KEY, COLORS, DOMAIN, FONT_SIZES, USER_ID_COOKIE_KEY } from '@util/globals';
+import { AUTH_TOKEN_COOKIE_KEY, DOMAIN, USER_ID_COOKIE_KEY } from '@util/global';
+import { COLORS, FONT_SIZES } from '@util/global-client';
 
 
 
@@ -72,7 +73,7 @@ export default function Login() {
                 <LoginInput
                     title='Email'
                     placeholder='john10@illinois.edu'
-                    subtitle='"@illinois.edu" email'
+                    subtitle='School email'
                     value={userData.email}
                     onChange={(input: string) => handleChange('email', input)} />
 

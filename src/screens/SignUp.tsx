@@ -9,8 +9,8 @@ import { CheckIfLoading } from '@components/Loading';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
 
-import { COLORS, DOMAIN, FONT_SIZES, MAX_USERNAME_LENGTH, USER_ID_COOKIE_KEY } from '@util/globals';
-
+import { DOMAIN, USER_ID_COOKIE_KEY, MAX_USERNAME_LENGTH } from '@util/global';
+import { COLORS, FONT_SIZES } from '@util/global-client';
 
 
 
@@ -88,7 +88,7 @@ export default function SignUp() {
                 <SignUpInput
                     title='Email'
                     placeholder='john10@illinois.edu'
-                    subtitle='"@illinois.edu" email'
+                    subtitle='School email'
                     value={userData.email}
                     onChange={(input: string) => handleChange('email', input)} />
 
