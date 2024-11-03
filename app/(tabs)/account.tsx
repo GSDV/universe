@@ -66,7 +66,7 @@ export default function Index() {
         <View style={{ flex: 1, backgroundColor: COLORS.background }}>
             <SafeAreaTop />
             <CheckIfLoading loading={loading}>
-                {!loggedIn ?
+                {loggedIn ?
                     <Acccount userPrisma={userPrisma as RedactedUserType} ownAccount={true} found={false} />
                 :
                     <NotLoggedIn />
