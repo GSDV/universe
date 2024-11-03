@@ -3,14 +3,19 @@
 
 
 export const DOMAIN = 'http://localhost:3005';
-export const BRAND = 'IlliniTalk';
-export const CONTACT_EMAIL = 'contact@illininotes.com';
+export const BRAND = 'UniVerse';
+export const CONTACT_EMAIL = 'contact@universe.com';
 
 
 
 // COOKIES
 export const AUTH_TOKEN_COOKIE_KEY = 'auth_token';
 export const USER_ID_COOKIE_KEY = 'id_token';
+
+
+
+// UI
+export const ACCOUNT_POSTS_PER_BATCH = 15;
 
 
 
