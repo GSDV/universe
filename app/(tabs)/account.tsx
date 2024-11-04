@@ -10,7 +10,7 @@ import Acccount from '@screens/account/Account';
 
 import { CheckIfLoading } from '@components/Loading';
 import { SafeAreaTop } from '@components/SafeArea';
-import Button, { LongButton } from '@components/Button';
+import Button from '@components/Button';
 
 import { AUTH_TOKEN_COOKIE_KEY, BRAND, DOMAIN } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
@@ -66,7 +66,7 @@ export default function Index() {
         <View style={{ flex: 1, backgroundColor: COLORS.background }}>
             <SafeAreaTop />
             <CheckIfLoading loading={loading}>
-                {!loggedIn ?
+                {loggedIn ?
                     <Acccount userPrisma={userPrisma as RedactedUserType} ownAccount={true} found={false} />
                 :
                     <NotLoggedIn />
