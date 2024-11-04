@@ -1,7 +1,7 @@
 {
     "expo": {
-        "name": "illini-notes",
-        "slug": "illini-notes",
+        "name": "universe",
+        "slug": "universe",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/images/icon.png",
