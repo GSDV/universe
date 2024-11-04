@@ -68,7 +68,7 @@ export default function SignUp() {
     return (
     <>
         <View style={{ alignSelf: 'center', width: '80%', display: 'flex', flexDirection: 'column', gap: 30 }}>
-            <Text style={{ textAlign: 'center', fontSize: FONT_SIZES.xxl, fontWeight: 600, color: COLORS.secondary_1 }}>Create Account</Text>
+            <Text style={{ textAlign: 'center', fontSize: FONT_SIZES.xxl, fontWeight: 600, color: COLORS.primary_1 }}>Create Account</Text>
 
             <CheckIfLoading loading={loading}>
                 <SignUpInput

@@ -9,7 +9,8 @@ import { CheckIfLoading } from '@components/Loading';
 import { Alert, AlertType } from '@components/Alert';
 import Button from '@components/Button';
 
-import { USER_ID_COOKIE_KEY, COLORS, FONT_SIZES, DOMAIN, AUTH_TOKEN_COOKIE_KEY } from '@util/globals';
+import { USER_ID_COOKIE_KEY, DOMAIN, AUTH_TOKEN_COOKIE_KEY } from '@util/global';
+import { COLORS, FONT_SIZES } from '@util/global-client';
 
 
 
@@ -94,7 +95,9 @@ export default function Verification() {
                         value={digit}
                         onChangeText={(value) => handleChange(value, index)}
                         onKeyPress={(e) => handleKeyPress(e, index)}
-                        textAlign="center"
+                        textAlign="center" 
+                        autoCorrect={false} // Disable autocorrect (e.g. 'o' to 'I')
+                        autoCapitalize="none"
                     />
                 ))}
                 </View>
@@ -109,6 +112,8 @@ export default function Verification() {
     );
 };
 
+
+
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
     title: {
         marginBottom: 20,
         fontSize: FONT_SIZES.xl,
-        color: COLORS.secondary_1,
+        color: COLORS.primary_1,
         fontWeight: '600'
     },
     subtitle: {
