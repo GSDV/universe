@@ -1,6 +1,10 @@
+// Displays the posts of a given user on his account.
+// Does not need to be the same user as who is logged in. 
+
 import { useEffect, useState } from 'react';
 import { View, Text, FlatList, RefreshControl } from 'react-native';
 
+import { useUser } from '@components/providers/UserProvider';
 import { useOperation } from '@components/providers/OperationProvider';
 
 import { FeedPost } from './Post';
@@ -15,6 +19,7 @@ import { PostType } from '@util/types';
 
 
 export default function UserPosts({ userId }: { userId: string }) {
+    const userContext = useUser();
     const operationContext = useOperation();
 
     const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -121,7 +126,7 @@ export default function UserPosts({ userId }: { userId: string }) {
 
     // The UserPosts component will always be used in an account, so all posts will be displayed in feed style.
     const renderPost = ({ item, index }: { item: PostType, index: number }) => {
-        return <FeedPost post={item} ownPost={true} showPinned={item.pinned} handlePinChange={handlePinChange} handleDelete={handleDelete} previousScreen='account' />;
+        return <FeedPost post={item} ownPost={userContext?.user?.id === item.author.id} showPinned={item.pinned} handlePinChange={handlePinChange} handleDelete={handleDelete} />;
     }
 
     useEffect(() => {
