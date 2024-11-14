@@ -48,4 +48,4 @@ export const OperationProvider = ({ children }: { children: React.ReactNode }) =
 
 
 
-export const useRefresh = () => useContext(OperationContext);
+export const useOperation = () => useContext(OperationContext);
