@@ -4,13 +4,18 @@ import { RedactedUserType } from '@util/types';
 
 
 
-const UserContext = createContext<{ 
+interface UserContextType {
     user: RedactedUserType | null, 
     setUser: (input: RedactedUserType | null) => void 
-}>({ 
+}
+
+
+
+const UserContext = createContext<UserContextType>({ 
     user: null, 
     setUser: (input: RedactedUserType | null) => {} 
 });
+
 
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -22,6 +27,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         </UserContext.Provider>
     );
 }
+
 
 
 export const useUser = () => useContext(UserContext);
