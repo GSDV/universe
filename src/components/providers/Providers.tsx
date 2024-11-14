@@ -1,11 +1,14 @@
-import { UserIdProvider } from './UserIdProvider';
+import { RefreshProvider } from './RefreshProvider';
+import { UserProvider } from './UserProvider';
 
 
 
 export default function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <UserIdProvider>
+        <RefreshProvider>
+        <UserProvider>
             {children}
-        </UserIdProvider>
+        </UserProvider>
+        </RefreshProvider>
     );
 }
