@@ -7,21 +7,25 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
+import { PostType } from '@util/types';
+
 
 
 const OperationContext = createContext<{ 
-    op: PostOperation | null,
-    setOperation: (postId: string, op: OperationType) => void
+    postOp: PostOperationType | null,
+    setOperation: (postId: string, op: OperationType) => void,
+    conductOperation: (posts: PostType[]) => PostType[];
 }>({ 
-    op: null,
-    setOperation: (postId: string, op: OperationType) => {}
+    postOp: null,
+    setOperation: (postId: string, op: OperationType) => {},
+    conductOperation: (posts: PostType[]) => []
 });
 
 
 
-type OperationType = 'LIKE' | 'DELETE';
+type OperationType = 'LIKE' | 'UNLIKE' | 'DELETE';
 
-interface PostOperation {
+interface PostOperationType {
     postId: string;
     op: OperationType;
 }
@@ -29,18 +33,31 @@ interface PostOperation {
 
 
 export const OperationProvider = ({ children }: { children: React.ReactNode }) => {
-    const [op, setOp] = useState<PostOperation | null>(null);
+    const [postOp, setPostOp] = useState<PostOperationType | null>(null);
 
     const setOperation = (postId: string, op: OperationType) => {
-        setOp({ postId, op });
+        setPostOp({ postId, op });
+    }
+
+    const conductOperation = (posts: PostType[]) => {
+        if (!postOp) return [];
+
+        const op = postOp.op;
+        const postId = postOp.postId;
+        if (op === 'LIKE') return posts.map(p => (p.id === postId) ? {...p, isLiked: true} : p );
+        if (op === 'UNLIKE') return posts.map(p => (p.id === postId) ? {...p, isLiked: false} : p );
+        if (op === 'DELETE') return posts.filter(post => post.id !== postId);
+
+        // Should never happen, but for TypeScript:
+        return [];
     }
 
     useEffect(() => {
-        setOp(null);
+        setPostOp(null);
     }, []);
 
     return (
-        <OperationContext.Provider value={{ op, setOperation }}>
+        <OperationContext.Provider value={{ postOp, setOperation, conductOperation }}>
             {children}
         </OperationContext.Provider>
     );
