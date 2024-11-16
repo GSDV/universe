@@ -33,10 +33,10 @@ export const MAX_POST_MEDIA = 4;
 export const ACCEPTED_IMGS = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 export const ACCEPTED_VIDS = ['video/mp4', 'video/quicktime'];
 export const ACCEPTED_FILES = [...ACCEPTED_IMGS, ...ACCEPTED_VIDS];
-export const IMG_SIZE_LIMIT = 15 * 1000000; // 15mb;
-export const IMG_SIZE_LIMIT_TXT = `15mb`;
-export const VID_SIZE_LIMIT = 15 * 1000000; // 15mb;
-export const VID_SIZE_LIMIT_TXT = `15mb`;
+export const IMG_SIZE_LIMIT = 10 * 1000000;
+export const IMG_SIZE_LIMIT_TXT = `10mb`;
+export const VID_SIZE_LIMIT = 50 * 1000000;
+export const VID_SIZE_LIMIT_TXT = `50mb`;
 
 
 
