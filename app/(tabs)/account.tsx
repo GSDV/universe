@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { View, Text, ScrollView } from 'react-native';
 
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import { useUser } from '@components/providers/UserProvider';
+import { useRefresh } from '@components/providers/RefreshProvider';
 
 import Acccount from '@screens/account/Account';
 
@@ -23,6 +24,7 @@ import { RedactedUserType } from '@util/types';
 
 export default function Index() {
     const userContext = useUser();
+    const refreshContext = useRefresh();
 
     const [loading, setLoading] = useState<boolean>(true);
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
@@ -55,12 +57,18 @@ export default function Index() {
             setLoggedIn(false);
         }
         setLoading(false);
+        refreshContext.setRefresh('account', false);
     }
 
     useEffect(() => {
         loadProfile();
     }, []);
 
+    useFocusEffect(
+        useCallback(() => {
+            if (refreshContext.getRefresh('account')) loadProfile();
+        }, [refreshContext.refreshMap])
+    );
 
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.background }}>
