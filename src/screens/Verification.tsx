@@ -38,7 +38,7 @@ export default function Verification() {
             newCode[index] = '';
             setCode(newCode);
         }
-    };
+    }
 
     const attemptResend = async () => {
         setLoading(true);
@@ -51,7 +51,7 @@ export default function Verification() {
         const resJson = await res.json();
         setAlert(resJson);
         setLoading(false);
-    };
+    }
 
     const attemptVerify = async () => {
         setLoading(true);
@@ -70,14 +70,14 @@ export default function Verification() {
             setAlert(resJson);
             setLoading(false);
         }
-    };
+    }
 
     const handleKeyPress = (e: any, index: number) => {
         if (e.nativeEvent.key === 'Backspace' && !code[index] && index > 0) {
             // Move to the previous input if current is empty
             inputs.current[index - 1]?.focus();
         }
-    };
+    }
 
     return (
         <View style={styles.container}>
