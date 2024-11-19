@@ -1,6 +1,6 @@
 // To be used for media that already exists, NOT recently uploaded media like in create post.
 
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Pressable, Modal } from 'react-native';
 
 import { ResizeMode, Video } from 'expo-av';
@@ -8,8 +8,63 @@ import { Image } from 'expo-image';
 
 import Entypo from '@expo/vector-icons/Entypo';
 
-import { ACCEPTED_IMGS } from '@util/global';
 import { COLORS, FONT_SIZES, mediaUrl } from '@util/global-client';
+
+
+
+export function MediaDisplay({ media }: { media: string[] }) {
+    const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const handleMediaPress = (item: string) => {
+        setSelectedMedia(item);
+        setIsModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setIsModalVisible(false);
+        setSelectedMedia(null);
+    };
+
+    const n = media.length;
+
+    if (n == 0) return <></>;
+
+    return (
+        <View style={{ gap: 5 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 5 }}>
+                {(n >= 1) && <MediaItem mediaItem={media[0]} handleMediaPress={handleMediaPress} /> }
+                {(n >= 2) && <MediaItem mediaItem={media[1]} handleMediaPress={handleMediaPress} /> }
+
+                {/* For only three posts, display them on the same line */}
+                {(n == 3) && <MediaItem mediaItem={media[2]} handleMediaPress={handleMediaPress} /> }
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 5 }}>
+                {(n == 4) && <MediaItem mediaItem={media[2]} handleMediaPress={handleMediaPress} /> }
+                {(n == 4) && <MediaItem mediaItem={media[3]} handleMediaPress={handleMediaPress} /> }
+            </View>
+            {selectedMedia && <MediaPopUp mediaItem={selectedMedia} isVisible={isModalVisible} closeModal={closeModal} />}
+        </View>
+    );
+}
+
+
+
+function MediaItem({ mediaItem, handleMediaPress }: { mediaItem: string, handleMediaPress: (v: string)=>void }) {
+    const url = mediaUrl(mediaItem);
+
+    return (
+        <TouchableOpacity onPress={() => handleMediaPress(mediaItem)} style={styles.mediaContainer}>
+            <View style={{ position: 'relative', flex: 1 }}>         
+                {mediaItem.includes('-image') ?
+                    <Image source={{ uri: url }} style={styles.mediaComponent} />
+                :
+                    <Video source={{ uri: url }} style={styles.mediaComponent} resizeMode={ResizeMode.COVER} />
+                }
+            </View>
+        </TouchableOpacity>
+    );
+}
 
 
 
@@ -52,70 +107,25 @@ export function MediaPopUp({ mediaItem, isVisible, closeModal }: MediaPopUpProps
 
 
 
-interface MediaDisplay {
-    media: string[]
-    handleMediaPress: (input: string) => void
-}
-
-export function MediaDisplay({ media, handleMediaPress }: MediaDisplay) {
+// For displaing media on feed, take out pop-up onPress functionality.
+// If a user taps on media of a feed post, just have the default feed post onPress of opening in focus view.
+export function FeedMediaDisplay({ media }: { media: string[] }) {
     const n = media.length;
 
     if (n == 0) return <></>;
 
-    if (n  == 1) return (
-        <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
-            <TouchableOpacity key={media[0] + '-i0'} onPress={() => handleMediaPress(media[0])} style={styles.mediaContainer}>
-                <MediaItem mediaItem={media[0]}/>
-            </TouchableOpacity>
-        </View>
-    );
-
-    if (n  == 2) return (
-        <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
-            {media.map((asset, index) => (
-                <TouchableOpacity key={asset + index} onPress={() => handleMediaPress(asset)} style={styles.mediaContainer}>
-                    <MediaItem mediaItem={asset}/>
-                </TouchableOpacity>
-            ))}
-        </View>
-    );
-
-    if (n  == 3) return (
-        <View style={{ flex: 1, gap: 15 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
-                <TouchableOpacity key={media[0] + '-i0'} onPress={() => handleMediaPress(media[0])} style={styles.mediaContainer}>
-                    <MediaItem mediaItem={media[0]}/>
-                </TouchableOpacity>
-                <TouchableOpacity key={media[1] + '-i1'} onPress={() => handleMediaPress(media[1])} style={styles.mediaContainer}>
-                    <MediaItem mediaItem={media[1]}/>
-                </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
-                <TouchableOpacity key={media[2] + '-i2'} onPress={() => handleMediaPress(media[2])} style={styles.mediaContainer}>
-                    <MediaItem mediaItem={media[2]}/>
-                </TouchableOpacity>
-                <View style={styles.mediaContainer} />
-            </View>
-        </View>
-    );
-
     return (
-        <View style={{ flex: 1, gap: 15 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
-                <TouchableOpacity key={media[0] + '-i0'} onPress={() => handleMediaPress(media[0])} style={styles.mediaContainer}>
-                    <MediaItem mediaItem={media[0]}/>
-                </TouchableOpacity>
-                <TouchableOpacity key={media[1] + '-i1'} onPress={() => handleMediaPress(media[1])} style={styles.mediaContainer}>
-                    <MediaItem mediaItem={media[1]}/>
-                </TouchableOpacity>
+        <View style={{ gap: 5 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 5 }}>
+                {(n >= 1) && <FeedMediaItem mediaItem={media[0]} /> }
+                {(n >= 2) && <FeedMediaItem mediaItem={media[1]} /> }
+
+                {/* For only three posts, display them on the same line */}
+                {(n == 3) && <FeedMediaItem mediaItem={media[2]} /> }
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
-                <TouchableOpacity key={media[2] + '-i2'} onPress={() => handleMediaPress(media[2])} style={styles.mediaContainer}>
-                    <MediaItem mediaItem={media[2]}/>
-                </TouchableOpacity>
-                <TouchableOpacity key={media[3] + '-i3'} onPress={() => handleMediaPress(media[3])} style={styles.mediaContainer}>
-                    <MediaItem mediaItem={media[3]}/>
-                </TouchableOpacity>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 5 }}>
+                {(n == 4) && <FeedMediaItem mediaItem={media[2]} /> }
+                {(n == 4) && <FeedMediaItem mediaItem={media[3]} /> }
             </View>
         </View>
     );
@@ -123,16 +133,18 @@ export function MediaDisplay({ media, handleMediaPress }: MediaDisplay) {
 
 
 
-function MediaItem({ mediaItem }: { mediaItem: string }) {
+function FeedMediaItem({ mediaItem }: { mediaItem: string }) {
     const url = mediaUrl(mediaItem);
 
     return (
-        <View style={{ position: 'relative', flex: 1 }}>         
-            {mediaItem.includes('-image') ?
-                <Image source={{ uri: url }} style={styles.mediaComponent} onError={(e) => console.error('Failed to load image:', e.error)}/>
-            :
-                <Video source={{ uri: url }} style={styles.mediaComponent} resizeMode={ResizeMode.COVER} />
-            }
+        <View style={styles.mediaContainer}>
+            <View style={{ position: 'relative', flex: 1 }}>         
+                {mediaItem.includes('-image') ?
+                    <Image source={{ uri: url }} style={styles.mediaComponent} />
+                :
+                    <Video source={{ uri: url }} style={styles.mediaComponent} resizeMode={ResizeMode.COVER} />
+                }
+            </View>
         </View>
     );
 }
