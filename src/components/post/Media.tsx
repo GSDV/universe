@@ -124,12 +124,14 @@ export function MediaDisplay({ media, handleMediaPress }: MediaDisplay) {
 
 
 function MediaItem({ mediaItem }: { mediaItem: string }) {
+    const url = mediaUrl(mediaItem);
+
     return (
         <View style={{ position: 'relative', flex: 1 }}>         
-            {ACCEPTED_IMGS.includes('-image') ?
-                <Image source={{ uri: mediaUrl(mediaItem) }} style={styles.mediaComponent} />
+            {mediaItem.includes('-image') ?
+                <Image source={{ uri: url }} style={styles.mediaComponent} onError={(e) => console.error('Failed to load image:', e.error)}/>
             :
-                <Video source={{ uri: mediaUrl(mediaItem) }} style={styles.mediaComponent} resizeMode={ResizeMode.COVER} />
+                <Video source={{ uri: url }} style={styles.mediaComponent} resizeMode={ResizeMode.COVER} />
             }
         </View>
     );
