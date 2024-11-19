@@ -132,8 +132,9 @@ function MediaItem({ mediaItem }: { mediaItem: string }) {
                 <Video source={{ uri: mediaUrl(mediaItem) }} style={styles.mediaComponent} resizeMode={ResizeMode.COVER} />
             }
         </View>
-    )
+    );
 }
+
 
 
 const styles = StyleSheet.create({
