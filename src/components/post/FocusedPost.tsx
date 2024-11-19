@@ -1,3 +1,6 @@
+// Used when a post is in focus (user pressed on a post and now can see the post and its replies).
+// Only used at the top of PostView.
+
 import { ActionSheetIOS, Text, Image, View, StyleSheet, Alert as AlertPopUp } from 'react-native';
 
 import { useOperation } from '@components/providers/OperationProvider';
@@ -20,8 +23,6 @@ interface FocusedPostType {
     post: PostType;
     ownPost?: boolean;
 }
-// Used when a post is in focus (user pressed on a post and now can see the post and its replies).
-// Only used at the top of PostView.
 export default function FocusedPost({ post, ownPost }: FocusedPostType) {
     return (
         <View style={{ padding: 20, width: '100%', gap: 10, backgroundColor: COLORS.background }}>
