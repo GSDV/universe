@@ -11,31 +11,25 @@ export const POST_OPERATION_EVENT_KEY = 'POST_OPERATION_EVENT_KEY';
 export const DEFAULT_PFP_STR = '@assets/ui/default-profile-picture.png';
 export const DEFAULT_PFP = require('@assets/ui/default-profile-picture.png');
 
-export const mediaUrl = (authorId: string, mediaKey: string) => `https://uni-verse.s3.us-east-2.amazonaws.com/users/${authorId}/posts/${mediaKey}`;
+export const mediaUrl = (mediaKey: string) => `https://uni-verse.s3.us-east-2.amazonaws.com/${mediaKey}`;
 
 export const imgUrl = (key: string) => `https://uni-verse.s3.us-east-2.amazonaws.com/${key}`;
-
-export const ACCEPTED_IMGS = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
-export const ACCEPTED_VIDS = ['video/mp4', 'video/quicktime'];
-export const ACCEPTED_FILES = [...ACCEPTED_IMGS, ...ACCEPTED_VIDS];
-export const IMG_SIZE_LIMIT = 15 * 1000000; // 15mb;
-export const IMG_SIZE_LIMIT_TXT = `15mb`;
-export const VID_SIZE_LIMIT = 15 * 1000000; // 15mb;
-export const VID_SIZE_LIMIT_TXT = `15mb`;
 
 
 
 export const PRIMARY_1 = 'rgb(232, 70, 70)';
 export const PRIMARY_2 = 'rgb(212, 59, 59)';
 export const SECONDARY_1 = 'rgb(157, 2, 7)';
-export const BLACK = 'rgb(20, 20, 20)';
-export const GRAY = 'rgb(117, 117, 117)';
 export const WHITE = 'rgb(232, 230, 229)';
+export const GRAY = 'rgb(117, 117, 117)';
+export const DARK_GRAY = 'rgb(220, 220, 220)';
+export const BLACK = 'rgb(20, 20, 20)';
 
 export const COLORS = {
-    black: BLACK,
-    gray: GRAY,
     white: WHITE,
+    gray: GRAY,
+    dark_gray: DARK_GRAY,
+    black: BLACK,
     primary_1: PRIMARY_1,
     primary_2: PRIMARY_2,
     secondary_1: SECONDARY_1,
