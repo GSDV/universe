@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { useUser } from '@components/providers/UserProvider';
 
 import { CheckIfLoading } from '@components/Loading';
 import { Alert, AlertType } from '@components/Alert';
@@ -11,17 +13,23 @@ import Button from '@components/Button';
 
 import { USER_ID_COOKIE_KEY, DOMAIN, AUTH_TOKEN_COOKIE_KEY } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
+import { setAuthCookie } from '@util/storage';
 
 
 
 export default function Verification() {
     const router = useRouter();
 
+    const userContext = useUser();
+
     const [loading, setLoading] = useState<boolean>(false);
     const [alert, setAlert] = useState<AlertType | null>(null);
 
     const [code, setCode] = useState(['', '', '', '', '', '']);
     const inputs = useRef<(TextInput | null)[]>([]);
+
+    const { dataParam } = useLocalSearchParams();
+    const data = JSON.parse(decodeURIComponent(dataParam as string));
 
     const handleChange = (value: string, index: number) => {
         if (/^[a-zA-Z0-9]$/.test(value)) {
@@ -46,7 +54,7 @@ export default function Verification() {
         const userId = await AsyncStorage.getItem(USER_ID_COOKIE_KEY);
         const res = await fetch(`${DOMAIN}/api/app/user/verification`, {
             method: 'POST',
-            body: JSON.stringify({ userId })
+            body: JSON.stringify({ data })
         });
         const resJson = await res.json();
         setAlert(resJson);
@@ -57,14 +65,15 @@ export default function Verification() {
         setLoading(true);
         setAlert(null);
         const codeStr = code.join('');
-        const userId = await AsyncStorage.getItem(USER_ID_COOKIE_KEY);
+        const email = data.email;
         const res = await fetch(`${DOMAIN}/api/app/user/verification`, {
             method: 'PUT',
-            body: JSON.stringify({ userId, codeStr })
+            body: JSON.stringify({ email, codeStr })
         });
         const resJson = await res.json();
         if (resJson.cStatus == 200) {
-            await AsyncStorage.setItem(AUTH_TOKEN_COOKIE_KEY, resJson.authToken);
+            userContext.setUser(resJson.user);
+            await setAuthCookie(resJson.authToken);
             router.push('/(tabs)/account');
         } else {
             setAlert(resJson);

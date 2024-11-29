@@ -42,14 +42,15 @@ export default function SignUp() {
     const onSubmit = async () => {
         setLoading(true);
         setAlert(null);
-        const res = await fetch(`${DOMAIN}/api/app/user`, {
+        const res = await fetch(`${DOMAIN}/api/app/user/verification`, {
             method: 'POST',
             body: JSON.stringify({ data: userData })
         });
+
         const resJson = await res.json();
         if (resJson.cStatus == 200) {
-            await AsyncStorage.setItem(USER_ID_COOKIE_KEY, resJson.userId);
-            router.push(`/signup/verification`);
+            const dataParam = encodeURIComponent(JSON.stringify(userData));
+            router.push({ pathname: `/signup/verification`, params: {dataParam} });
         }
         else {
             setAlert(resJson);
