@@ -11,8 +11,9 @@ import { CheckIfLoading } from '@components/Loading';
 import { Alert, AlertType } from '@components/Alert';
 import Button from '@components/Button';
 
-import { USER_ID_COOKIE_KEY, DOMAIN, AUTH_TOKEN_COOKIE_KEY } from '@util/global';
+import { USER_ID_COOKIE_KEY, DOMAIN } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
+
 import { setAuthCookie } from '@util/storage';
 
 
@@ -119,7 +120,7 @@ export default function Verification() {
             {alert && <Alert alert={alert} />}
         </View>
     );
-};
+}
 
 
 
