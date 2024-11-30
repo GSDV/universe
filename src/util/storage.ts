@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { AUTH_TOKEN_COOKIE_KEY, USER_ID_COOKIE_KEY } from './globals';
+import { AUTH_TOKEN_COOKIE_KEY, USER_ID_COOKIE_KEY } from './global';
 
 
 
