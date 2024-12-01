@@ -16,25 +16,25 @@ import { RedactedUserType } from '@util/types';
 export default function Index() {
     const userContext = useUser();
 
-    const [loading, setLoading] = useState<boolean>(false);
-    const [userPrisma, setUserPrisma] = useState<RedactedUserType | null>(null);
+    // const [loading, setLoading] = useState<boolean>(false);
+    // const [userPrisma, setUserPrisma] = useState<RedactedUserType | null>(userContext.user);
 
-    const fetchaccount = async () => {
-        setLoading(true);
-        setUserPrisma(userContext.user);
-        setLoading(false);
-    }
+    // const fetchaccount = async () => {
+    //     setLoading(true);
+    //     setUserPrisma(userContext.user);
+    //     setLoading(false);
+    // }
 
-    useEffect(() => {
-        fetchaccount();
-    }, []);
+    // useEffect(() => {
+    //     fetchaccount();
+    // }, []);
 
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.background }}>
             <SafeAreaFull>
-            <CheckIfLoading loading={loading}>
-                {userPrisma && <CreatePostScreen userPrisma={userPrisma as RedactedUserType} />}
-            </CheckIfLoading>
+            {/* <CheckIfLoading loading={loading}> */}
+                {userContext.user && <CreatePostScreen userPrisma={userContext.user as RedactedUserType} />}
+            {/* </CheckIfLoading> */}
             </ SafeAreaFull>
         </View>
     );
