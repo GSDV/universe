@@ -150,12 +150,15 @@ function Thread({ userId }: { userId: string }) {
         });
     }
 
+
     const fetchReplies = async () => {
         if (post.replyCount == 0) {
             setReplies([]);
             return;
         }
     }
+
+
     useEffect(() => {
         fetchAncestors();
         fetchReplies();
