@@ -12,13 +12,11 @@ interface ButtonProps {
     textStyle?: TextStyle;
 }
 
-
-
 export default function Button({ children, onPress, disabled, textStyle, containerStyle }: ButtonProps) {
     const disabledStyle = (disabled) ? {backgroundColor: '#9bacb0'} : {};
 
     return (
-        <TouchableOpacity onPress={disabled ? ()=>{} : onPress} style={containerStyle}>
+        <TouchableOpacity onPress={disabled ? ()=>{} : onPress} disabled={disabled} style={containerStyle}>
             <Text style={[styles.text, disabledStyle, textStyle]}>
                 {children}
             </Text>
@@ -26,17 +24,17 @@ export default function Button({ children, onPress, disabled, textStyle, contain
     );
 }
 
-
-
 const styles = StyleSheet.create({
     text: {
+        width: '100%',
         paddingHorizontal: 10,
         paddingVertical: 5,
         alignSelf: 'flex-start',
         borderRadius: 10,
-        backgroundColor: COLORS.secondary_1,
+        backgroundColor: COLORS.primary_2,
         fontSize: FONT_SIZES.l,
         color: COLORS.white,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        textAlign: 'center'
     }
 });
