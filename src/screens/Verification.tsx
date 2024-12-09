@@ -3,13 +3,11 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { useUser } from '@components/providers/UserProvider';
 
+import Button from '@components/Button';
 import { CheckIfLoading } from '@components/Loading';
 import { Alert, AlertType } from '@components/Alert';
-import Button from '@components/Button';
 
 import { USER_ID_COOKIE_KEY, DOMAIN } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
@@ -52,7 +50,6 @@ export default function Verification() {
     const attemptResend = async () => {
         setLoading(true);
         setAlert(null);
-        const userId = await AsyncStorage.getItem(USER_ID_COOKIE_KEY);
         const res = await fetch(`${DOMAIN}/api/app/user/verification`, {
             method: 'POST',
             body: JSON.stringify({ data })
@@ -66,16 +63,15 @@ export default function Verification() {
         setLoading(true);
         setAlert(null);
         const codeStr = code.join('');
-        const email = data.email;
         const res = await fetch(`${DOMAIN}/api/app/user/verification`, {
             method: 'PUT',
-            body: JSON.stringify({ email, codeStr })
+            body: JSON.stringify({ data, codeStr })
         });
         const resJson = await res.json();
         if (resJson.cStatus == 200) {
             userContext.setUser(resJson.user);
             await setAuthCookie(resJson.authToken);
-            router.push('/(tabs)/account');
+            router.replace('/(tabs)/account');
         } else {
             setAlert(resJson);
             setLoading(false);
@@ -116,8 +112,10 @@ export default function Verification() {
                     <Button onPress={attemptVerify} disabled={code.some((ele)=>ele=='')}>Verify</Button>
                 </View>
             </CheckIfLoading>
-
-            {alert && <Alert alert={alert} />}
+        
+            <View style={{ paddingTop: 20, width: '100%' }}>
+                {alert && <Alert alert={alert} />}
+            </View>
         </View>
     );
 }
@@ -126,20 +124,24 @@ export default function Verification() {
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
         padding: 15,
-        backgroundColor: COLORS.background
+        flex: 1,
+        alignSelf: 'center',
+        width: '80%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 15
     },
     title: {
-        marginBottom: 20,
-        fontSize: FONT_SIZES.xl,
-        color: COLORS.primary_1,
-        fontWeight: '600'
+        textAlign: 'center',
+        fontSize: FONT_SIZES.xxl,
+        fontWeight: 'bold',
+        color: COLORS.primary_1
     },
     subtitle: {
-        marginBottom: 16,
         fontSize: FONT_SIZES.m,
-        color: COLORS.black
+        color: COLORS.black,
+        textAlign: 'center'
     },
     inputContainer: {
         flexDirection: 'row',

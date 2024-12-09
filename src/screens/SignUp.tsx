@@ -1,15 +1,14 @@
 import { useCallback, useState } from 'react';
-import { View, Text, TextInput } from 'react-native';
+
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 import { useFocusEffect, useRouter } from 'expo-router';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { CheckIfLoading } from '@components/Loading';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
+import { CheckIfLoading } from '@components/Loading';
 
-import { DOMAIN, USER_ID_COOKIE_KEY, MAX_USERNAME_LENGTH } from '@util/global';
+import { DOMAIN, MAX_USERNAME_LENGTH } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 
@@ -48,9 +47,9 @@ export default function SignUp() {
         });
 
         const resJson = await res.json();
-        if (resJson.cStatus == 200) {
+        if (resJson.cStatus == 200 || resJson.cStatus == 510) {
             const dataParam = encodeURIComponent(JSON.stringify(userData));
-            router.push({ pathname: `/signup/verification`, params: {dataParam} });
+            router.push({ pathname: `/signup/verification`, params: { dataParam } });
         }
         else {
             setAlert(resJson);
@@ -67,9 +66,8 @@ export default function SignUp() {
     );
 
     return (
-    <>
-        <View style={{ alignSelf: 'center', width: '80%', display: 'flex', flexDirection: 'column', gap: 30 }}>
-            <Text style={{ textAlign: 'center', fontSize: FONT_SIZES.xxl, fontWeight: 600, color: COLORS.primary_1 }}>Create Account</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Create Account</Text>
 
             <CheckIfLoading loading={loading}>
                 <SignUpInput
@@ -102,10 +100,9 @@ export default function SignUp() {
 
                 <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Sign Up</Button>
             </CheckIfLoading>
-        </View>
 
-        {alert && <Alert alert={alert} />}
-    </>
+            {alert && <Alert alert={alert} />}
+        </View>
     );
 }
 
@@ -126,3 +123,24 @@ function SignUpInput({ placeholder, value, onChange, title, subtitle, isSecure }
         </View>
     );
 }
+
+
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 15,
+        flex: 1,
+        alignSelf: 'center',
+        width: '80%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 30
+    },
+    title: {
+        marginBottom: 20,
+        textAlign: 'center',
+        fontSize: FONT_SIZES.xxl,
+        fontWeight: 'bold',
+        color: COLORS.primary_1
+    }
+});
