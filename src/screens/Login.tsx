@@ -1,21 +1,26 @@
 import { useCallback, useState } from 'react';
+
 import { View, Text, TextInput } from 'react-native';
 
 import { useFocusEffect, useRouter } from 'expo-router';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUser } from '@components/providers/UserProvider';
 
 import { CheckIfLoading } from '@components/Loading';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
 
-import { AUTH_TOKEN_COOKIE_KEY, DOMAIN, USER_ID_COOKIE_KEY } from '@util/global';
+import { DOMAIN } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
+
+import { setAuthCookie } from '@util/storage';
 
 
 
 export default function Login() {
     const router = useRouter();
+
+    const userContext = useUser();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [alert, setAlert] = useState<AlertType | null>(null);
@@ -24,6 +29,7 @@ export default function Login() {
         email: '',
         password: ''
     });
+
 
     const handleChange = (name: string, value: string) => {
         if (name == 'email') value = value.toLowerCase();
@@ -42,13 +48,10 @@ export default function Login() {
             body: JSON.stringify({ email: userData.email, password: userData.password })
         });
         const resJson = await res.json();
-        if (resJson.cStatus == 412) {
-            await AsyncStorage.setItem(USER_ID_COOKIE_KEY, resJson.userId);
-            router.push(`/signup/verification`);
-        }
-        else if (resJson.cStatus == 200) {
-            await AsyncStorage.setItem(AUTH_TOKEN_COOKIE_KEY, resJson.authToken);
-            router.push(`/(tabs)/account`);
+        if (resJson.cStatus == 200) {
+            userContext.setUser(resJson.user);
+            await setAuthCookie(resJson.authToken);
+            router.replace('/(tabs)/account');
         }
         else {
             setAlert(resJson);
@@ -63,6 +66,7 @@ export default function Login() {
                 setAlert(null);
         }, [])
     );
+
 
     return (
     <>
@@ -92,8 +96,6 @@ export default function Login() {
     </>
     );
 }
-
-
 
 
 
