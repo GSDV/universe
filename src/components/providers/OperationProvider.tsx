@@ -8,7 +8,7 @@ import { PostType } from '@util/types';
 
 
 
-type Screen = 'account_posts' | 'account_replies' | 'search' | 'feed' | 'map' | 'focus';
+type Screen = 'account_posts' | 'account_replies' | 'search' | 'feed' | 'map' | 'focus_post' | 'focus_ancestors' | 'focus_replies';
 
 
 
