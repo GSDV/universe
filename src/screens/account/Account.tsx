@@ -5,19 +5,18 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
-
-import { COLORS, FONT_SIZES } from '@util/global-client';
-
-import Pfp from '@components/Pfp';
-import { useOperation } from '@components/providers/OperationProvider';
-
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
+import { useOperation } from '@components/providers/OperationProvider';
+
+import Pfp from '@components/Pfp';
 import UserPosts from '@components/post/UserPosts';
 import UserReplies from '@components/post/UserReplies';
 import { CheckIfLoading } from '@components/Loading';
 
 import { ACCOUNT_POSTS_PER_BATCH, DOMAIN } from '@util/global';
+
+import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { PostType, RedactedUserType, UniversityType } from '@util/types';
 
