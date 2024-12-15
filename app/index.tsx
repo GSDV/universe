@@ -4,12 +4,11 @@ import { View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
-import { useUser } from '@components/providers/UserProvider';
-
 import NotLoggedIn from '@screens/NotLoggedIn';
 
-import { CheckIfLoading } from '@components/Loading';
+import { useUser } from '@components/providers/UserProvider';
 import { SafeAreaTop } from '@components/SafeArea';
+import { CheckIfLoading } from '@components/Loading';
 
 import { AUTH_TOKEN_COOKIE_KEY, DOMAIN } from '@util/global';
 
