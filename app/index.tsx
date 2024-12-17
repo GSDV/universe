@@ -16,7 +16,7 @@ import { getAuthCookie } from '@util/storage';
 
 
 
-// Check if user is signed in
+// Check if user is signed in.
 export default function Index() {
     const router = useRouter();
 
