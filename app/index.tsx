@@ -19,7 +19,6 @@ import { getAuthCookie } from '@util/storage';
 // Check if user is signed in.
 export default function Index() {
     const router = useRouter();
-
     const userContext = useUser();
 
     const [loading, setLoading] = useState<boolean>(true);
