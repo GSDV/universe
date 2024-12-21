@@ -10,6 +10,7 @@ import { RedactedUserType } from '@util/types';
 
 
 
+// If this view is being mounted, then "userContext.user" will never be null.
 export default function Index() {
     const userContext = useUser();
 
