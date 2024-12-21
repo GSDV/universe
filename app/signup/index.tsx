@@ -1,15 +1,16 @@
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
+
+import SignUp from '@screens/SignUp';
 
 import GoBackHeader from '@components/GoBackHeader';
-import SignUp from '@screens/SignUp';
 
 
 
 export default function Index() {
     return (
-        <ScrollView contentContainerStyle={{ flex: 1, gap: 20 }}>
+        <View style={{ flex: 1, gap: 20 }}>
             <GoBackHeader />
             <SignUp />
-        </ScrollView>
+        </View>
     );
 }
