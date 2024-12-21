@@ -9,7 +9,7 @@ import Button from '@components/Button';
 import { CheckIfLoading } from '@components/Loading';
 import { Alert, AlertType } from '@components/Alert';
 
-import { USER_ID_COOKIE_KEY, DOMAIN } from '@util/global';
+import { DOMAIN } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { setAuthCookie } from '@util/storage';
