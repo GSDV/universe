@@ -13,6 +13,9 @@ export const DEFAULT_PFP = require('@assets/ui/default-profile-picture.png');
 
 export const mediaUrl = (mediaKey: string) => `https://uni-verse.s3.us-east-2.amazonaws.com/${mediaKey}`;
 
+export const pfpUrl = (key: string) => (key === '') ? DEFAULT_PFP_STR : `https://uni-verse.s3.us-east-2.amazonaws.com/${key}`;
+export const pfpUri = (key: string) => (key === '') ? DEFAULT_PFP : {uri: 'https://buyillini.s3.us-east-2.amazonaws.com/post-f-7482a848-870d-4c8d-8421-5cbf1793daf8'};
+
 export const imgUrl = (key: string) => `https://uni-verse.s3.us-east-2.amazonaws.com/${key}`;
 
 
