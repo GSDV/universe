@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+
 import { Switch, Text, View, StyleSheet, TouchableOpacity, TextInput, Keyboard, Pressable, Modal, ScrollView } from 'react-native';
+
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useRouter } from 'expo-router';
+import { useOperation } from '@components/providers/OperationProvider';
 
 import { ResizeMode, Video } from 'expo-av';
 import { Image } from 'expo-image';
@@ -16,8 +19,8 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
 
-import { DOMAIN, AUTH_TOKEN_COOKIE_KEY, MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_POST_CONTENT_LENGTH } from '@util/global';
-import { ACCEPTED_FILES, ACCEPTED_IMGS, ACCEPTED_VIDS, COLORS, DEFAULT_PFP, FONT_SIZES, IMG_SIZE_LIMIT, IMG_SIZE_LIMIT_TXT, imgUrl, VID_SIZE_LIMIT, VID_SIZE_LIMIT_TXT } from '@util/global-client';
+import { ACCEPTED_FILES, ACCEPTED_IMGS, ACCEPTED_VIDS, IMG_SIZE_LIMIT, IMG_SIZE_LIMIT_TXT, VID_SIZE_LIMIT, VID_SIZE_LIMIT_TXT, DOMAIN, AUTH_TOKEN_COOKIE_KEY, MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_POST_CONTENT_LENGTH } from '@util/global';
+import { COLORS, DEFAULT_PFP, FONT_SIZES, imgUrl } from '@util/global-client';
 
 import { clientUploadMediaAndGetKeys } from '@util/s3';
 import { getAuthCookie } from '@util/storage';
@@ -36,6 +39,8 @@ type MediaItem = {
 
 export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedUserType }) {
     const router = useRouter();
+
+    const operationContext = useOperation();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingMedia, setLoadingMedia] = useState<boolean>(false);
@@ -133,7 +138,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
                 const blob = await response.blob();
                 return blob;
             } catch (error) {
-                setAlert({ msg: 'Something went wrong while uploading media.', cStatus: 400 });
+                setAlert({ msg: `Something went wrong while uploading media.`, cStatus: 400 });
                 return null;
             }
         });
@@ -141,9 +146,9 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
         const filteredBlobs = resBlobs.filter(blob => blob !== null);
         const mediaKeys = await clientUploadMediaAndGetKeys(filteredBlobs);
         if (!mediaKeys) {
-            setAlert({ msg: 'Something went wrong while uploading media.', cStatus: 400 });
+            setAlert({ msg: `Please upload photos under ${IMG_SIZE_LIMIT_TXT} and videos under ${VID_SIZE_LIMIT_TXT}.`, cStatus: 400 });
             setLoading(false);
-            return ;
+            return;
         }
 
         const postDataInput: PostDataInput = {
@@ -164,12 +169,13 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
         });
         const resJson = await res.json();
 
-        if (resJson.cStatus != 200) {
-            setAlert(resJson);
-            setLoading(false);
-        } else {
+        if (resJson.cStatus == 200) {
+            operationContext.emitOperation({ name: 'CREATE', postData: resJson.post })
             const postStr = encodeURIComponent(JSON.stringify(resJson.post));
             router.replace({ pathname: `/post/[postId]/view`, params: {postId: resJson.postId, post: postStr} });
+        } else {
+            setAlert(resJson);
+            setLoading(false);
         }
     }
 
@@ -201,6 +207,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
                         <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.l }}>Location: </Text>
                         <Switch
                             style={{ transform: [{scaleX: .8}, {scaleY: .8}] }}
+                            trackColor={{ true: COLORS.primary_1 }}
                             onValueChange={() => setIncludesLocation((prev)=>!prev)}
                             value={includesLocation}
                         />
@@ -211,8 +218,8 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
                 <View style={{ flex: 7, gap: 10 }}>
                     <CheckIfLoading loading={loadingMedia}>
                         <TouchableOpacity disabled={media.length==MAX_POST_MEDIA} style={{ flexDirection: 'row', alignItems: 'center', maxWidth: 150, gap: 5 }} onPress={uploadMedia}>
-                            <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.secondary_1 : COLORS.gray) }}>Add Media</Text>
-                            <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.secondary_1 : COLORS.gray} />
+                            <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.primary_1 : COLORS.gray) }}>Add Media</Text>
+                            <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.primary_1 : COLORS.gray} />
                         </TouchableOpacity>
                         <MediaDisplay media={media} handleMediaPress={handleMediaPress} removeMedia={removeMedia} />
                         {selectedMedia && <MediaPopUp media={selectedMedia} isVisible={isModalVisible} closeModal={closeModal} />}
@@ -230,12 +237,12 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
 function Header({ userPrisma, attemptPost, canSubmit }: { userPrisma: RedactedUserType, attemptPost: ()=>void, canSubmit: boolean }) {
     const router = useRouter();
 
-    const sendStyles = canSubmit ? COLORS.secondary_1 : COLORS.gray;
+    const sendStyles = canSubmit ? COLORS.primary_1 : COLORS.gray;
 
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={router.back}>
-                <Ionicons name='chevron-back' size={25} color={COLORS.secondary_1} />
+                <Ionicons name='chevron-back' size={25} color={COLORS.primary_1} />
             </TouchableOpacity>
 
             <View style={{ flex: 1, display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'center' }}>
@@ -299,7 +306,7 @@ function MediaPopUp({ media, isVisible, closeModal }: MediaPopUpProps) {
             <Pressable onPress={closeModal} style={styles.overlay}>
                 <View style={styles.mediaPopUpContainer}>
                     <Pressable style={{backgroundColor: 'black'}}>
-                        {ACCEPTED_FILES.includes(media.type) ?
+                        {ACCEPTED_IMGS.includes(media.type) ?
                             <Image
                                 source={{ uri: media.uri }}
                                 contentFit='contain'
