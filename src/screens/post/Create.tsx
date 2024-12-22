@@ -22,10 +22,9 @@ import { CheckIfLoading } from '@components/Loading';
 import { ACCEPTED_FILES, ACCEPTED_IMGS, ACCEPTED_VIDS, IMG_SIZE_LIMIT, IMG_SIZE_LIMIT_TXT, VID_SIZE_LIMIT, VID_SIZE_LIMIT_TXT, DOMAIN, AUTH_TOKEN_COOKIE_KEY, MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_POST_CONTENT_LENGTH } from '@util/global';
 import { COLORS, DEFAULT_PFP, FONT_SIZES, imgUrl } from '@util/global-client';
 
-import { clientUploadMediaAndGetKeys } from '@util/s3';
+import { clientUploadMediaAndGetKeys, promptMediaPermissions } from '@util/s3';
 import { getAuthCookie } from '@util/storage';
 import { requestLocation } from '@util/location';
-
 import { PostDataInput, RedactedUserType } from '@util/types';
 
 
@@ -71,6 +70,10 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
 
     const uploadMedia = async () => {
         if (media.length >= MAX_POST_MEDIA) return;
+
+        const havePermissions = await promptMediaPermissions();
+        if (!havePermissions) return;
+
         setLoadingMedia(true);
 
         const result = await ImagePicker.launchImageLibraryAsync({
