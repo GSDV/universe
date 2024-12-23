@@ -64,3 +64,30 @@ export const clientUploadMedia = async (asset: Blob, authTokenCookie?: string | 
     });
     return resSignAndKeyJson.key;
 }
+
+
+
+export const clientUploadPfp = async (asset: Blob) => {
+    let authToken = await getAuthCookie();
+
+    const resSignAndKey = await fetch(`${DOMAIN}/api/app/pfp/s3`, {
+        method: 'POST',
+        body: JSON.stringify({ fileType: asset.type, fileSize: asset.size }),
+        headers: { 
+            'Content-Type': 'application/json',
+            'Cookie': `${AUTH_TOKEN_COOKIE_KEY}=${authToken}`
+        }
+    });
+    if (!resSignAndKey.ok) return null;
+
+    const assetBlob = new Blob([asset], { type: asset.type });
+
+    const resSignAndKeyJson = await resSignAndKey.json();
+    if (resSignAndKeyJson.cStatus!=200) return null;
+
+    await fetch(resSignAndKeyJson.signedUrl, {
+        method: 'PUT',
+        body: assetBlob
+    });
+    return resSignAndKeyJson.key;
+}
