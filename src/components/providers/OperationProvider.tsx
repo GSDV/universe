@@ -16,10 +16,10 @@ type CreateOp = { name: 'CREATE', postData: PostType }
 const processCreate = (posts: PostType[], op: CreateOp) => [op.postData, ...posts];
 
 type LikeOp = { name: 'LIKE', postId: string }
-const processLike = (posts: PostType[], op: LikeOp) => posts.map(p => p.id === op.postId ? { ...p, isLiked: true, likeCount: p.likeCount + 1 } : p);
+const processLike = (posts: PostType[], op: LikeOp) => posts.map(p => (p.id === op.postId) ? { ...p, isLiked: true, likeCount: p.likeCount + 1 } : p);
 
 type UnlikeOp = { name: 'UNLIKE', postId: string }
-const processUnlike = (posts: PostType[], op: UnlikeOp) => posts.map(p => p.id === op.postId ? { ...p, isLiked: false, likeCount: p.likeCount - 1 } : p);
+const processUnlike = (posts: PostType[], op: UnlikeOp) => posts.map(p => (p.id === op.postId) ? { ...p, isLiked: false, likeCount: p.likeCount - 1 } : p);
 
 type DeleteOp = { name: 'DELETE', postId: string }
 const processDelete = (posts: PostType[], op: DeleteOp) => posts.filter(p => p.id !== op.postId);
