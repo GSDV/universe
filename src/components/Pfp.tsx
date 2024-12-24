@@ -9,7 +9,7 @@ export default function Pfp({ pfpKey, style }: { pfpKey: string, style?: StylePr
         <>{pfpKey=='' ? 
             <Image style={style} source={DEFAULT_PFP} />
         :
-            <Image style={style} source={{ uri: imgUrl(pfpKey) }} />
+            <Image style={style} source={{ uri: imgUrl(pfpKey), cache: 'reload' }} />
         }</>
     );
 }
