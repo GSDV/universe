@@ -11,6 +11,9 @@ type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export const fetchBasic = async (route: string, method: Method, body?: string) => {
     const res = await fetch(`${DOMAIN}/api/app/${route}`, {
         method,
+        headers: {
+            'Content-Type': 'application/json'
+        },
         body
     });
     return res;
