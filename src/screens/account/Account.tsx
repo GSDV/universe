@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -14,9 +14,10 @@ import UserPosts from '@components/post/UserPosts';
 import UserReplies from '@components/post/UserReplies';
 import { CheckIfLoading } from '@components/Loading';
 
-import { ACCOUNT_POSTS_PER_BATCH, DOMAIN } from '@util/global';
-
+import { ACCOUNT_POSTS_PER_BATCH } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
+
+import { fetchWithAuth } from '@util/fetch';
 
 import { PostType, RedactedUserType, UniversityType } from '@util/types';
 
@@ -33,17 +34,16 @@ interface AccountProps {
 }
 
 export default function Account({ userPrisma, ownAccount = false, found = true }: AccountProps) {
-
     return (
-    <View style={{ flex: 1, gap: 5 }}>
-        <AccountHeader userPrisma={userPrisma} ownAccount={ownAccount} found={found} />
+        <View style={{ flex: 1, gap: 5 }}>
+            <AccountHeader userPrisma={userPrisma} ownAccount={ownAccount} found={found} />
 
-        {userPrisma.university && <University university={userPrisma.university} />}
+            {userPrisma.university && <University university={userPrisma.university} />}
 
-        <Connections user={userPrisma} />
+            <Connections user={userPrisma} />
 
-        <PostsAndReplies userId={userPrisma.id} />
-    </View>
+            <PostsAndReplies userId={userPrisma.id} />
+        </View>
     );
 }
 
@@ -83,7 +83,7 @@ function AccountHeader({ userPrisma, ownAccount, found }: AccountHeader) {
                     <Ionicons name='add-outline' size={30} color={COLORS.primary_1} />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => console.log("View settings")}>
+                <TouchableOpacity onPress={() => router.push('/settings')}>
                     <Ionicons name='settings-outline' size={30} color={COLORS.primary_1} />
                 </TouchableOpacity>
             </>
@@ -141,7 +141,7 @@ function PostsAndReplies({ userId }: { userId: string }) {
 
 
     const fetchAndUpdatePosts = async (postsPage: number, oldPosts: PostType[]) => {
-        const res = await fetch(`${DOMAIN}/api/app/user/${userId}/post?postsPage=${postsPage}`, { method: 'GET' });
+        const res = await fetchWithAuth(`user/${userId}/post?postsPage=${postsPage}`, 'GET');
         const resJson = await res.json();
         if (resJson.cStatus == 200) {
             setPostsPage(postsPage);
@@ -151,7 +151,7 @@ function PostsAndReplies({ userId }: { userId: string }) {
     }
 
     const fetchAndUpdateReplies = async (repliesPage: number, oldReplies: PostType[]) => {
-        const res = await fetch(`${DOMAIN}/api/app/user/${userId}/reply?repliesPage=${repliesPage}`, { method: 'GET' });
+        const res = await fetchWithAuth(`user/${userId}/reply?repliesPage=${repliesPage}`, 'GET');
         const resJson = await res.json();
         if (resJson.cStatus == 200) {
             setRepliesPage(repliesPage);
@@ -174,7 +174,12 @@ function PostsAndReplies({ userId }: { userId: string }) {
         fetchInitialPR();
     }, []);
 
+    const isFirstRender = useRef<boolean>(true);
     useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
         if (operationContext.lastOperation) {
             setPosts(prev => operationContext.conductOperation(prev, 'account_posts'));
             setReplies(prev => operationContext.conductOperation(prev, 'account_replies'));
