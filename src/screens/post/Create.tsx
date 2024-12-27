@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Switch, Text, View, StyleSheet, TouchableOpacity, TextInput, Keyboard, Pressable, Modal, ScrollView } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { useRouter } from 'expo-router';
 import { useOperation } from '@components/providers/OperationProvider';
 
