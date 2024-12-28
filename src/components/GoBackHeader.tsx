@@ -16,7 +16,7 @@ export default function GoBackHeader() {
     return (
         <View>
             <SafeAreaTop />
-            <TouchableOpacity style={{ paddingLeft: 5, width: '100%' }} onPress={router.back}>
+            <TouchableOpacity style={{ paddingLeft: 5, width: 50 }} onPress={router.back}>
                 <Ionicons name='chevron-back' size={25} color={COLORS.primary_1} />
             </TouchableOpacity>
         </View>
