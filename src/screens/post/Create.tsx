@@ -68,50 +68,56 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
     const handleInput = (input: string) => setContent((input.length > MAX_POST_CONTENT_LENGTH) ? input.slice(0, MAX_POST_CONTENT_LENGTH) : input);
 
     const uploadMedia = async () => {
-        if (media.length >= MAX_POST_MEDIA) return;
+        try {
+            setAlert(null);
+            if (media.length >= MAX_POST_MEDIA) return;
 
-        const havePermissions = await promptMediaPermissions();
-        if (!havePermissions) return;
+            const havePermissions = await promptMediaPermissions();
+            if (!havePermissions) return;
 
-        setLoadingMedia(true);
+            setLoadingMedia(true);
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsMultipleSelection: true,
-            orderedSelection: true,
-            selectionLimit: (MAX_POST_MEDIA-media.length),
-            quality: 1
-        });
-        if (result.canceled) {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsMultipleSelection: true,
+                orderedSelection: true,
+                selectionLimit: (MAX_POST_MEDIA-media.length),
+                quality: 1
+            });
+            if (result.canceled) {
+                setLoadingMedia(false);
+                return;
+            }
+
+            const assets = result.assets.filter((asset) => asset.mimeType !== undefined);
+
+            for (let i = 0; i < assets.length; i++) {
+                const asset = assets[i];
+                const type = asset.mimeType;
+                if (type==undefined || !ACCEPTED_FILES.includes(type)) {
+                    setAlert({ msg: `Please only upload png, jpg, webp, mp4, or mov files.`, cStatus: 400 });
+                    setLoadingMedia(false);
+                    return;
+                }
+                if (ACCEPTED_IMGS.includes(asset.type as string) && (asset.fileSize ? asset.fileSize : 0) > IMG_SIZE_LIMIT) {
+                    setAlert({ msg: `Please upload pictures under ${IMG_SIZE_LIMIT_TXT}.`, cStatus: 400 });
+                    setLoadingMedia(false);
+                    return;
+                }
+                if (ACCEPTED_VIDS.includes(asset.type as string) && (asset.fileSize ? asset.fileSize : 0) > VID_SIZE_LIMIT) {
+                    setAlert({ msg: `Please upload videos under ${VID_SIZE_LIMIT_TXT}.`, cStatus: 400 });
+                    setLoadingMedia(false);
+                    return;
+                }
+            }
+
+            const newMedia: MediaItem[] = assets.map((asset) => ({ uri: asset.uri, type: (asset.mimeType as string) }));
+            setMedia([...media, ...newMedia]);
             setLoadingMedia(false);
-            return;
+        } catch (err) {
+            setAlert({ msg: `Something went wrong while uploading media.`, cStatus: 400});
+            setLoadingMedia(false);
         }
-
-        const assets = result.assets.filter((asset) => asset.mimeType !== undefined);
-
-        for (let i = 0; i < assets.length; i++) {
-            const asset = assets[i];
-            const type = asset.mimeType;
-            if (type==undefined || !ACCEPTED_FILES.includes(type)) {
-                setAlert({ msg: `Please only upload png, jpg, webp, mp4, or mov files.`, cStatus: 400 });
-                setLoadingMedia(false);
-                return;
-            }
-            if (ACCEPTED_IMGS.includes(asset.type as string) && (asset.fileSize ? asset.fileSize : 0) > IMG_SIZE_LIMIT) {
-                setAlert({ msg: `Please upload pictures under ${IMG_SIZE_LIMIT_TXT}.`, cStatus: 400 });
-                setLoadingMedia(false);
-                return;
-            }
-            if (ACCEPTED_VIDS.includes(asset.type as string) && (asset.fileSize ? asset.fileSize : 0) > VID_SIZE_LIMIT) {
-                setAlert({ msg: `Please upload videos under ${VID_SIZE_LIMIT_TXT}.`, cStatus: 400 });
-                setLoadingMedia(false);
-                return;
-            }
-        }
-
-        const newMedia: MediaItem[] = assets.map((asset) => ({ uri: asset.uri, type: (asset.mimeType as string) }));
-        setMedia([...media, ...newMedia]);
-        setLoadingMedia(false);
     }
 
     const removeMedia = (index: number) => {
