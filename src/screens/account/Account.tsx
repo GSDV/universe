@@ -141,8 +141,7 @@ function PostsAndReplies({ userId }: { userId: string }) {
 
 
     const fetchAndUpdatePosts = async (postsPage: number, oldPosts: PostType[]) => {
-        const res = await fetchWithAuth(`user/${userId}/post?postsPage=${postsPage}`, 'GET');
-        const resJson = await res.json();
+        const resJson = await fetchWithAuth(`user/${userId}/post?postsPage=${postsPage}`, 'GET');
         if (resJson.cStatus == 200) {
             setPostsPage(postsPage);
             setPosts([...oldPosts, ...resJson.posts]);
@@ -151,8 +150,7 @@ function PostsAndReplies({ userId }: { userId: string }) {
     }
 
     const fetchAndUpdateReplies = async (repliesPage: number, oldReplies: PostType[]) => {
-        const res = await fetchWithAuth(`user/${userId}/reply?repliesPage=${repliesPage}`, 'GET');
-        const resJson = await res.json();
+        const resJson = await fetchWithAuth(`user/${userId}/reply?repliesPage=${repliesPage}`, 'GET');
         if (resJson.cStatus == 200) {
             setRepliesPage(repliesPage);
             setReplies([...oldReplies, ...resJson.replies]);
