@@ -24,12 +24,14 @@ export const PRIMARY_1 = 'rgb(232, 70, 70)';
 export const PRIMARY_2 = 'rgb(212, 59, 59)';
 export const SECONDARY_1 = 'rgb(157, 2, 7)';
 export const WHITE = 'rgb(232, 230, 229)';
+export const LIGHT_GRAY = 'rgb(220, 220, 220)';
 export const GRAY = 'rgb(117, 117, 117)';
 export const DARK_GRAY = 'rgb(220, 220, 220)';
 export const BLACK = 'rgb(20, 20, 20)';
 
 export const COLORS = {
     white: WHITE,
+    light_gray: LIGHT_GRAY,
     gray: GRAY,
     dark_gray: DARK_GRAY,
     black: BLACK,
