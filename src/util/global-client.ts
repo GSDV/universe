@@ -11,8 +11,6 @@ export const POST_OPERATION_EVENT_KEY = 'POST_OPERATION_EVENT_KEY';
 export const DEFAULT_PFP_STR = '@assets/ui/default-profile-picture.png';
 export const DEFAULT_PFP = require('@assets/ui/default-profile-picture.png');
 
-export const mediaUrl = (mediaKey: string) => `https://uni-verse.s3.us-east-2.amazonaws.com/${mediaKey}`;
-
 export const pfpUrl = (key: string) => (key === '') ? DEFAULT_PFP_STR : `https://uni-verse.s3.us-east-2.amazonaws.com/${key}`;
 export const pfpUri = (key: string) => (key === '') ? DEFAULT_PFP : {uri: pfpUrl(key)};
 
