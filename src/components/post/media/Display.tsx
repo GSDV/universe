@@ -5,30 +5,97 @@ import { ResizeMode, Video } from 'expo-av';
 import { Image } from 'expo-image';
 import { Entypo } from '@expo/vector-icons';
 
-import { UploadedMediaPopUp } from './PopUp';
+import { MediaPopUp, UploadedMediaPopUp } from './PopUp';
 
-import { ACCEPTED_IMGS } from '@util/global';
+import { ACCEPTED_IMGS, mediaUrl } from '@util/global';
 import { COLORS } from '@util/global-client';
 
 
 
-export interface MediaItem {
+export function DisplayMedia({ media }: { media: string[] }) {
+    if (media.length === 0) return <></>;
+
+    const [selectedMedia, setSelectedMedia] = useState<string>('');
+    const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
+
+    const openModal = (item: string) => {
+        setSelectedMedia(item);
+        setIsMediaModalVisible(true);
+    }
+
+    const closeModal = () => {
+        setIsMediaModalVisible(false);
+        setSelectedMedia('');
+    }
+
+    return (
+        <>
+            <View style={styles.displayContainer}>
+                {media.slice(0, 2).map((asset, i) => (
+                    <Media key={`${asset}-${i}`} onPress={() => openModal(asset)} asset={asset} />
+                ))}
+                {/* If exactly three images, display them in a row */}
+                {media.length==3 && <Media key={`${media[2]}-2`} onPress={() => openModal(media[2])} asset={media[2]} />}
+            </View>
+
+            {media.length==4 &&
+                <View style={styles.displayContainer}>
+                    {media.slice(2).map((asset, i) => (
+                        <Media key={`${asset}-${i}`} onPress={() => openModal(asset)} asset={asset} />
+                    ))}
+                </View>
+            }
+
+            {selectedMedia && <MediaPopUp asset={selectedMedia} isVisible={isMediaModalVisible} closeModal={closeModal} />}
+        </>
+    );
+}
+
+
+
+function Media({ asset, onPress }: { asset: string, onPress: ()=>void }) {
+    return (
+        <TouchableOpacity onPress={onPress} style={styles.container}>
+            <View style={{ position: 'relative', flex: 1 }}>
+                {asset.includes('-image') ?
+                    <Image
+                        source={{ uri: mediaUrl(asset) }}
+                        contentFit='cover'
+                        style={styles.asset}
+                    />
+                :
+                    <Video
+                        source={{ uri: mediaUrl(asset) }}
+                        style={styles.asset}
+                        useNativeControls 
+                        shouldPlay 
+                        resizeMode={ResizeMode.COVER}
+                    />
+                }
+            </View>
+        </TouchableOpacity>
+    );
+}
+
+
+
+export interface UploadedAsset {
     uri: string;
-    type: string,
+    type: string;
 }
 
 interface MediaDisplayProps {
-    media: MediaItem[]
-    removeMedia: (input: number) => void
+    media: UploadedAsset[];
+    removeMedia: (input: number) => void;
 }
 
+export function DisplayUploadedMedia({ media, removeMedia }: MediaDisplayProps) {
+    if (media.length === 0) return <></>;
 
-
-export function DisplayUploadedMedia({media, removeMedia}: MediaDisplayProps) {
-    const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
+    const [selectedMedia, setSelectedMedia] = useState<UploadedAsset | null>(null);
     const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
 
-    const openModal = (item: MediaItem) => {
+    const openModal = (item: UploadedAsset) => {
         setSelectedMedia(item);
         setIsMediaModalVisible(true);
     }
@@ -44,24 +111,27 @@ export function DisplayUploadedMedia({media, removeMedia}: MediaDisplayProps) {
                 {media.slice(0, 2).map((asset, i) => (
                     <UploadedMedia key={`${asset.uri}-${i}`} onPress={() => openModal(asset)} asset={asset} remove={() => removeMedia(i)}/>
                 ))}
-                {media.length==1 && <View style={styles.container} />}
+
+                {/* If exactly three images, display them in a row */}
+                {media.length==3 && <UploadedMedia key={`${media[2].uri}-2`} onPress={() => openModal(media[2])} asset={media[2]} remove={() => removeMedia(2)}/>}
             </View>
 
-            <View style={styles.displayContainer}>
-                {media.slice(2).map((asset, i) => (
-                    <UploadedMedia key={`${asset.uri}-${i}`} onPress={() => openModal(asset)} asset={asset} remove={() => removeMedia(i)}/>
-                ))}
-                {media.length==3 && <View style={styles.container} />}
-            </View>
+            {media.length==4 &&
+                <View style={styles.displayContainer}>
+                    {media.slice(2).map((asset, i) => (
+                        <UploadedMedia key={`${asset.uri}-${i}`} onPress={() => openModal(asset)} asset={asset} remove={() => removeMedia(i)}/>
+                    ))}
+                </View>
+            }
 
-            {selectedMedia && <UploadedMediaPopUp media={selectedMedia} isVisible={isMediaModalVisible} closeModal={closeModal} />}
+            {selectedMedia && <UploadedMediaPopUp asset={selectedMedia} isVisible={isMediaModalVisible} closeModal={closeModal} />}
         </>
     );
 }
 
 
 
-function UploadedMedia({ asset, remove, onPress }: { asset: MediaItem, remove: ()=>void, onPress: ()=>void }) {
+function UploadedMedia({ asset, remove, onPress }: { asset: UploadedAsset, remove: ()=>void, onPress: ()=>void }) {
     return (
         <TouchableOpacity onPress={onPress} style={styles.container}>
             <View style={{ position: 'relative', flex: 1 }}>

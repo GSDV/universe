@@ -4,35 +4,71 @@ import { Video } from 'expo-av';
 import { Image } from 'expo-image';
 import { Entypo } from '@expo/vector-icons';
 
-import { MediaItem } from '@components/post/media/Display';
-
-import { ACCEPTED_IMGS } from '@util/global';
+import { ACCEPTED_IMGS, mediaUrl } from '@util/global';
+import { UploadedAsset } from './Display';
 
 
 
 export interface MediaPopUpProps {
-    media: MediaItem;
+    asset: string;
     isVisible: boolean;
     closeModal: () => void;
 }
 
-
-
-export function UploadedMediaPopUp({ media, isVisible, closeModal }: MediaPopUpProps) {
+export function MediaPopUp({ asset, isVisible, closeModal }: MediaPopUpProps) {
     return (
         <Modal visible={isVisible} transparent={true} animationType='fade' statusBarTranslucent >
             <Pressable onPress={closeModal} style={styles.overlay}>
                 <View style={styles.mediaPopUpContainer}>
                     <Pressable style={{backgroundColor: 'black'}}>
-                        {ACCEPTED_IMGS.includes(media.type) ?
+                        {asset.includes('-image') ?
                             <Image
-                                source={{ uri: media.uri }}
+                                source={{ uri: mediaUrl(asset) }}
                                 contentFit='contain'
                                 style={styles.media}
                             />
                         :
                             <Video
-                                source={{ uri: media.uri }}
+                                source={{ uri: mediaUrl(asset) }}
+                                style={styles.media}
+                                useNativeControls 
+                                shouldPlay 
+                            />
+                        }
+                    </Pressable>
+                </View>
+
+                <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                    <Entypo name='cross' size={35} color='white' />
+                </TouchableOpacity>
+            </Pressable>
+        </Modal>
+    );
+}
+
+
+
+export interface UploadedMediaPopUpProps {
+    asset: UploadedAsset;
+    isVisible: boolean;
+    closeModal: () => void;
+}
+
+export function UploadedMediaPopUp({ asset, isVisible, closeModal }: UploadedMediaPopUpProps) {
+    return (
+        <Modal visible={isVisible} transparent={true} animationType='fade' statusBarTranslucent >
+            <Pressable onPress={closeModal} style={styles.overlay}>
+                <View style={styles.mediaPopUpContainer}>
+                    <Pressable style={{backgroundColor: 'black'}}>
+                        {ACCEPTED_IMGS.includes(asset.type) ?
+                            <Image
+                                source={{ uri: asset.uri }}
+                                contentFit='contain'
+                                style={styles.media}
+                            />
+                        :
+                            <Video
+                                source={{ uri: asset.uri }}
                                 style={styles.media}
                                 useNativeControls 
                                 shouldPlay 
