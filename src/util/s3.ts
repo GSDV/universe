@@ -6,9 +6,7 @@ import { Alert as AlertPopUp, Linking } from 'react-native'
 
 import * as ImagePicker from 'expo-image-picker';
 
-import { AUTH_TOKEN_COOKIE_KEY, DOMAIN } from './global';
-
-import { getAuthCookie } from './storage';
+import { fetchWithAuth } from './fetch';
 
 
 
@@ -30,8 +28,7 @@ export const promptMediaPermissions = async () => {
 
 
 export const clientUploadMediaAndGetKeys = async (media: Blob[]) => {
-    const authTokenCookie = await getAuthCookie();
-    const keyPromises = media.map((asset) => clientUploadMedia(asset, authTokenCookie));
+    const keyPromises = media.map((asset) => clientUploadMedia(asset));
     const imageKeys = await Promise.all(keyPromises);
 
     if (imageKeys.includes(null)) return null;
@@ -40,23 +37,12 @@ export const clientUploadMediaAndGetKeys = async (media: Blob[]) => {
 
 
 
-export const clientUploadMedia = async (asset: Blob, authTokenCookie?: string | null) => {
-    let authToken = !authTokenCookie ? (await getAuthCookie()) : authTokenCookie;
-
-    const resSignAndKey = await fetch(`${DOMAIN}/api/app/post/s3`, {
-        method: 'POST',
-        body: JSON.stringify({ fileType: asset.type, fileSize: asset.size }),
-        headers: { 
-            'Content-Type': 'application/json',
-            'Cookie': `${AUTH_TOKEN_COOKIE_KEY}=${authToken}`
-        }
-    });
-    if (!resSignAndKey.ok) return null;
+export const clientUploadMedia = async (asset: Blob) => {
+    const body = JSON.stringify({ fileType: asset.type, fileSize: asset.size });
+    const resSignAndKeyJson = await fetchWithAuth(`post/s3`, 'POST', body);
+    if (resSignAndKeyJson.cStatus!=200) return null;
 
     const assetBlob = new Blob([asset], { type: asset.type });
-
-    const resSignAndKeyJson = await resSignAndKey.json();
-    if (resSignAndKeyJson.cStatus!=200) return null;
 
     await fetch(resSignAndKeyJson.signedUrl, {
         method: 'PUT',
@@ -68,21 +54,12 @@ export const clientUploadMedia = async (asset: Blob, authTokenCookie?: string | 
 
 
 export const clientUploadPfp = async (asset: Blob) => {
-    let authToken = await getAuthCookie();
-
-    const resSignAndKey = await fetch(`${DOMAIN}/api/app/pfp/s3`, {
-        method: 'POST',
-        body: JSON.stringify({ fileType: asset.type, fileSize: asset.size }),
-        headers: { 
-            'Content-Type': 'application/json',
-            'Cookie': `${AUTH_TOKEN_COOKIE_KEY}=${authToken}`
-        }
-    });
-    if (!resSignAndKey.ok) return null;
+    const body = JSON.stringify({ fileType: asset.type, fileSize: asset.size });
+    const resSignAndKeyJson = await fetchWithAuth(`pfp/s3`, 'POST', body);
+    if (resSignAndKeyJson.cStatus!=200) return null;
 
     const assetBlob = new Blob([asset], { type: asset.type });
 
-    const resSignAndKeyJson = await resSignAndKey.json();
     if (resSignAndKeyJson.cStatus!=200) return null;
 
     await fetch(resSignAndKeyJson.signedUrl, {
