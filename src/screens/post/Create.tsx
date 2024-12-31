@@ -178,7 +178,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
         const resJson = await res.json();
 
         if (resJson.cStatus == 200) {
-            operationContext.emitOperation({ name: 'CREATE', postData: resJson.post })
+            operationContext.emitOperation({ name: 'CREATE_POST', postData: resJson.post });
             const postParam = encodeURIComponent(JSON.stringify(resJson.post));
             router.replace({ pathname: `/post/[postId]/view`, params: {postId: resJson.postId, postParam} });
         } else {

@@ -12,8 +12,16 @@ type Screen = 'account_posts' | 'account_replies' | 'search' | 'feed' | 'map' | 
 
 
 
-type CreateOp = { name: 'CREATE', postData: PostType }
-const processCreate = (posts: PostType[], op: CreateOp) => [op.postData, ...posts];
+// Add the post to the account screen.
+type CreatePostOp = { name: 'CREATE_POST', postData: PostType }
+const processCreate = (posts: PostType[], op: CreatePostOp) => [op.postData, ...posts];
+
+type CreateReplyOp = { name: 'CREATE_REPLY', replyData: PostType }
+const processCreateReply = (posts: PostType[], op: CreateReplyOp) => [op.replyData, ...posts];
+
+// Increase replyCount field of the post that was just replied to.
+type ReplyCountOp = { name: 'REPLY_COUNT', replyToId: string }
+const processReply = (posts: PostType[], op: ReplyCountOp) => posts.map(p => (p.id === op.replyToId) ? { ...p, replyCount: p.replyCount + 1 } : p);
 
 type LikeOp = { name: 'LIKE', postId: string }
 const processLike = (posts: PostType[], op: LikeOp) => posts.map(p => (p.id === op.postId) ? { ...p, isLiked: true, likeCount: p.likeCount + 1 } : p);
@@ -29,7 +37,7 @@ const processBlock = (posts: PostType[], op: BlockOp) => posts.filter(p => p.aut
 
 
 
-type OperationType = CreateOp | LikeOp | UnlikeOp | DeleteOp | BlockOp;
+type OperationType = CreatePostOp | CreateReplyOp | ReplyCountOp | LikeOp | UnlikeOp | DeleteOp | BlockOp;
 
 
 
@@ -65,7 +73,9 @@ export function OperationProvider({ children }: { children: React.ReactNode }) {
         if (!lastOperation) return posts;
         const opName = lastOperation.name;
 
-        if (opName === 'CREATE' && screen === 'account_posts') return processCreate(posts, lastOperation);
+        if (opName === 'CREATE_POST' && screen === 'account_posts') return processCreate(posts, lastOperation);
+        if (opName === 'CREATE_REPLY' && screen === 'account_replies') return processCreateReply(posts, lastOperation);
+        if (opName === 'REPLY_COUNT') return processReply(posts, lastOperation);
         if (opName === 'LIKE')  return processLike(posts, lastOperation);
         if (opName === 'UNLIKE') return processUnlike(posts, lastOperation);
         if (opName === 'DELETE') return processDelete(posts, lastOperation);
