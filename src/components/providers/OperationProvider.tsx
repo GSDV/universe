@@ -30,7 +30,7 @@ type UnlikeOp = { name: 'UNLIKE', postId: string }
 const processUnlike = (posts: PostType[], op: UnlikeOp) => posts.map(p => (p.id === op.postId) ? { ...p, isLiked: false, likeCount: p.likeCount - 1 } : p);
 
 type DeleteOp = { name: 'DELETE', postId: string }
-const processDelete = (posts: PostType[], op: DeleteOp) => posts.filter(p => p.id !== op.postId);
+const processDelete = (posts: PostType[], op: DeleteOp) => posts.map(p => (p.id === op.postId) ? { ...p, deleted: true, content: '', media: [] } : p);
 
 type BlockOp = { name: 'BLOCK', userId: string }
 const processBlock = (posts: PostType[], op: BlockOp) => posts.filter(p => p.author.id !== op.userId);
