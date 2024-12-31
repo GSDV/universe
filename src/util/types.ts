@@ -48,6 +48,7 @@ export interface PostType {
     replyToId: string | null;
     replyCount: number;
     isLiked: boolean;
+    deleted: boolean;
 }
 
 export const createPostSchema = z.object({
