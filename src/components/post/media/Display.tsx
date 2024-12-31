@@ -29,8 +29,8 @@ export function DisplayMedia({ media }: { media: string[] }) {
     }
 
     return (
-        <>
-            <View style={styles.displayContainer}>
+        <View style={styles.displayContainer}>
+            <View style={styles.displayRow}>
                 {media.slice(0, 2).map((asset, i) => (
                     <Media key={`${asset}-${i}`} onPress={() => openModal(asset)} asset={asset} />
                 ))}
@@ -39,7 +39,7 @@ export function DisplayMedia({ media }: { media: string[] }) {
             </View>
 
             {media.length==4 &&
-                <View style={styles.displayContainer}>
+                <View style={styles.displayRow}>
                     {media.slice(2).map((asset, i) => (
                         <Media key={`${asset}-${i}`} onPress={() => openModal(asset)} asset={asset} />
                     ))}
@@ -47,7 +47,7 @@ export function DisplayMedia({ media }: { media: string[] }) {
             }
 
             {selectedMedia && <MediaPopUp asset={selectedMedia} isVisible={isMediaModalVisible} closeModal={closeModal} />}
-        </>
+        </View>
     );
 }
 
@@ -106,8 +106,8 @@ export function DisplayUploadedMedia({ media, removeMedia }: MediaDisplayProps) 
     }
 
     return (
-        <>
-            <View style={styles.displayContainer}>
+        <View style={styles.displayContainer}>
+            <View style={styles.displayRow}>
                 {media.slice(0, 2).map((asset, i) => (
                     <UploadedMedia key={`${asset.uri}-${i}`} onPress={() => openModal(asset)} asset={asset} remove={() => removeMedia(i)}/>
                 ))}
@@ -117,7 +117,7 @@ export function DisplayUploadedMedia({ media, removeMedia }: MediaDisplayProps) 
             </View>
 
             {media.length==4 &&
-                <View style={styles.displayContainer}>
+                <View style={styles.displayRow}>
                     {media.slice(2).map((asset, i) => (
                         <UploadedMedia key={`${asset.uri}-${i}`} onPress={() => openModal(asset)} asset={asset} remove={() => removeMedia(i)}/>
                     ))}
@@ -125,7 +125,7 @@ export function DisplayUploadedMedia({ media, removeMedia }: MediaDisplayProps) 
             }
 
             {selectedMedia && <UploadedMediaPopUp asset={selectedMedia} isVisible={isMediaModalVisible} closeModal={closeModal} />}
-        </>
+        </View>
     );
 }
 
@@ -156,11 +156,14 @@ function UploadedMedia({ asset, remove, onPress }: { asset: UploadedAsset, remov
 
 const styles = StyleSheet.create({
     displayContainer: {
-        padding: 10,
-        gap: 20,
+        width: '100%',
+        gap: 15
+    },
+    displayRow: {
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        gap: 15
     },
     container: {
         aspectRatio: 1,
