@@ -14,6 +14,7 @@ import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { PostType } from '@util/types';
 import { DisplayMedia } from '../media/Display';
+import { useEffect, useRef } from 'react';
 
 
 
@@ -43,6 +44,7 @@ interface ThreadProps {
 
 export default function Thread({ userId, focusPost, ancestors, replies, loadingAncestors, loadingReplies }: ThreadProps) {
     const router = useRouter();
+    const flatListRef = useRef<FlatList>(null);
 
     const renderableItems: RenderItemType[] = [
         // Loading and displaying ancestors:
@@ -116,12 +118,39 @@ export default function Thread({ userId, focusPost, ancestors, replies, loadingA
         return <></>;
     }
 
+
+    // Used to gracefully scroll to the focused post in long thread
+    useEffect(() => {
+        if (!loadingAncestors) {
+            const focusedIndex = renderableItems.findIndex(item => item.type === 'focused');
+            setTimeout(() => {
+                flatListRef.current?.scrollToIndex({
+                    index: focusedIndex,
+                    animated: true,
+                    viewPosition: 0
+                });
+            }, 300);
+        }
+    }, [loadingAncestors]);
+
     return (
         <FlatList 
+            ref={flatListRef} 
+            initialScrollIndex={loadingAncestors ? 0 : renderableItems.findIndex(item => item.type === 'focused')} 
             contentContainerStyle={{ paddingBottom: '50%' }}
             data={renderableItems} 
             keyExtractor={(item, idx) => item.id} 
-            renderItem={renderItem}
+            renderItem={renderItem} 
+            scrollsToTop={false} 
+            onScrollToIndexFailed={info => {
+                setTimeout(() => {
+                    flatListRef.current?.scrollToIndex({
+                        index: info.index,
+                        animated: true,
+                        viewPosition: 0
+                    });
+                }, 200);
+            }}
         />
     );
 }
@@ -237,7 +266,7 @@ function PostHeader({ post, ownPost }: ThreadPostType) {
             {/* Spacer */}
             <View style={{ width: 10 }} />
 
-            <PostActionsMenu postId={post.id} ownPost={ownPost} />
+            <PostActionsMenu post={post} ownPost={ownPost} />
         </View>
     );
 }
@@ -251,7 +280,7 @@ function ReplyHeader({ post, ownPost }: ThreadPostType) {
                 <Text style={styles.username} numberOfLines={1} ellipsizeMode='tail'>@{post.author.username}</Text>
             </View>
 
-            <PostActionsMenu postId={post.id} ownPost={ownPost} />
+            <PostActionsMenu post={post} ownPost={ownPost} />
         </View>
     );
 }
