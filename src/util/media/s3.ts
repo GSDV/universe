@@ -6,9 +6,10 @@ import { Alert as AlertPopUp, Linking } from 'react-native'
 
 import * as ImagePicker from 'expo-image-picker';
 
-import { fetchWithAuth } from '../fetch';
 import { UploadedAsset } from '@components/post/media/Display';
+
 import { IMG_SIZE_LIMIT_TXT, VID_SIZE_LIMIT_TXT } from '@util/global';
+import { fetchWithAuth } from '@util/fetch';
 
 
 
