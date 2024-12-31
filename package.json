@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@gorhom/bottom-sheet": "^4.6.4",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/stack": "^6.4.1",
@@ -24,6 +25,7 @@
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.9",
     "expo-image": "~1.13.0",
+    "expo-image-manipulator": "~12.0.5",
     "expo-image-picker": "~15.0.7",
     "expo-linking": "~6.3.1",
     "expo-location": "~17.0.1",
@@ -32,6 +34,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
+    "fbemitter": "^3.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
@@ -46,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/fbemitter": "^2.0.35",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.2.45",
     "@types/react-native": "^0.72.8",
