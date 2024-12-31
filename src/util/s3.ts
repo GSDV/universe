@@ -44,11 +44,12 @@ export const clientUploadMedia = async (asset: Blob) => {
 
     const assetBlob = new Blob([asset], { type: asset.type });
 
-    await fetch(resSignAndKeyJson.signedUrl, {
+    const resS3 = await fetch(resSignAndKeyJson.signedUrl, {
         method: 'PUT',
         body: assetBlob
     });
-    return resSignAndKeyJson.key;
+
+    return (resS3.ok) ? resSignAndKeyJson.key : null;
 }
 
 
@@ -62,9 +63,10 @@ export const clientUploadPfp = async (asset: Blob) => {
 
     if (resSignAndKeyJson.cStatus!=200) return null;
 
-    await fetch(resSignAndKeyJson.signedUrl, {
+    const resS3 = await fetch(resSignAndKeyJson.signedUrl, {
         method: 'PUT',
         body: assetBlob
     });
-    return resSignAndKeyJson.key;
+
+    return (resS3.ok) ? resSignAndKeyJson.key : null;
 }
