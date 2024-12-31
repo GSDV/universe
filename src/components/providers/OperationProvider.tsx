@@ -74,7 +74,7 @@ export function OperationProvider({ children }: { children: React.ReactNode }) {
         const opName = lastOperation.name;
 
         if (opName === 'CREATE_POST' && screen === 'account_posts') return processCreate(posts, lastOperation);
-        if (opName === 'CREATE_REPLY' && screen === 'account_replies') return processCreateReply(posts, lastOperation);
+        if (opName === 'CREATE_REPLY' && (screen === 'account_replies' || screen === 'focus_replies')) return processCreateReply(posts, lastOperation);
         if (opName === 'REPLY_COUNT') return processReply(posts, lastOperation);
         if (opName === 'LIKE')  return processLike(posts, lastOperation);
         if (opName === 'UNLIKE') return processUnlike(posts, lastOperation);

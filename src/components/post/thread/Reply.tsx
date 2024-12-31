@@ -133,7 +133,7 @@ export default function ReplyInput() {
                     >
                         <DraftArea  
                             inputRef={inputRef} 
-                            toggleExpand={toggleExpand}
+                            toggleExpand={toggleExpand} 
                             isExpanded={isExpanded}
                         />
                     </Animated.View>
@@ -206,8 +206,6 @@ function DraftArea({ inputRef, toggleExpand, isExpanded }: DraftAreaProps) {
                 setLoadingMedia(false);
                 return;
             }
-
-
 
             const assets = result.assets.filter((asset: any) => asset.mimeType !== undefined);
 
@@ -298,6 +296,7 @@ function DraftArea({ inputRef, toggleExpand, isExpanded }: DraftAreaProps) {
 
         if (resJson.cStatus == 200) {
             operationContext.emitOperation({ name: 'CREATE_REPLY', replyData: resJson.reply });
+            operationContext.emitOperation({ name: 'REPLY_COUNT', replyToId: postId });
             if (isExpanded) toggleExpand();
             setContent('');
             setMedia([]);
