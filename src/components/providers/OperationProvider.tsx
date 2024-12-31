@@ -5,6 +5,7 @@ import { POST_OPERATION_EVENT_KEY } from '@util/global-client';
 import { eventEmitter } from '@util/event';
 
 import { PostType } from '@util/types';
+import { ACCOUNT_POSTS_PER_BATCH } from '@util/global';
 
 
 
@@ -16,6 +17,7 @@ type Screen = 'account_posts' | 'account_replies' | 'search' | 'feed' | 'map' | 
 type CreatePostOp = { name: 'CREATE_POST', postData: PostType }
 const processCreate = (posts: PostType[], op: CreatePostOp) => [op.postData, ...posts];
 
+// Add the reply to the account screen and current reply section.
 type CreateReplyOp = { name: 'CREATE_REPLY', replyData: PostType }
 const processCreateReply = (posts: PostType[], op: CreateReplyOp) => [op.replyData, ...posts];
 
@@ -35,9 +37,38 @@ const processDelete = (posts: PostType[], op: DeleteOp) => posts.map(p => (p.id 
 type BlockOp = { name: 'BLOCK', userId: string }
 const processBlock = (posts: PostType[], op: BlockOp) => posts.filter(p => p.author.id !== op.userId);
 
+// For both pinning and unpinning a post (not reply) on the account screen.
+type PinOP = { name: 'PIN', selectedPostId: string, morePostsAvailable: boolean }
+const processPin = (posts: PostType[], op: PinOP) => {
+        const currentPinnedPost = posts[0]?.pinned ? posts[0] : null;
+        const postToPin = posts.find(post => post.id === op.selectedPostId);
+        if (!postToPin) return posts;
+        
+        // Unpinning case
+        if (currentPinnedPost?.id === op.selectedPostId) {
+            const otherPosts = posts.slice(1);
+            const unpinnedPost = { ...currentPinnedPost, pinned: false };
+            const sortedPosts = [unpinnedPost, ...otherPosts].sort(
+                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+            
+            if (sortedPosts[sortedPosts.length-1].id === unpinnedPost.id)
+            return (sortedPosts.length > ACCOUNT_POSTS_PER_BATCH && 
+                    op.morePostsAvailable && 
+                    sortedPosts[sortedPosts.length-1].id === unpinnedPost.id)
+                    ? sortedPosts.slice(0, -1)
+                    : sortedPosts;
+        }
+
+        // Pinning case
+        const newPinnedPost = { ...postToPin, pinned: true };
+        const otherPosts = posts.filter(post => post.id !== op.selectedPostId);
+        return [newPinnedPost, ...(currentPinnedPost ? otherPosts.slice(1) : otherPosts)];
+}
 
 
-type OperationType = CreatePostOp | CreateReplyOp | ReplyCountOp | LikeOp | UnlikeOp | DeleteOp | BlockOp;
+
+type OperationType = CreatePostOp | CreateReplyOp | ReplyCountOp | LikeOp | UnlikeOp | DeleteOp | BlockOp | PinOP;
 
 
 
@@ -80,6 +111,7 @@ export function OperationProvider({ children }: { children: React.ReactNode }) {
         if (opName === 'UNLIKE') return processUnlike(posts, lastOperation);
         if (opName === 'DELETE') return processDelete(posts, lastOperation);
         if (opName === 'BLOCK') return processBlock(posts, lastOperation);
+        if (opName === 'PIN' && screen === 'account_posts') return processPin(posts, lastOperation);
         return posts;
     }
 
