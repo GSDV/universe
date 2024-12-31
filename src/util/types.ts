@@ -15,10 +15,10 @@ export interface UserType extends RedactedUserType {
 
 
 export interface UniversityType {
-    domain: string,
-    name: string,
-    color: string,
-    users: RedactedUserType[]
+    domain: string;
+    name: string;
+    color: string;
+    users: RedactedUserType[];
 }
 
 
@@ -29,8 +29,9 @@ export interface RedactedUserType {
     displayName: string;
     pfpKey: string;
     university?: UniversityType;
-    followerCount: number,
-    followingCount: number 
+    followerCount: number;
+    followingCount: number;
+    verified: boolean;
 }
 
 
