@@ -9,8 +9,6 @@ export interface AlertType {
     msg: string;
 }
 
-
-
 export function Alert({ alert }: { alert: AlertType }) {
     const status = parseInt(alert.cStatus.toString()[0]);
     const textStyle = (status==2) ? styles.success: styles.error;
@@ -26,11 +24,16 @@ export function Alert({ alert }: { alert: AlertType }) {
 
 interface CheckIfAlertType {
     alert: AlertType | null | undefined;
-    content: React.ReactNode;
+    children: React.ReactNode;
 }
-export function CheckIfAlert({ alert, content }: CheckIfAlertType) {
-    if (alert!=undefined && alert!=null && alert.cStatus/100!=2) return <Alert alert={alert} />;
-    return <>{content}</>;
+
+export function CheckIfAlert({ alert, children }: CheckIfAlertType) {
+    if (alert!=undefined && alert!=null && alert.cStatus/100!=2) return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Alert alert={alert} />
+        </View>
+    );
+    return children;
 }
 
 
