@@ -1,18 +1,20 @@
-import { Tabs } from 'expo-router';
 import React from 'react';
 
+import { Tabs } from 'expo-router';
+
 import { TabBarIcon } from '@components/navigation/TabBarIcon';
-import { COLORS } from '@util/globals';
+
+import { COLORS } from '@util/global-client';
 
 
 
 type IconName = React.ComponentProps<typeof TabBarIcon>['name'];
 
 interface TabType {
-    fileName: string,
-    title: string,
-    iconFocused: IconName,
-    iconUnfocused: IconName
+    fileName: string;
+    title: string;
+    iconFocused: IconName;
+    iconUnfocused: IconName;
 }
 
 
@@ -29,7 +31,7 @@ export default function TabLayout() {
         <Tabs 
             initialRouteName='account' 
             screenOptions={{ tabBarActiveTintColor: COLORS.tint, headerShown: false, }}
-            sceneContainerStyle={{ backgroundColor: 'green'}}
+            sceneContainerStyle={{ backgroundColor: COLORS.background }}
         >
             {tabs.map((tab, i) => (
                 <Tabs.Screen key={i} name={tab.fileName} options={{ title: tab.title, tabBarIcon: ({ color, focused }) => (
