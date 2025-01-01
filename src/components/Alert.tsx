@@ -5,8 +5,8 @@ import { FONT_SIZES } from '@util/global-client';
 
 
 export interface AlertType {
-    cStatus: number,
-    msg: string
+    cStatus: number;
+    msg: string;
 }
 
 
@@ -25,11 +25,11 @@ export function Alert({ alert }: { alert: AlertType }) {
 
 
 interface CheckIfAlertType {
-    alert: AlertType|null
-    content: React.ReactNode
+    alert: AlertType | null | undefined;
+    content: React.ReactNode;
 }
 export function CheckIfAlert({ alert, content }: CheckIfAlertType) {
-    if (alert!=null && alert.cStatus/100!=2) return <Alert alert={alert} />;
+    if (alert!=undefined && alert!=null && alert.cStatus/100!=2) return <Alert alert={alert} />;
     return <>{content}</>;
 }
 
