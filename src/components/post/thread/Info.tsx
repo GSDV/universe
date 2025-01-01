@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -41,6 +41,11 @@ export default function Info({ post }: { post: PostType }) {
         const body = JSON.stringify({ liked: didLike });
         fetchWithAuth(`post/${post.id}/like`, 'POST', body);
     }
+
+    // This useEffect handles updating for when a parent component recieves an operation event.
+    useEffect(() => {
+        setLikeState({ count: post.likeCount, isLiked: post.isLiked });
+    }, [post.likeCount, post.isLiked])
 
     return (
         <View style={styles.container}>
