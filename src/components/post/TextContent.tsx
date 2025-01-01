@@ -10,7 +10,6 @@ import { useRouter } from 'expo-router';
 
 
 const URL_REGEX = /(https:\/\/|http:\/\/)?((\w)+\.)+(com|org|net|edu|gov|mil|io|co|ai|app|dev|tech|info|biz|me|tv|uk)((\/)((\w|\/)+|(\w|\/|\.\w))*)?(\?\w(\w+|\&|\=|\#)+)?/gi;
-// const USERNAME_REGEX = /@[a-z][a-z0-9_]+/gi;
 const USERNAME_REGEX = /(?:^|\s)(@[a-z][a-z0-9_]+)/gi;
 
 const MAX_PREVIEW_LINES = 5;
