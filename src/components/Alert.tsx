@@ -1,5 +1,7 @@
 import { Text, View, StyleSheet } from 'react-native';
 
+import { FONT_SIZES } from '@util/global-client';
+
 
 
 export interface AlertType {
@@ -7,34 +9,15 @@ export interface AlertType {
     msg: string
 }
 
-export interface AlertVariation {
-    cStatus: number,
-    jsx: React.ReactNode
-}
 
-interface AlertComponentType {
-    alert: AlertType,
-    variations?: AlertVariation[]
-}
 
-export function Alert({ alert, variations }: AlertComponentType) {
+export function Alert({ alert }: { alert: AlertType }) {
     const status = parseInt(alert.cStatus.toString()[0]);
-    const alertStyle = (status==2) ? successAlert: errorAlert;
+    const textStyle = (status==2) ? styles.success: styles.error;
 
-    if (variations==undefined) return (
-        <View style={alertStyle}>
-            <Text style={{ textAlign: 'center' }}>{alert.msg}</Text>
-        </View>
-    );
-
-    const variation = variations.find(alertVar => (alertVar.cStatus===alert.cStatus));
     return (
-        <View style={alertStyle}>
-            {variation ? 
-                <>{variation.jsx}</>
-            :
-                <p>{alert.msg}</p>
-            }
+        <View style={styles.container}>
+            <Text style={textStyle}>{alert.msg}</Text>
         </View>
     );
 }
@@ -42,40 +25,33 @@ export function Alert({ alert, variations }: AlertComponentType) {
 
 
 interface CheckIfAlertType {
-    alert: AlertType|null,
-    variations?: AlertVariation[],
+    alert: AlertType|null
     content: React.ReactNode
 }
-export function CheckIfAlert({ alert, variations, content }: CheckIfAlertType) {
-    if (alert!=null && alert.cStatus/100!=2) return <Alert alert={alert} variations={variations} />;
+export function CheckIfAlert({ alert, content }: CheckIfAlertType) {
+    if (alert!=null && alert.cStatus/100!=2) return <Alert alert={alert} />;
     return <>{content}</>;
 }
 
 
 
 const styles = StyleSheet.create({
-    msg: {
-        padding: 10,
+    container: {
+        padding: 5,
         alignSelf: 'center',
         maxWidth: 300,
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10
+        alignItems: 'center'
     },
     error: {
-        borderWidth: 3,
-        borderStyle: 'solid',
-        borderColor: '#c44d4d',
-        backgroundColor: '#ff9c9c'
+        color: '#ff7070',
+        textAlign: 'center',
+        fontSize: FONT_SIZES.m
     },
     success: {
-        borderWidth: 3,
-        borderStyle: 'solid',
-        borderColor: '#3ca93b',
-        backgroundColor: '#82e682'
+        color: '#82e682',
+        textAlign: 'center',
+        fontSize: FONT_SIZES.m
     }
 });
-
-const successAlert = [styles.msg, styles.success];
-const errorAlert = [styles.msg, styles.error];
