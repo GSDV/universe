@@ -206,7 +206,7 @@ function ThreadPost({ post, ownPost, type }: { post: PostType, ownPost?: boolean
             <View style={{ padding: 10, flex: 6, gap: 10 }}>
                 <PostHeader post={post} ownPost={ownPost} />
 
-                <TextContent content={post.content} />
+                <TextContent post={post} truncate={false} />
 
                 <DisplayMedia media={post.media} />
 
@@ -243,20 +243,6 @@ function PostHeader({ post, ownPost }: ThreadPostType) {
 
             {/* Spacer */}
             <View style={{ width: 10 }} />
-
-            <PostActionsMenu post={post} ownPost={ownPost} />
-        </View>
-    );
-}
-
-function ReplyHeader({ post, ownPost }: ThreadPostType) {
-    return (
-        <View style={styles.header}>
-            <Pfp pfpKey={post.author.pfpKey} style={{ width: PFP_SIZE, height: PFP_SIZE, borderRadius: 50 }} />
-            <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Text style={styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{post.author.displayName}</Text>
-                <Text style={styles.username} numberOfLines={1} ellipsizeMode='tail'>@{post.author.username}</Text>
-            </View>
 
             <PostActionsMenu post={post} ownPost={ownPost} />
         </View>

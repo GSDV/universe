@@ -49,7 +49,7 @@ export function FeedPost({ post, ownPost, showPinned, threadParam = '', morePost
                 <View style={{ padding: 10, flex: 6, gap: 5 }}>
                     <Header post={post} ownPost={ownPost} showPinned={showPinned} morePostsAvailable={morePostsAvailable} />
 
-                    <TextContent content={post.content} />
+                    <TextContent post={post} />
 
                     <DisplayMedia media={post.media} />
 
