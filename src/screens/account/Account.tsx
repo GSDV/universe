@@ -14,7 +14,6 @@ import UserPosts from '@components/post/UserPosts';
 import UserReplies from '@components/post/UserReplies';
 import { CheckIfLoading } from '@components/Loading';
 
-import { ACCOUNT_POSTS_PER_BATCH } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
@@ -24,19 +23,15 @@ import { PostType, RedactedUserType, UniversityType } from '@util/types';
 
 
 // ownAccount (assumed false): Is the user viewing his own account
-// found (assumed true): Was the account found through anything but the user tapping his own account on nav tab
-//      - In other words, was this account screen mounted from the map, viewing a post, through search, ...
-//      - "found" only controls whether or not to display a back button (no need to "go back" from the nav tab)
 interface AccountProps {
     userPrisma: RedactedUserType
     ownAccount?: boolean
-    found?: boolean
 }
 
-export default function Account({ userPrisma, ownAccount = false, found = true }: AccountProps) {
+export default function Account({ userPrisma, ownAccount = false }: AccountProps) {
     return (
         <View style={{ flex: 1, gap: 5 }}>
-            <AccountHeader userPrisma={userPrisma} ownAccount={ownAccount} found={found} />
+            <AccountHeader userPrisma={userPrisma} ownAccount={ownAccount} />
 
             {userPrisma.university && <University university={userPrisma.university} />}
 
@@ -52,20 +47,13 @@ export default function Account({ userPrisma, ownAccount = false, found = true }
 interface AccountHeader {
     userPrisma: RedactedUserType
     ownAccount: boolean
-    found: boolean
 }
 
-function AccountHeader({ userPrisma, ownAccount, found }: AccountHeader) {
+function AccountHeader({ userPrisma, ownAccount }: AccountHeader) {
     const router = useRouter();
 
     return (
         <View style={styles.header}>
-            {found && 
-                <TouchableOpacity onPress={router.back}>
-                    <Ionicons name='chevron-back' size={25} color={COLORS.primary_1} />
-                </TouchableOpacity>
-            }
-
             <View style={{ flex: 1, flexDirection: 'row', gap: 5, alignItems: 'center' }}>
                 <Pfp pfpKey={userPrisma.pfpKey} style={styles.pfp} />
                 <View style={{ gap: 2 }}>

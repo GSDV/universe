@@ -17,7 +17,7 @@ export default function Index() {
     return (
         <View style={{ flex: 1 }}>
             <SafeAreaTop />
-            <Acccount userPrisma={userContext.user as RedactedUserType} ownAccount={true} found={false} />
+            <Acccount userPrisma={userContext.user as RedactedUserType} ownAccount={true} />
         </View>
     );
 }
