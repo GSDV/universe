@@ -12,14 +12,12 @@ import { useUser } from '@components/providers/UserProvider';
 import GoBackHeader from '@components/GoBackHeader';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
+import { CheckIfLoading } from '@components/Loading';
 
-import { AUTH_TOKEN_COOKIE_KEY, DOMAIN, IMG_SIZE_LIMIT_TXT, isValidDisplayName, isValidUsername, MAX_DISPLAY_NAME_LENGTH, MAX_USERNAME_LENGTH, MIN_DISPLAY_NAME_LENGTH, MIN_USERNAME_LENGTH } from '@util/global';
+import { IMG_SIZE_LIMIT_TXT, isValidDisplayName, isValidUsername, MAX_DISPLAY_NAME_LENGTH, MAX_USERNAME_LENGTH, MIN_DISPLAY_NAME_LENGTH, MIN_USERNAME_LENGTH } from '@util/global';
 import { COLORS, FONT_SIZES, pfpUri } from '@util/global-client';
 
-import { clientUploadPfp, promptMediaPermissions } from '@util/s3';
-import { CheckIfLoading } from '@components/Loading';
-import { getAuthCookie } from '@util/storage';
-import { useOperation } from '@components/providers/OperationProvider';
+import { clientUploadPfp, promptMediaPermissions } from '@util/media/s3';
 import { fetchWithAuth } from '@util/fetch';
 
 
@@ -98,14 +96,9 @@ export default function Index() {
 
 
         const body = JSON.stringify({ data: newUserData });
-        const res = await fetchWithAuth(`user/edit`, 'POST', body);
+        const resJson = await fetchWithAuth(`user/edit`, 'POST', body);
 
-        const resJson = await res.json();
         if (resJson.cStatus == 200) {
-            // resJson.user.pfpKey += `?t=${Date.now()}`;
-            // operationContext.emitOperation({
-
-            // });
             userContext.setUser(resJson.user);
             router.replace(`/account`);
         }
@@ -139,7 +132,7 @@ export default function Index() {
         );
 
         handleChange('pfpUri', {uri: optimized.uri});
-    };
+    }
 
     return (
         <View style={{ flex: 1, gap: 10 }}>
