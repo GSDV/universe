@@ -71,7 +71,7 @@ function AccountHeader({ userPrisma, ownAccount, found }: AccountHeader) {
                 <View style={{ gap: 2 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
                         <Text style={styles.displayName}>{userPrisma.displayName}</Text>
-                        <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary_1} />
+                        {userPrisma.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary_1} />}
                     </View>
                     <Text style={styles.username}>@{userPrisma.username}</Text>
                 </View>
@@ -110,36 +110,6 @@ function PostsAndReplies({ userId }: { userId: string }) {
     const [repliesPage, setRepliesPage] = useState<number>(1);
     const [moreRepliesAvailable, setMoreRepliesAvailable] = useState<boolean>(false);
 
-    const handlePinChange = (postToPinId: string) => {
-        setPosts(currentPosts => {
-            const currentPinnedPost = currentPosts[0]?.pinned ? currentPosts[0] : null;
-            const postToPin = currentPosts.find(post => post.id === postToPinId);
-            
-            if (!postToPin) return currentPosts;
-            
-            // Unpinning case
-            if (currentPinnedPost?.id === postToPinId) {
-                const otherPosts = currentPosts.slice(1);
-                const unpinnedPost = { ...currentPinnedPost, pinned: false };
-                const sortedPosts = [unpinnedPost, ...otherPosts].sort(
-                    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                );
-                
-                return (sortedPosts.length > ACCOUNT_POSTS_PER_BATCH && 
-                       morePostsAvailable && 
-                       sortedPosts[sortedPosts.length-1].id === unpinnedPost.id)
-                       ? sortedPosts.slice(0, -1)
-                       : sortedPosts;
-            }
-
-            // Pinning case
-            const newPinnedPost = { ...postToPin, pinned: true };
-            const otherPosts = currentPosts.filter(post => post.id !== postToPinId);
-            return [newPinnedPost, ...(currentPinnedPost ? otherPosts.slice(1) : otherPosts)];
-        });
-    }
-
-
     const fetchAndUpdatePosts = async (postsPage: number, oldPosts: PostType[]) => {
         const resJson = await fetchWithAuth(`user/${userId}/post?postsPage=${postsPage}`, 'GET');
         if (resJson.cStatus == 200) {
@@ -163,7 +133,7 @@ function PostsAndReplies({ userId }: { userId: string }) {
         setLoading(true);
         await Promise.all([
             fetchAndUpdatePosts(1, []),
-            // fetchAndUpdateReplies(1, [])
+            fetchAndUpdateReplies(1, [])
         ]);
         setLoading(false);
     }
@@ -207,7 +177,6 @@ function PostsAndReplies({ userId }: { userId: string }) {
                         postsPage={postsPage} 
                         morePostsAvailable={morePostsAvailable} 
                         fetchAndUpdatePosts={fetchAndUpdatePosts} 
-                        handlePinChange={handlePinChange} 
                     />
                 :
                     <UserReplies 
