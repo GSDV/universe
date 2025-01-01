@@ -1,8 +1,10 @@
+import { useState } from 'react';
+
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { AntDesign, SimpleLineIcons } from '@expo/vector-icons';
-
 import { useOperation } from '@components/providers/OperationProvider';
+
+import { AntDesign, SimpleLineIcons } from '@expo/vector-icons';
 
 import { COLORS, FONT_SIZES, formatInteraction, formatPostDate } from '@util/global-client';
 
@@ -15,21 +17,25 @@ import { PostType } from '@util/types';
 export default function Info({ post }: { post: PostType }) {
     const operationContext = useOperation();
 
-    const university = post.author.university;
+    const [likeState, setLikeState] = useState<{ count: number, isLiked: boolean }>({
+        count: post.likeCount, isLiked: post.isLiked
+    });
 
-    const getUniName = () => {
-        if (!university) return '';
-        else return university.name;
-    }
-    const getUniColor = () => {
-        if (!university) return COLORS.black;
-        else return university.color;
-    }
+    const university = post.author.university;
+    const getUniName = () => university?.name ?? '';
+    const getUniColor = () => university?.color ?? COLORS.black;
 
     const onPressLike = async () => {
-        const didLike = !post.isLiked;
-        if (didLike) operationContext.emitOperation({ name: 'LIKE', postId: post.id });
-        else operationContext.emitOperation({ name: 'UNLIKE', postId: post.id });
+        const didLike = !likeState.isLiked;
+        setLikeState(prev => ({
+            count: (didLike) ? prev.count+1 : prev.count -1,
+            isLiked: didLike
+        }));
+
+        requestAnimationFrame(() => {
+            if (didLike) operationContext.emitOperation({ name: 'LIKE', postId: post.id });
+            else operationContext.emitOperation({ name: 'UNLIKE', postId: post.id });
+        });
 
         // Async call
         const body = JSON.stringify({ liked: didLike });
@@ -38,12 +44,12 @@ export default function Info({ post }: { post: PostType }) {
 
     return (
         <View style={styles.container}>
-            <Text style={{ flex: 2, fontSize: FONT_SIZES.m, color: getUniColor() }} numberOfLines={1} ellipsizeMode='tail'>{getUniName()}</Text>
+            <Text style={[styles.uniName, { color: getUniColor() }]} numberOfLines={1} ellipsizeMode='tail'>{getUniName()}</Text>
 
-            <View style={{ flexDirection: 'row', gap: 20 }}>
+            <View style={styles.interactionContainer}>
                 <TouchableOpacity onPress={onPressLike} style={styles.infoContainers}>
-                    <Text style={styles.info}>{formatInteraction(post.likeCount)} </Text>
-                    {post.isLiked ? <AntDesign name='heart' size={15} color='#ff578f' /> : <AntDesign name='hearto' size={15} color={COLORS.black} /> }
+                    <Text style={styles.info}>{formatInteraction(likeState.count)} </Text>
+                    {likeState.isLiked ? <AntDesign name='heart' size={15} color='#ff578f' /> : <AntDesign name='hearto' size={15} color={COLORS.black} /> }
                 </TouchableOpacity>
                 
                 <View style={styles.infoContainers}>
@@ -60,6 +66,14 @@ export default function Info({ post }: { post: PostType }) {
 
 
 const styles = StyleSheet.create({
+    uniName: {
+        flex: 2,
+        fontSize: FONT_SIZES.m,
+    },
+    interactionContainer: {
+        flexDirection: 'row',
+        gap: 20
+    },
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
