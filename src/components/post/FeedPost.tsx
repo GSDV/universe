@@ -13,8 +13,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Pfp from '@components/Pfp';
 import PostActionsMenu from '@components/post/Actions';
 import { DisplayMedia } from '@components/post/media/Display';
-import TextContent from '@components/post/thread/TextContent';
-import Info from '@components/post/thread/Info';
+import TextContent from '@components/post/TextContent';
+import Info from '@components/post/Info';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 

@@ -1,20 +1,22 @@
+import { useEffect, useRef } from 'react';
+
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { FlatList } from 'react-native-gesture-handler';
 
 import { useRouter } from 'expo-router';
 
-import Pfp from '@components/Pfp';
-import TextContent from './TextContent';
-import Info from './Info';
-import PostActionsMenu from '../Actions';
 import { Loading } from '@components/Loading';
+import Pfp from '@components/Pfp';
+import TextContent from '@components/post/TextContent';
+import Info from '@components/post/Info';
+import PostActionsMenu from '@components/post/Actions';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { PostType } from '@util/types';
-import { DisplayMedia } from '../media/Display';
-import { useEffect, useRef } from 'react';
+import { DisplayMedia } from '@components/post/media/Display';
+import { FeedPost } from '@components/post/FeedPost';
 
 
 
@@ -83,15 +85,6 @@ export default function Thread({ userId, focusPost, ancestors, replies, loadingA
         } });
     }
 
-    const openReply = (item: RenderItemType) => {
-        const { type, ...post } = item;
-        router.push({ pathname: `/post/[postId]/view`, params: {
-            postId: post.id,
-            postParam: encodeURIComponent(JSON.stringify(post)),
-            threadParam: encodeURIComponent(JSON.stringify([...ancestors, focusPost]))
-        } });
-    }
-
     const renderItem = ({ item, index }: { item: RenderItemType, index: number }) => {
         if (item.type === 'focused') {
             const ownPost = (item.author.id === userId);
@@ -104,8 +97,13 @@ export default function Thread({ userId, focusPost, ancestors, replies, loadingA
         }
 
         if (item.type === 'reply') {
+            const { type, ...post } = item;
             const ownPost = (item.author.id === userId);
-            return <ReplyPost post={item} ownPost={ownPost} openReply={() => openReply(item)} />
+            const threadParam = encodeURIComponent(JSON.stringify([...ancestors, focusPost]));
+            return (<>
+                <View style={{ width: '100%', height: 2, backgroundColor: COLORS.light_gray }} />
+                <FeedPost post={post} ownPost={ownPost} threadParam={threadParam} />
+            </>);
         }
 
         if (item.type === 'loading') return <Loading size='small' />;
@@ -195,26 +193,6 @@ function AncestorPost({ post, ownPost, openAncestor }: { post: PostType, ownPost
 function FocusPost({ post, ownPost }: { post: PostType, ownPost?: boolean }) {
     const type = (!post.replyToId) ? 'none' : 'up';
     return <ThreadPost post={post} ownPost={ownPost} type={type} />;
-}
-
-
-
-// Direct reply to post that was pressed on.
-function ReplyPost({ post, ownPost, openReply }: { post: PostType, ownPost?: boolean, openReply: ()=>void }) {
-    return (
-        <TouchableOpacity onPress={openReply}>
-            <View style={{ width: '100%', height: 2, backgroundColor: COLORS.light_gray }} />
-            <View style={{ padding: 10, flex: 6, gap: 10 }}>
-                <ReplyHeader post={post} ownPost={ownPost} />
-
-                <TextContent content={post.content} />
-
-                <DisplayMedia media={post.media} />
-
-                <Info post={post} />
-            </View>
-        </TouchableOpacity>
-    );
 }
 
 
