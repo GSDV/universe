@@ -31,38 +31,45 @@ export const promptMediaPermissions = async () => {
 
 
 export const getMediaKeys = async (media: UploadedAsset[]) => {
-    const blobPromises = media.map(async (asset) => {
-        try {
-            const response = await fetch(asset.uri);
-            const blob = await response.blob();
-            return blob;
-        } catch (error) {
-            return null;
-        }
-    });
-    const resBlobs = await Promise.all(blobPromises);
+    try {
+        const blobPromises = media.map(async (asset) => {
+            try {
+                const response = await fetch(asset.uri);
+                const blob = await response.blob();
+                return blob;
+            } catch (error) {
+                return null;
+            }
+        });
+        const resBlobs = await Promise.all(blobPromises);
 
-    if (resBlobs.includes(null)) {
+        if (resBlobs.includes(null)) {
+            return {
+                mediaKeys: null,
+                resp: { msg: `Something went wrong while uploading media.`, cStatus: 400 }
+            };
+        }
+
+        // For TypeScript:
+        const filteredBlobs = resBlobs.filter(blob => blob !== null);
+
+        const mediaKeys = await clientUploadMediaAndGetKeys(filteredBlobs);
+        if (!mediaKeys || mediaKeys.includes(null)) {
+            return {
+                mediaKeys: null,
+                resp: { msg: `Please upload photos under ${IMG_SIZE_LIMIT_TXT} and videos under ${VID_SIZE_LIMIT_TXT}.`, cStatus: 400 }
+            };
+        }
+        return {
+            mediaKeys: mediaKeys as string[],
+            resp: { msg: `Success.`, cStatus: 200 }
+        };
+    } catch (err) {
         return {
             mediaKeys: null,
             resp: { msg: `Something went wrong while uploading media.`, cStatus: 400 }
         };
     }
-
-    // For TypeScript:
-    const filteredBlobs = resBlobs.filter(blob => blob !== null);
-
-    const mediaKeys = await clientUploadMediaAndGetKeys(filteredBlobs);
-    if (!mediaKeys || mediaKeys.includes(null)) {
-        return {
-            mediaKeys: null,
-            resp: { msg: `Please upload photos under ${IMG_SIZE_LIMIT_TXT} and videos under ${VID_SIZE_LIMIT_TXT}.`, cStatus: 400 }
-        };
-    }
-    return {
-        mediaKeys: mediaKeys as string[],
-        resp: { msg: `Success.`, cStatus: 200 }
-    };
 }
 
 
