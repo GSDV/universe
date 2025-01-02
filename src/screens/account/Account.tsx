@@ -170,7 +170,7 @@ function PostsAndReplies({ userId }: { userId: string }) {
                     <UserReplies 
                         replies={replies} 
                         repliesPage={repliesPage} 
-                        moreRepliesAvailable={morePostsAvailable} 
+                        moreRepliesAvailable={moreRepliesAvailable} 
                         fetchAndUpdateReplies={fetchAndUpdateReplies} 
                     />
                 }
