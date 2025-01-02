@@ -33,6 +33,7 @@ const processUnlike = (posts: PostType[], op: UnlikeOp) => posts.map(p => (p.id 
 
 type DeleteOp = { name: 'DELETE', postId: string }
 const processDelete = (posts: PostType[], op: DeleteOp) => posts.map(p => (p.id === op.postId) ? { ...p, deleted: true, content: '', media: [] } : p);
+const removeDelete = (posts: PostType[], op: DeleteOp) => posts.filter(p => p.id !== op.postId);
 
 type BlockOp = { name: 'BLOCK', userId: string }
 const processBlock = (posts: PostType[], op: BlockOp) => posts.filter(p => p.author.id !== op.userId);
@@ -109,6 +110,7 @@ export function OperationProvider({ children }: { children: React.ReactNode }) {
         if (opName === 'REPLY_COUNT') return processReply(posts, lastOperation);
         if (opName === 'LIKE')  return processLike(posts, lastOperation);
         if (opName === 'UNLIKE') return processUnlike(posts, lastOperation);
+        if (opName === 'DELETE' && (screen === 'account_posts' || screen === 'account_replies')) return removeDelete(posts, lastOperation);
         if (opName === 'DELETE') return processDelete(posts, lastOperation);
         if (opName === 'BLOCK') return processBlock(posts, lastOperation);
         if (opName === 'PIN' && screen === 'account_posts') return processPin(posts, lastOperation);
