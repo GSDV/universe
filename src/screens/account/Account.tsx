@@ -18,13 +18,14 @@ import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { PostType, RedactedUserType, UniversityType } from '@util/types';
+import { PostType, RedactedUserType, RedactedUserTypeWithFollow, UniversityType } from '@util/types';
+import Button from '@components/Button';
 
 
 
 // ownAccount (assumed false): Is the user viewing his own account
 interface AccountProps {
-    userPrisma: RedactedUserType
+    userPrisma: RedactedUserTypeWithFollow
     ownAccount?: boolean
 }
 
@@ -35,7 +36,7 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 
             {userPrisma.university && <University university={userPrisma.university} />}
 
-            <Connections user={userPrisma} />
+            <Connections user={userPrisma} ownAccount={ownAccount} />
 
             <PostsAndReplies userId={userPrisma.id} />
         </View>
@@ -45,7 +46,7 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 
 
 interface AccountHeader {
-    userPrisma: RedactedUserType
+    userPrisma: RedactedUserTypeWithFollow
     ownAccount: boolean
 }
 
@@ -190,11 +191,34 @@ function University({ university }: { university: UniversityType }) {
 }
 
 
-function Connections({ user }: { user: RedactedUserType }) {
+
+function Connections({ user, ownAccount }: { user: RedactedUserTypeWithFollow, ownAccount: boolean }) {
+    const [isFollowing, setIsFollowing] = useState<boolean>(user.isFollowed);
+    const [followerCount, setFollowerCount] = useState<number>(user.followerCount);
+    const followButtonColor = isFollowing ? '#b8b8b8' : COLORS.primary_2;
+
+    const toggleFollow = async () => {
+        const followed = !isFollowing;
+        setIsFollowing(followed);
+        if (followed) setFollowerCount(prev=>prev+1);
+        else setFollowerCount(prev=>prev-1);
+        // Async call:
+        const body = JSON.stringify({ followed });
+        fetchWithAuth(`user/${user.id}/follow`, 'POST', body);
+    }
+
     return (
-        <View style={{ paddingVertical: 5, width: '100%', flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{user.followerCount} Followers</Text>
-            <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{user.followingCount} Following</Text>
+        <View style={{ paddingVertical: 5, paddingHorizontal: 20, width: '100%', gap: 10 }}>
+            <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{followerCount} Followers</Text>
+                <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{user.followingCount} Following</Text>
+                {!ownAccount && <Button
+                    textStyle={{width: 100, fontSize: FONT_SIZES.m, backgroundColor: followButtonColor}} 
+                    onPress={toggleFollow}
+                >
+                    {(isFollowing) ? 'Unfollow' : 'Follow'}
+                </Button>}
+            </View>
         </View>
     );
 }
