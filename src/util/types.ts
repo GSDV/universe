@@ -14,11 +14,8 @@ export interface UserType extends RedactedUserType {
 
 
 
-export interface UniversityType {
-    domain: string;
-    name: string;
-    color: string;
-    users: RedactedUserType[];
+export interface RedactedUserTypeWithFollow extends RedactedUserType {
+    isFollowed: boolean;
 }
 
 
@@ -32,6 +29,15 @@ export interface RedactedUserType {
     followerCount: number;
     followingCount: number;
     verified: boolean;
+}
+
+
+
+export interface UniversityType {
+    domain: string;
+    name: string;
+    color: string;
+    users: RedactedUserType[];
 }
 
 
