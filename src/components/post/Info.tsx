@@ -26,6 +26,8 @@ export default function Info({ post }: { post: PostType }) {
     const getUniColor = () => university?.color ?? COLORS.black;
 
     const onPressLike = async () => {
+        if (post.deleted) return;
+
         const didLike = !likeState.isLiked;
         setLikeState(prev => ({
             count: (didLike) ? prev.count+1 : prev.count -1,
