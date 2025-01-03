@@ -20,14 +20,14 @@ import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { PostType, RedactedUserTypeWithFollow, UniversityType } from '@util/types';
+import { PostType, RedactedUserWithFollow, UniversityType } from '@util/types';
 import Button from '@components/Button';
 
 
 
 // ownAccount (assumed false): Is the user viewing his own account
 interface AccountProps {
-    userPrisma: RedactedUserTypeWithFollow
+    userPrisma: RedactedUserWithFollow
     ownAccount?: boolean
 }
 
@@ -48,7 +48,7 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 
 
 interface AccountHeader {
-    userPrisma: RedactedUserTypeWithFollow
+    userPrisma: RedactedUserWithFollow
     ownAccount: boolean
 }
 
@@ -194,7 +194,7 @@ function University({ university }: { university: UniversityType }) {
 
 
 
-function Connections({ user, ownAccount }: { user: RedactedUserTypeWithFollow, ownAccount: boolean }) {
+function Connections({ user, ownAccount }: { user: RedactedUserWithFollow, ownAccount: boolean }) {
     const userContext = useUser();
 
     const [isFollowing, setIsFollowing] = useState<boolean>(user.isFollowed);

@@ -12,14 +12,14 @@ import GoBackHeader from '@components/GoBackHeader';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { RedactedUserTypeWithFollow } from '@util/types';
+import { RedactedUserWithFollow } from '@util/types';
 
 
 
 export default function Index() {
     const { username } = useLocalSearchParams();
 
-    const [user, setUser] = useState<RedactedUserTypeWithFollow>();
+    const [user, setUser] = useState<RedactedUserWithFollow>();
     const [ownAccount, setOwnAccount] = useState<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -49,7 +49,7 @@ export default function Index() {
             <GoBackHeader />
             <CheckIfLoading loading={loading}>
                 <CheckIfAlert alert={alert}>
-                    <Acccount userPrisma={user as RedactedUserTypeWithFollow} ownAccount={ownAccount} />
+                    <Acccount userPrisma={user as RedactedUserWithFollow} ownAccount={ownAccount} />
                 </CheckIfAlert>
             </CheckIfLoading>
         </View>

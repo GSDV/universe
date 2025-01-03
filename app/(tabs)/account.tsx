@@ -6,7 +6,7 @@ import Acccount from '@screens/account/Account';
 
 import { SafeAreaTop } from '@components/SafeArea';
 
-import { RedactedUserType, RedactedUserTypeWithFollow } from '@util/types';
+import { RedactedUserType, RedactedUserWithFollow } from '@util/types';
 
 
 
@@ -14,7 +14,7 @@ import { RedactedUserType, RedactedUserTypeWithFollow } from '@util/types';
 export default function Index() {
     const userContext = useUser();
 
-    const userPrisma: RedactedUserTypeWithFollow = {
+    const userPrisma: RedactedUserWithFollow = {
         ...userContext.user as RedactedUserType,
         isFollowed: false
     }

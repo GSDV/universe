@@ -14,7 +14,7 @@ export interface UserType extends RedactedUserType {
 
 
 
-export interface RedactedUserTypeWithFollow extends RedactedUserType {
+export interface RedactedUserWithFollow extends RedactedUserType {
     isFollowed: boolean;
 }
 
