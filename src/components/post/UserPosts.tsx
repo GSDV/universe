@@ -45,7 +45,7 @@ export default function UserPosts({ posts, postsPage, morePostsAvailable, fetchA
 
     // The UserPosts component will always be used in an account, so all posts will be displayed in feed style.
     const renderPost = ({ item, index }: { item: PostType, index: number }) => {
-        return <FeedPost post={item} ownPost={userContext?.user?.id === item.author.id} showPinned={item.pinned} morePostsAvailable={morePostsAvailable} />;
+        return <FeedPost post={item} ownPost={userContext?.user?.id === item.author.id} showPinned={true} morePostsAvailable={morePostsAvailable} />;
     }
 
     return (
