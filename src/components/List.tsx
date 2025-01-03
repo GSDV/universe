@@ -16,9 +16,19 @@ interface ListProps<T extends ListItem> {
     moreAvailable: boolean;
     fetchAndUpdate: (cursor: Date, oldItems: T[]) => Promise<void>;
     renderItem: (item: T) => React.ReactElement;
+    allowRefresh?: boolean;
+    noResultsText: string;
 }
 
-export default function List<T extends ListItem>({ items, cursor, moreAvailable, fetchAndUpdate, renderItem }: ListProps<T>) {
+export default function List<T extends ListItem>({ 
+    items, 
+    cursor, 
+    moreAvailable, 
+    fetchAndUpdate, 
+    renderItem, 
+    allowRefresh = true,
+    noResultsText
+}: ListProps<T>) {
     const [refreshing, setRefreshing] = useState<boolean>(false);
 
     // Used every time the user swipes up (refreshes an account) to see newer items.
@@ -40,7 +50,7 @@ export default function List<T extends ListItem>({ items, cursor, moreAvailable,
         <>
             {items.length == 0 ?
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>nothing found</Text>
+                    <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>{noResultsText}</Text>
                 </View>
             :
                 <FlatList
@@ -52,12 +62,14 @@ export default function List<T extends ListItem>({ items, cursor, moreAvailable,
                     contentContainerStyle={{ gap: 2 }} 
                     showsVerticalScrollIndicator={false} 
 
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing} 
-                            onRefresh={onRefresh} 
-                            tintColor={COLORS.primary_1}
-                        />
+                    refreshControl={allowRefresh ?
+                            <RefreshControl
+                                refreshing={refreshing} 
+                                onRefresh={onRefresh} 
+                                tintColor={COLORS.primary_1}
+                            />
+                        :
+                            <></>
                     } 
 
                     onEndReached={moreAvailable ? onEndReached : null} 
