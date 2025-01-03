@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
         maxWidth: '50%',
         color: COLORS.black,
         fontSize: FONT_SIZES.m,
-        fontWeight: 500
+        fontWeight: '500'
     },
     username: {
         flex: 1,
