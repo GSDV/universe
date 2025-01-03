@@ -5,15 +5,15 @@ import { RedactedUserType } from '@util/types';
 
 
 interface UserContextType {
-    user: RedactedUserType | null, 
-    setUser: (input: RedactedUserType | null) => void 
+    user: RedactedUserType | null;
+    setUser: React.Dispatch<React.SetStateAction<RedactedUserType | null>>;
 }
 
 
 
 const UserContext = createContext<UserContextType>({ 
     user: null, 
-    setUser: (input: RedactedUserType | null) => {} 
+    setUser: () => null
 });
 
 
