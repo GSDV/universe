@@ -25,6 +25,7 @@ export interface RedactedUserType {
     username: string;
     displayName: string;
     pfpKey: string;
+    bio: string;
     university?: UniversityType;
     followerCount: number;
     followingCount: number;
