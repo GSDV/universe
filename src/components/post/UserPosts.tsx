@@ -51,7 +51,7 @@ export default function UserPosts({ posts, postsPage, morePostsAvailable, fetchA
     return (
         <>
             {posts.length == 0 ?
-                <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: COLORS.black }}>no posts yet</Text>
                 </View>
             :

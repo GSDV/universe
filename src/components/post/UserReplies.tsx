@@ -51,7 +51,7 @@ export default function UserReplies({ replies, repliesPage, moreRepliesAvailable
     return (
         <>
             {replies.length == 0 ?
-                <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: COLORS.black }}>no replies yet</Text>
                 </View>
             :
