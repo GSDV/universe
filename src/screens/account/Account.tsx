@@ -4,10 +4,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
+import { useOperation } from '@components/providers/OperationProvider';
+
+import { useUser } from '@components/providers/UserProvider';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-import { useOperation } from '@components/providers/OperationProvider';
 
 import Pfp from '@components/Pfp';
 import UserPosts from '@components/post/UserPosts';
@@ -18,7 +20,7 @@ import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { PostType, RedactedUserType, RedactedUserTypeWithFollow, UniversityType } from '@util/types';
+import { PostType, RedactedUserTypeWithFollow, UniversityType } from '@util/types';
 import Button from '@components/Button';
 
 
@@ -193,6 +195,8 @@ function University({ university }: { university: UniversityType }) {
 
 
 function Connections({ user, ownAccount }: { user: RedactedUserTypeWithFollow, ownAccount: boolean }) {
+    const userContext = useUser();
+
     const [isFollowing, setIsFollowing] = useState<boolean>(user.isFollowed);
     const [followerCount, setFollowerCount] = useState<number>(user.followerCount);
     const followButtonColor = isFollowing ? '#b8b8b8' : COLORS.primary_2;
@@ -200,18 +204,27 @@ function Connections({ user, ownAccount }: { user: RedactedUserTypeWithFollow, o
     const toggleFollow = async () => {
         const followed = !isFollowing;
         setIsFollowing(followed);
+
         if (followed) setFollowerCount(prev=>prev+1);
         else setFollowerCount(prev=>prev-1);
+
+        // For displaying on user's own account:
+        userContext.setUser(prev => {
+            if (!prev) return null;
+            const followingCount = prev.followingCount + ((followed) ? 1 : -1);
+            return { ...prev, followingCount };
+        });
+
         // Async call:
         const body = JSON.stringify({ followed });
-        fetchWithAuth(`user/${user.id}/follow`, 'POST', body);
+        fetchWithAuth(`profile/${user.username}/follow`, 'POST', body);
     }
 
     return (
         <View style={{ paddingVertical: 5, paddingHorizontal: 20, width: '100%', gap: 10 }}>
             <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{followerCount} Followers</Text>
                 <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{user.followingCount} Following</Text>
+                <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{followerCount} Followers</Text>
                 {!ownAccount && <Button
                     textStyle={{width: 100, fontSize: FONT_SIZES.m, backgroundColor: followButtonColor}} 
                     onPress={toggleFollow}
