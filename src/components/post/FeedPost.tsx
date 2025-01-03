@@ -75,7 +75,7 @@ function Header({ post, ownPost, showPinned, morePostsAvailable }: FeedPostType)
             {/* Spacer - only gets used when the display name is too long */}
             <View style={{ width: 10 }} />
 
-            {showPinned && <Entypo name='pin' size={20} color={COLORS.black} />}
+            {(showPinned && post.pinned) && <Entypo name='pin' size={20} color={COLORS.black} />}
             <PostActionsMenu post={post} ownPost={ownPost} morePostsAvailable={morePostsAvailable} />
         </View>
     );
