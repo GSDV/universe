@@ -31,7 +31,7 @@ interface FeedPostType {
 }
 
 
-export function FeedPost({ post, ownPost, showPinned, threadParam = '', morePostsAvailable }: FeedPostType) {
+export function FeedPost({ post, ownPost, showPinned = false, threadParam = '', morePostsAvailable }: FeedPostType) {
     const router = useRouter();
 
     const onPress = () => {
