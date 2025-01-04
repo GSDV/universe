@@ -38,6 +38,8 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 
             {userPrisma.university && <University university={userPrisma.university} />}
 
+            <Bio bio={userPrisma.bio} />
+
             <Connections user={userPrisma} ownAccount={ownAccount} />
 
             <PostsAndReplies userId={userPrisma.id} />
@@ -147,7 +149,7 @@ function PostsAndReplies({ userId }: { userId: string }) {
 
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ padding: 5, width: '100%', flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
+            <View style={{ padding: 10, width: '100%', flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
                 <TouchableOpacity onPress={() => setView('posts')}>
                     <Text style={{ color: ((view==='posts') ? COLORS.black : COLORS.gray), fontSize: FONT_SIZES.m }}>Posts</Text>
                 </TouchableOpacity>
@@ -188,6 +190,16 @@ function University({ university }: { university: UniversityType }) {
     return (
         <View style={{ width: '100%', paddingHorizontal: 20 }}>
             <Text style={{ fontSize: FONT_SIZES.m, color: university.color }}>{university.name}</Text>
+        </View>
+    );
+}
+
+
+
+function Bio({ bio }: { bio: string }) {
+    return (
+        <View style={{ width: '100%', paddingHorizontal: 20 }}>
+            <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{bio}</Text>
         </View>
     );
 }
