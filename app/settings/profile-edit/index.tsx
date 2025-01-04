@@ -1,20 +1,41 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
-import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity, Image, Keyboard } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    Image,
+    Keyboard,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback
+} from 'react-native';
+
+import { useUser } from '@components/providers/UserProvider';
 
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 
-import { useUser } from '@components/providers/UserProvider';
-
 import GoBackHeader from '@components/GoBackHeader';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
 
-import { IMG_SIZE_LIMIT_TXT, isValidDisplayName, isValidUsername, MAX_DISPLAY_NAME_LENGTH, MAX_USERNAME_LENGTH, MIN_DISPLAY_NAME_LENGTH, MIN_USERNAME_LENGTH } from '@util/global';
+import {
+    IMG_SIZE_LIMIT_TXT,
+    isValidBio,
+    isValidDisplayName,
+    isValidUsername,
+    MAX_BIO_LENGTH,
+    MAX_DISPLAY_NAME_LENGTH,
+    MAX_USERNAME_LENGTH,
+    MIN_DISPLAY_NAME_LENGTH,
+    MIN_USERNAME_LENGTH
+} from '@util/global';
 import { COLORS, FONT_SIZES, pfpUri } from '@util/global-client';
 
 import { clientUploadPfp, promptMediaPermissions } from '@util/media/s3';
@@ -30,10 +51,13 @@ export default function Index() {
     // For TypeScript:
     if (!user) return <Text>Something went wrong.</Text>
 
+    const scrollViewRef = useRef<ScrollView>(null);
+
     const [userData, setUserData] = useState({
         displayName: user.displayName,
         username: user.username,
-        pfpUri: pfpUri(user.pfpKey)
+        pfpUri: pfpUri(user.pfpKey),
+        bio: user.bio
     });
 
     const canSave = ((userData.pfpUri !== pfpUri(user.pfpKey)) || (userData.displayName !== user.displayName) ||  (userData.username !== user.username));
@@ -41,8 +65,14 @@ export default function Index() {
     const [alert, setAlert] = useState<AlertType | null>(null);
 
     const handleChange = (name: string, value: any) => {
-        if (name == 'username') value = value.toLowerCase();
-        if (value.length > MAX_USERNAME_LENGTH) value = value.substring(0, MAX_USERNAME_LENGTH+1);
+        if (name == 'username') {
+            value = value.toLowerCase();
+            if (value.length > MAX_USERNAME_LENGTH) value = value.substring(0, MAX_USERNAME_LENGTH+1);
+        } else if (name == 'displayName') {
+            if (value.length > MAX_DISPLAY_NAME_LENGTH) value = value.substring(0, MAX_DISPLAY_NAME_LENGTH+1);
+        } else if (name == 'bio') {
+            if (value.length > MAX_BIO_LENGTH) value = value.substring(0, MAX_BIO_LENGTH+1);
+        }
 
         setUserData(prevState => ({
             ...prevState,
@@ -84,16 +114,24 @@ export default function Index() {
             newUserData.displayName = userData.displayName;
         }
 
-        if (userData.username !== user.username) {
-            if (!isValidUsername(userData.username)) {
+        const trimmedUsername = userData.username.trim();
+        if (trimmedUsername !== user.username) {
+            if (!isValidUsername(trimmedUsername)) {
                 setAlert({ msg: `Usernames must be ${MIN_USERNAME_LENGTH}-${MAX_USERNAME_LENGTH} characters, and start with a letter.`, cStatus: 400 });
                 setLoading(false);
                 return;
             }
-            newUserData.username = userData.username;
+            newUserData.username = trimmedUsername;
         }
 
-
+        if (userData.bio !== user.bio) {
+            if (!isValidBio(userData.bio)) {
+                setAlert({ msg: `Bios must be ${MAX_BIO_LENGTH} characters or under.`, cStatus: 400 });
+                setLoading(false);
+                return;
+            }
+            newUserData.bio = userData.bio;
+        }
 
         const body = JSON.stringify({ data: newUserData });
         const resJson = await fetchWithAuth(`user/edit`, 'POST', body);
@@ -134,84 +172,145 @@ export default function Index() {
         handleChange('pfpUri', {uri: optimized.uri});
     }
 
+    const handleFocus = () => {
+        setTimeout(() => {
+            scrollViewRef.current?.scrollToEnd({ animated: true });
+        }, 100);
+    }
+
     return (
-        <View style={{ flex: 1, gap: 10 }}>
+        <View style={{ flex: 1 }}>
             <GoBackHeader />
-            <ScrollView contentContainerStyle={{ padding: 10, flex: 1, alignItems: 'center' }}>
-                <Text style={styles.title}>Edit Profile</Text>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={'padding'}
+                keyboardVerticalOffset={-20}
+            >
+                <ScrollView 
+                    ref={scrollViewRef}
+                    contentContainerStyle={styles.scrollViewContent}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps='handled'
+                >
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View>
+                            <Text style={styles.title}>Edit Profile</Text>
 
-                <CheckIfLoading loading={loading}>
-                    <View style={styles.container}>
-                        <TouchableOpacity style={cl_styles.imageContainer} onPress={pickImage}>
-                            <Image source={userData.pfpUri} style={cl_styles.profileImage} />
-                            <View style={cl_styles.editIconContainer}>
-                                <MaterialIcons name='edit' size={20} color='white' />
-                            </View>
-                        </TouchableOpacity>
+                            <CheckIfLoading loading={loading}>
+                                <View style={styles.container}>
+                                    <TouchableOpacity 
+                                        style={styles.profileImageContainer} 
+                                        onPress={pickImage}
+                                    >
+                                        <Image source={userData.pfpUri} style={styles.profileImage} />
+                                        <View style={styles.editIconContainer}>
+                                            <MaterialIcons name='edit' size={20} color='white' />
+                                        </View>
+                                    </TouchableOpacity>
 
-                        <View style={{ gap: 2 }}>
-                            <Text style={{color: COLORS.black, fontSize: FONT_SIZES.m}}>Display Name</Text>
-                            <TextInput
-                                style={{ padding: 5, width: '100%', backgroundColor: 'white', fontSize: FONT_SIZES.m }}
-                                value={userData.displayName}
-                                onChangeText={(v: string) => handleChange('displayName', v)}
-                            />
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.subtitle}>Display Name</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            value={userData.displayName}
+                                            onChangeText={(v: string) => 
+                                                handleChange('displayName', v)
+                                            }
+                                            onFocus={handleFocus}
+                                        />
+                                    </View>
+
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.subtitle}>Username</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            value={userData.username}
+                                            onChangeText={(v: string) => handleChange('username', v)}
+                                            autoCapitalize="none"
+                                            onFocus={handleFocus}
+                                        />
+                                    </View>
+
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.subtitle}>Bio</Text>
+                                        <TextInput
+                                            style={[styles.input, styles.bioInput]}
+                                            numberOfLines={4}
+                                            multiline={true}
+                                            value={userData.bio}
+                                            onChangeText={(v: string) => handleChange('bio', v)}
+                                            onFocus={handleFocus}
+                                        />
+                                    </View>
+
+                                    <View style={styles.buttonContainer}>
+                                        <Button onPress={onSubmit} disabled={!canSave}>Save</Button>
+
+                                        {alert && <Alert alert={alert} />}
+                                    </View>
+                                </View>
+                            </CheckIfLoading>
                         </View>
-
-                        <View style={{ gap: 2 }}>
-                            <Text style={{color: COLORS.black, fontSize: FONT_SIZES.m}}>Username</Text>
-                            <TextInput
-                                style={{ padding: 5, width: '100%', backgroundColor: 'white', fontSize: FONT_SIZES.m }}
-                                value={userData.username}
-                                onChangeText={(v: string) => handleChange('username', v)}
-                            />
-                        </View>
-                        
-                        <Button onPress={onSubmit} disabled={!canSave}>Save</Button>
-                        {alert && <Alert alert={alert} />}
-                    </View>
-                </CheckIfLoading>
-            </ScrollView>
+                    </TouchableWithoutFeedback>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </View>
-    )
+    );
 }
 
 
 
 const styles = StyleSheet.create({
+    scrollViewContent: {
+        flexGrow: 1,
+        paddingBottom: 120,
+    },
     container: {
         padding: 15,
-        flex: 1,
         alignSelf: 'center',
         width: '80%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 30
+        gap: 20,
     },
-    title: {
-        marginBottom: 20,
-        textAlign: 'center',
-        fontSize: FONT_SIZES.xxl,
-        fontWeight: 'bold',
-        color: COLORS.primary_1
-    }
-});
-
-
-
-const cl_styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: 'white',
-    },
-    imageContainer: {
+    profileImageContainer: {
         alignSelf: 'center',
+        marginBottom: 10,
     },
     profileImage: {
         width: 120,
         height: 120,
         borderRadius: 60,
+    },
+    title: {
+        marginVertical: 20,
+        textAlign: 'center',
+        fontSize: FONT_SIZES.xxl,
+        fontWeight: 'bold',
+        color: COLORS.primary_1
+    },
+    subtitle: {
+        color: COLORS.black,
+        fontSize: FONT_SIZES.m,
+        marginBottom: 5,
+    },
+    inputContainer: {
+        gap: 2,
+        marginBottom: 10,
+    },
+    input: {
+        borderRadius: 5,
+        padding: 10,
+        width: '100%',
+        backgroundColor: 'white',
+        fontSize: FONT_SIZES.m,
+    },
+    bioInput: {
+        height: 100,
+        textAlignVertical: 'top',
+        paddingTop: 10,
+    },
+    buttonContainer: {
+        marginTop: 20,
+        paddingBottom: 20,
     },
     editIconContainer: {
         position: 'absolute',
