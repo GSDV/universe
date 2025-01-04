@@ -61,12 +61,12 @@ function AccountHeader({ userPrisma, ownAccount }: AccountHeader) {
         <View style={styles.header}>
             <View style={{ flex: 1, flexDirection: 'row', gap: 5, alignItems: 'center' }}>
                 <Pfp pfpKey={userPrisma.pfpKey} style={styles.pfp} />
-                <View style={{ gap: 2 }}>
+                <View style={{ flex: 1, gap: 2 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-                        <Text style={styles.displayName}>{userPrisma.displayName}</Text>
+                        <Text ellipsizeMode='tail' numberOfLines={1} style={styles.displayName}>{userPrisma.displayName}</Text>
                         {userPrisma.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary_1} />}
                     </View>
-                    <Text style={styles.username}>@{userPrisma.username}</Text>
+                    <Text ellipsizeMode='tail' numberOfLines={1} style={styles.username}>@{userPrisma.username}</Text>
                 </View>
             </View>
 
