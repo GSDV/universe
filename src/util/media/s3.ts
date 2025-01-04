@@ -108,8 +108,6 @@ export const clientUploadPfp = async (asset: Blob) => {
 
     const assetBlob = new Blob([asset], { type: asset.type });
 
-    if (resSignAndKeyJson.cStatus!=200) return null;
-
     const resS3 = await fetch(resSignAndKeyJson.signedUrl, {
         method: 'PUT',
         body: assetBlob
