@@ -144,8 +144,10 @@ function PostsAndUsers({ query }: { query: string }) {
     const intialFetch = async () => {
         setLoading(true);
         const now = new Date();
-        fetchAndUpdatePosts(now, []);
-        fetchAndUpdateUsers(now, []);
+        await Promise.all([
+            fetchAndUpdatePosts(now, []),
+            fetchAndUpdateUsers(now, [])
+        ]);
         setLoading(false);
     }
 
