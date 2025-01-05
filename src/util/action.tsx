@@ -8,7 +8,7 @@ interface Option {
 }
 
 export const showActionSheet = (options: Option[], destructiveIdxs: number[] = []) => {
-    const actions = options.map(o => o.action);
+    const actions = [()=>{}, ...options.map(o => o.action)];
     ActionSheetIOS.showActionSheetWithOptions(
         {
             options: ['Cancel', ...options.map(o => o.label)], 
