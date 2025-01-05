@@ -12,7 +12,7 @@ type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export const fetchBasic = async (route: string, method: Method, body?: string) => {
     try {
-        const res = await fetch(`${DOMAIN}/api/app/${API_VERSION}/${route}`, {
+        const res = await fetch(`${DOMAIN}/api/${API_VERSION}/app/${route}`, {
             method,
             headers: {
                 'Content-Type': 'application/json'
@@ -31,7 +31,7 @@ export const fetchBasic = async (route: string, method: Method, body?: string) =
 export const fetchWithAuth = async (route: string, method: Method, body?: string) => {
     try {
         const authTokenCookie = await getAuthCookie();
-        const res = await fetch(`${DOMAIN}/api/app/${API_VERSION}/${route}`, {
+        const res = await fetch(`${DOMAIN}/api/${API_VERSION}/app/${route}`, {
             method,
             body,
             headers: {

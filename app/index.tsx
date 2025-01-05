@@ -10,8 +10,7 @@ import { useUser } from '@components/providers/UserProvider';
 import { SafeAreaTop } from '@components/SafeArea';
 import { CheckIfLoading } from '@components/Loading';
 
-import { AUTH_TOKEN_COOKIE_KEY, DOMAIN } from '@util/global';
-
+import { fetchWithAuth } from '@util/fetch';
 import { getAuthCookie } from '@util/storage';
 
 
@@ -23,7 +22,6 @@ export default function Index() {
 
     const [loading, setLoading] = useState<boolean>(true);
 
-
     const loadProfile = async () => {
         setLoading(true);
 
@@ -33,15 +31,7 @@ export default function Index() {
             return;
         }
 
-        const res = await fetch(`${DOMAIN}/api/app/user`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cookie': `${AUTH_TOKEN_COOKIE_KEY}=${authTokenCookie}`
-            }
-        });
-
-        const resJson = await res.json();
+        const resJson = await fetchWithAuth('user', 'GET');
         if (resJson.cStatus == 200) {
             const user = resJson.user;
             userContext.setUser(user);
