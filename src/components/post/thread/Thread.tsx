@@ -130,7 +130,6 @@ export default function Thread({ focusPost, ancestors, replies, loadingAncestors
     return (
         <FlatList 
             ref={flatListRef}
-            showsVerticalScrollIndicator={false}
             initialScrollIndex={loadingAncestors ? 0 : renderableItems.findIndex(item => item.type === 'focused')}
             contentContainerStyle={{ paddingBottom: '50%' }}
             data={renderableItems}

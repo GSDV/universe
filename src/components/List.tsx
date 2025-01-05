@@ -48,23 +48,22 @@ export default function List<T extends ListItem>({
 
     return (
         <FlatList
-            keyExtractor={(item, idx) => `${idx}--${item.id}`} 
-            data={items} 
-            renderItem={({ item }) => renderItem(item)} 
+            keyExtractor={(item, idx) => `${idx}--${item.id}`}
+            data={items}
+            renderItem={({ item }) => renderItem(item)}
 
-            style={{ flex: 1, backgroundColor: COLORS.dark_gray }} 
-            contentContainerStyle={{ flexGrow: 1, gap: 2 }} 
-            showsVerticalScrollIndicator={false} 
+            style={{ flex: 1, backgroundColor: COLORS.dark_gray }}
+            contentContainerStyle={{ flexGrow: 1, gap: 2 }}
 
             refreshControl={allowRefresh ?
                     <RefreshControl
-                        refreshing={refreshing} 
-                        onRefresh={onRefresh} 
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
                         tintColor={COLORS.primary_1}
                     />
                 :
                     <></>
-            } 
+            }
 
             ListEmptyComponent={
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -72,7 +71,7 @@ export default function List<T extends ListItem>({
                 </View>
             }
 
-            onEndReached={moreAvailable ? onEndReached : null} 
+            onEndReached={moreAvailable ? onEndReached : null}
             onEndReachedThreshold={0.5}
         />
     );
