@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { TextInput, View, Text, Platform, StatusBar, Keyboard, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
 import { useUser } from '@components/providers/UserProvider';
 
 import { Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -9,15 +11,15 @@ import { Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { FeedPost } from '@components/post/FeedPost';
 import { SafeAreaTop } from '@components/SafeArea';
 import { CheckIfLoading } from '@components/Loading';
+import Pfp from '@components/Pfp';
+import List from '@components/List';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 
 import { PostType, RedactedUserWithFollow } from '@util/types';
-import { useRouter } from 'expo-router';
-import Pfp from '@components/Pfp';
-import List from '@components/List';
+
 
 
 
