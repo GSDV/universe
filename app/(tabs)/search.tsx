@@ -53,7 +53,7 @@ export default function Index() {
 
                 {(query === '') ? 
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>search posts and users</Text>
+                        <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>search posts and accounts</Text>
                     </View>
                 :
                     <PostsAndUsers query={query} />
