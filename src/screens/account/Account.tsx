@@ -1,27 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useRouter } from 'expo-router';
-
-import { useOperation } from '@components/providers/OperationProvider';
 
 import { useUser } from '@components/providers/UserProvider';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
+import PostsAndReplies from './PostsAndReplies';
 import Pfp from '@components/Pfp';
-import UserPosts from '@components/post/UserPosts';
-import UserReplies from '@components/post/UserReplies';
-import { CheckIfLoading } from '@components/Loading';
+import Button from '@components/Button';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { PostType, RedactedUserWithFollow, UniversityType } from '@util/types';
-import Button from '@components/Button';
+import { RedactedUserWithFollow, UniversityType } from '@util/types';
 
 
 
@@ -81,105 +77,6 @@ function AccountHeader({ userPrisma, ownAccount }: AccountHeader) {
                 </TouchableOpacity>
             </>
             }
-        </View>
-    );
-}
-
-
-
-function PostsAndReplies({ userId }: { userId: string }) {
-    const operationContext = useOperation();
-
-    const [view, setView] = useState<'posts' | 'replies'>('posts');
-    const [loading, setLoading] = useState<boolean>(true);
-
-    const [posts, setPosts] = useState<PostType[]>([]);
-    const [postsPage, setPostsPage] = useState<number>(1);
-    // Are there more posts available for when the user scrolls to the end?
-    // If not, do not let user load more.
-    const [morePostsAvailable, setMorePostsAvailable] = useState<boolean>(false);
-
-    const [replies, setReplies] = useState<PostType[]>([]);
-    const [repliesPage, setRepliesPage] = useState<number>(1);
-    const [moreRepliesAvailable, setMoreRepliesAvailable] = useState<boolean>(false);
-
-    const fetchAndUpdatePosts = async (postsPage: number, oldPosts: PostType[]) => {
-        const resJson = await fetchWithAuth(`user/${userId}/post?postsPage=${postsPage}`, 'GET');
-        if (resJson.cStatus == 200) {
-            setPostsPage(postsPage);
-            setPosts([...oldPosts, ...resJson.posts]);
-            setMorePostsAvailable(resJson.morePostsAvailable);
-        }
-    }
-
-    const fetchAndUpdateReplies = async (repliesPage: number, oldReplies: PostType[]) => {
-        const resJson = await fetchWithAuth(`user/${userId}/reply?repliesPage=${repliesPage}`, 'GET');
-        if (resJson.cStatus == 200) {
-            setRepliesPage(repliesPage);
-            setReplies([...oldReplies, ...resJson.replies]);
-            setMoreRepliesAvailable(resJson.moreRepliesAvailable);
-        }
-    }
-    
-    // Used only once, to initially load first few posts and replies.
-    const fetchInitialPR = async () => {
-        setLoading(true);
-        await Promise.all([
-            fetchAndUpdatePosts(1, []),
-            fetchAndUpdateReplies(1, [])
-        ]);
-        setLoading(false);
-    }
-
-    useEffect(() => {
-        fetchInitialPR();
-    }, []);
-
-    const isFirstRender = useRef<boolean>(true);
-    useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-            return;
-        }
-        if (operationContext.lastOperation) {
-            setPosts(prev => operationContext.conductOperation(prev, 'account_posts'));
-            setReplies(prev => operationContext.conductOperation(prev, 'account_replies'));
-        }
-    }, [operationContext.lastOperation]);
-
-    return (
-        <View style={{ flex: 1 }}>
-            <View style={{ padding: 10, width: '100%', flexDirection: 'row', justifyContent: 'center', gap: 15 }}>
-                <TouchableOpacity onPress={() => setView('posts')}>
-                    <Text style={{ color: ((view==='posts') ? COLORS.black : COLORS.gray), fontSize: FONT_SIZES.m }}>Posts</Text>
-                </TouchableOpacity>
-
-                <Text style={{ color: COLORS.gray, fontSize: FONT_SIZES.m }}>|</Text>
-
-                <TouchableOpacity onPress={() => setView('replies')}>
-                    <Text style={{ color: ((view==='replies') ? COLORS.black : COLORS.gray), fontSize: FONT_SIZES.m }}>Replies</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={{ width: '100%', height: 5, backgroundColor: 'rgb(220, 220, 220)' }} />
-
-            <CheckIfLoading loading={loading}>
-                {view === 'posts' ?
-                    <UserPosts 
-                        posts={posts} 
-                        postsPage={postsPage} 
-                        morePostsAvailable={morePostsAvailable} 
-                        fetchAndUpdatePosts={fetchAndUpdatePosts} 
-                    />
-                :
-                    <UserReplies 
-                        replies={replies} 
-                        repliesPage={repliesPage} 
-                        moreRepliesAvailable={moreRepliesAvailable} 
-                        fetchAndUpdateReplies={fetchAndUpdateReplies} 
-                    />
-                }
-            </CheckIfLoading>
         </View>
     );
 }
