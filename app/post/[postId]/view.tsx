@@ -4,12 +4,11 @@ import { View } from 'react-native';
 
 import { useLocalSearchParams } from 'expo-router';
 
-import { useUser } from '@components/providers/UserProvider';
 import { useOperation } from '@components/providers/OperationProvider';
 
 import GoBackHeader from '@components/GoBackHeader';
 
-import { PostType, RedactedUserType } from '@util/types';
+import { PostType } from '@util/types';
 import Thread from '@components/post/thread/Thread';
 
 import ReplyInput from '@components/post/thread/Reply';
@@ -21,7 +20,6 @@ import { fetchWithAuth } from '@util/fetch';
 // It is ALWAYS passed in as "post" parameter using JSON.stringify() and encodeURI.
 export default function Index() {
     const operationContext = useOperation();
-    const userContext = useUser();
 
     const postId = useLocalSearchParams().postId as string;
 
@@ -97,12 +95,11 @@ export default function Index() {
     return (
         <View style={{ flex: 1 }}>
             <GoBackHeader />
-            <Thread 
-                userId={(userContext.user as RedactedUserType).id} 
-                focusPost={focusPost} 
-                ancestors={ancestors} 
+            <Thread
+                focusPost={focusPost}
+                ancestors={ancestors}
                 replies={replies}
-                loadingAncestors={loadingAncestors} 
+                loadingAncestors={loadingAncestors}
                 loadingReplies={loadingReplies}
             />
             <ReplyInput />

@@ -36,7 +36,6 @@ interface RenderPostType extends PostType {
 type RenderItemType = RenderPostType | { id: string, type: 'loading' | 'reply-barrier' | 'no-replies' };
 
 interface ThreadProps {
-    userId: string,
     focusPost: PostType,
     ancestors: PostType[],
     replies: PostType[],
@@ -44,7 +43,7 @@ interface ThreadProps {
     loadingReplies: boolean
 }
 
-export default function Thread({ userId, focusPost, ancestors, replies, loadingAncestors, loadingReplies }: ThreadProps) {
+export default function Thread({ focusPost, ancestors, replies, loadingAncestors, loadingReplies }: ThreadProps) {
     const router = useRouter();
     const flatListRef = useRef<FlatList>(null);
 
