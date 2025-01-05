@@ -12,9 +12,9 @@ interface ListItem {
 
 interface ListProps<T extends ListItem> {
     items: T[];
-    cursor: Date;
+    cursor: string;
     moreAvailable: boolean;
-    fetchAndUpdate: (cursor: Date, oldItems: T[]) => Promise<void>;
+    fetchAndUpdate: (cursor: string, oldItems: T[]) => Promise<void>;
     renderItem: (item: T) => React.ReactElement;
     allowRefresh?: boolean;
     noResultsText: string;
@@ -35,7 +35,7 @@ export default function List<T extends ListItem>({
     // Completely reset the items array.
     const onRefresh = async () => {
         setRefreshing(true);
-        await fetchAndUpdate(new Date(), []);
+        await fetchAndUpdate('', []);
         setRefreshing(false);
     }
 
@@ -47,35 +47,33 @@ export default function List<T extends ListItem>({
     }
 
     return (
-        <>
-            {items.length == 0 ?
+        <FlatList
+            keyExtractor={(item, idx) => `${idx}--${item.id}`} 
+            data={items} 
+            renderItem={({ item }) => renderItem(item)} 
+
+            style={{ flex: 1, backgroundColor: COLORS.dark_gray }} 
+            contentContainerStyle={{ flexGrow: 1, gap: 2 }} 
+            showsVerticalScrollIndicator={false} 
+
+            refreshControl={allowRefresh ?
+                    <RefreshControl
+                        refreshing={refreshing} 
+                        onRefresh={onRefresh} 
+                        tintColor={COLORS.primary_1}
+                    />
+                :
+                    <></>
+            } 
+
+            ListEmptyComponent={
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>{noResultsText}</Text>
                 </View>
-            :
-                <FlatList
-                    keyExtractor={(item, idx) => `${idx}--${item.id}`} 
-                    data={items} 
-                    renderItem={({ item }) => renderItem(item)} 
-
-                    style={{ flex: 1, backgroundColor: COLORS.dark_gray }} 
-                    contentContainerStyle={{ gap: 2 }} 
-                    showsVerticalScrollIndicator={false} 
-
-                    refreshControl={allowRefresh ?
-                            <RefreshControl
-                                refreshing={refreshing} 
-                                onRefresh={onRefresh} 
-                                tintColor={COLORS.primary_1}
-                            />
-                        :
-                            <></>
-                    } 
-
-                    onEndReached={moreAvailable ? onEndReached : null} 
-                    onEndReachedThreshold={0.5}
-                />
             }
-        </>
+
+            onEndReached={moreAvailable ? onEndReached : null} 
+            onEndReachedThreshold={0.5}
+        />
     );
 }

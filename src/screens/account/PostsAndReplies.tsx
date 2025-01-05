@@ -15,6 +15,7 @@ import { fetchWithAuth } from '@util/fetch';
 import { PostType } from '@util/types';
 
 
+
 export default function PostsAndReplies({ userId }: { userId: string }) {
     const operationContext = useOperation();
 
@@ -22,34 +23,29 @@ export default function PostsAndReplies({ userId }: { userId: string }) {
     const [loading, setLoading] = useState<boolean>(true);
 
     const [posts, setPosts] = useState<PostType[]>([]);
-    const [postsCursor, setPostsCursor] = useState<Date>(new Date());
+    const [postsCursor, setPostsCursor] = useState<string>('');
     const [morePostsAvailable, setMorePostsAvailable] = useState<boolean>(false);
 
     const [replies, setReplies] = useState<PostType[]>([]);
-    const [repliesCursor, setRepliesCursor] = useState<Date>(new Date());
+    const [repliesCursor, setRepliesCursor] = useState<string>('');
     const [moreRepliesAvailable, setMoreRepliesAvailable] = useState<boolean>(false);
 
-    const fetchAndUpdatePosts = async (cursor: Date, oldPosts: PostType[]) => {
-        const getPinned = ((new Date()).getTime() - cursor.getTime()) < 500;
-        const params = new URLSearchParams({
-            getPinned: getPinned.toString(),
-            cursor: cursor.toISOString()
-        });
+    const fetchAndUpdatePosts = async (cursor: string, oldPosts: PostType[]) => {
+        const getPinned = (cursor === '').toString();
+        const params = new URLSearchParams({ getPinned, cursor });
         const resJson = await fetchWithAuth(`user/${userId}/post?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
-            setPostsCursor(new Date(resJson.newCursor));
+            setPostsCursor(resJson.nextCursor);
             setPosts([...oldPosts, ...resJson.posts]);
             setMorePostsAvailable(resJson.moreAvailable);
         }
     }
 
-    const fetchAndUpdateReplies = async (cursor: Date, oldReplies: PostType[]) => {
-        const params = new URLSearchParams({
-            cursor: cursor.toISOString()
-        });
+    const fetchAndUpdateReplies = async (cursor: string, oldReplies: PostType[]) => {
+        const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`user/${userId}/reply?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
-            setRepliesCursor(new Date(resJson.newCursor));
+            setRepliesCursor(resJson.nextCursor);
             setReplies([...oldReplies, ...resJson.replies]);
             setMoreRepliesAvailable(resJson.moreAvailable);
         }
@@ -58,10 +54,9 @@ export default function PostsAndReplies({ userId }: { userId: string }) {
     // Used only once, to initially load first few posts and replies.
     const fetchInitialPR = async () => {
         setLoading(true);
-        const now = new Date();
         await Promise.all([
-            fetchAndUpdatePosts(now, []),
-            fetchAndUpdateReplies(now, [])
+            fetchAndUpdatePosts('', []),
+            fetchAndUpdateReplies('', [])
         ]);
         setLoading(false);
     }

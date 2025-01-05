@@ -99,35 +99,29 @@ function PostsAndUsers({ query }: { query: string }) {
     const [loading, setLoading] = useState<boolean>(true);
 
     const [posts, setPosts] = useState<PostType[]>([]);
-    const [postsCursor, setPostsCursor] = useState<Date>(new Date());
+    const [postsCursor, setPostsCursor] = useState<string>('');
     const [morePostsAvailable, setMorePostsAvailable] = useState<boolean>(false);
 
     const [users, setUsers] = useState<RedactedUserWithFollow[]>([]);
-    const [usersCursor, setUsersCursor] = useState<Date>(new Date());
+    const [usersCursor, setUsersCursor] = useState<string>('');
     const [moreUsersAvailable, setMoreUsersAvailable] = useState<boolean>(false);
 
 
-    const fetchAndUpdatePosts = async (cursor: Date, oldPosts: PostType[]) => {
-        const params = new URLSearchParams({
-            query,
-            cursor: cursor.toISOString()
-        });
+    const fetchAndUpdatePosts = async (cursor: string, oldPosts: PostType[]) => {
+        const params = new URLSearchParams({ query, cursor });
         const resJson = await fetchWithAuth(`search/posts?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
-            setPostsCursor(new Date(resJson.newCursor));
+            setPostsCursor(resJson.nextCursor);
             setPosts([...oldPosts, ...resJson.posts]);
             setMorePostsAvailable(resJson.moreAvailable);
         }
     }
 
-    const fetchAndUpdateUsers = async (cursor: Date, oldUsers: RedactedUserWithFollow[]) => {
-        const params = new URLSearchParams({
-            query,
-            cursor: cursor.toISOString()
-        });
+    const fetchAndUpdateUsers = async (cursor: string, oldUsers: RedactedUserWithFollow[]) => {
+        const params = new URLSearchParams({ query, cursor });
         const resJson = await fetchWithAuth(`search/users?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
-            setUsersCursor(new Date(resJson.newCursor));
+            setUsersCursor(resJson.nextCursor);
             setUsers([...oldUsers, ...resJson.users]);
             setMoreUsersAvailable(resJson.moreAvailable);
         }
@@ -139,10 +133,9 @@ function PostsAndUsers({ query }: { query: string }) {
 
     const intialFetch = async () => {
         setLoading(true);
-        const now = new Date();
         await Promise.all([
-            fetchAndUpdatePosts(now, []),
-            fetchAndUpdateUsers(now, [])
+            fetchAndUpdatePosts('', []),
+            fetchAndUpdateUsers('', [])
         ]);
         setLoading(false);
     }
