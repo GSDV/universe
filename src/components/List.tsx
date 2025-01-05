@@ -21,11 +21,11 @@ interface ListProps<T extends ListItem> {
 }
 
 export default function List<T extends ListItem>({ 
-    items, 
-    cursor, 
-    moreAvailable, 
-    fetchAndUpdate, 
-    renderItem, 
+    items,
+    cursor,
+    moreAvailable,
+    fetchAndUpdate,
+    renderItem,
     allowRefresh = true,
     noResultsText
 }: ListProps<T>) {
