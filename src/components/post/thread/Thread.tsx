@@ -11,12 +11,12 @@ import Pfp from '@components/Pfp';
 import TextContent from '@components/post/TextContent';
 import Info from '@components/post/Info';
 import PostActionsMenu from '@components/post/Actions';
+import { DisplayMedia } from '@components/post/media/Display';
+import { FeedPost } from '@components/post/FeedPost';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { PostType } from '@util/types';
-import { DisplayMedia } from '@components/post/media/Display';
-import { FeedPost } from '@components/post/FeedPost';
 
 
 
@@ -87,22 +87,19 @@ export default function Thread({ userId, focusPost, ancestors, replies, loadingA
 
     const renderItem = ({ item, index }: { item: RenderItemType, index: number }) => {
         if (item.type === 'focused') {
-            const ownPost = (item.author.id === userId);
-            return <FocusPost post={item} ownPost={ownPost} />;
+            return <FocusPost post={item} />;
         }
 
         if (item.type === 'ancestor') {
-            const ownPost = (item.author.id === userId);
-            return <AncestorPost post={item} ownPost={ownPost} openAncestor={() => openAncestor(item, index)} />
+            return <AncestorPost post={item} openAncestor={() => openAncestor(item, index)} />
         }
 
         if (item.type === 'reply') {
             const { type, ...post } = item;
-            const ownPost = (item.author.id === userId);
             const threadParam = encodeURIComponent(JSON.stringify([...ancestors, focusPost]));
             return (<>
                 <View style={{ width: '100%', height: 2, backgroundColor: COLORS.light_gray }} />
-                <FeedPost post={post} ownPost={ownPost} threadParam={threadParam} />
+                <FeedPost post={post} threadParam={threadParam} />
             </>);
         }
 

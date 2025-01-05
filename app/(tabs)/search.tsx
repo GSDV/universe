@@ -4,8 +4,6 @@ import { TextInput, View, Text, Platform, StatusBar, Keyboard, StyleSheet, Touch
 
 import { useRouter } from 'expo-router';
 
-import { useUser } from '@components/providers/UserProvider';
-
 import { Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { FeedPost } from '@components/post/FeedPost';
@@ -96,8 +94,6 @@ const styles = StyleSheet.create({
 
 
 function PostsAndUsers({ query }: { query: string }) {
-    const userContext = useUser();
-
     const [view, setView] = useState<'posts' | 'users'>('posts');
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -137,7 +133,7 @@ function PostsAndUsers({ query }: { query: string }) {
         }
     }
 
-    const renderPost = (post: PostType) => <FeedPost post={post} ownPost={userContext?.user?.id === post.author.id} />;
+    const renderPost = (post: PostType) => <FeedPost post={post} />;
 
     const renderUser = (user: RedactedUserWithFollow) => <FeedAccount user={user} />;
 

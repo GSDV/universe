@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { View, Text, TouchableOpacity } from 'react-native';
 
-import { useUser } from '@components/providers/UserProvider';
 import { useOperation } from '@components/providers/OperationProvider';
 
 import List from '@components/List';
@@ -17,8 +16,6 @@ import { PostType } from '@util/types';
 
 
 export default function PostsAndReplies({ userId }: { userId: string }) {
-    const userContext = useUser();
-
     const operationContext = useOperation();
 
     const [view, setView] = useState<'posts' | 'replies'>('posts');
@@ -73,9 +70,9 @@ export default function PostsAndReplies({ userId }: { userId: string }) {
         fetchInitialPR();
     }, []);
 
-    const renderPost = (post: PostType) => <FeedPost post={post} ownPost={userContext?.user?.id === post.author.id} showPinned={true} />;
+    const renderPost = (post: PostType) => <FeedPost post={post} showPinned={true} />;
 
-    const renderReply = (reply: PostType) => <FeedPost post={reply} ownPost={userContext?.user?.id === reply.author.id} />;
+    const renderReply = (reply: PostType) => <FeedPost post={reply} />;
 
     const isFirstRender = useRef<boolean>(true);
     useEffect(() => {

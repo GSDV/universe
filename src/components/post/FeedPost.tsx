@@ -7,6 +7,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
+import { useUser } from '@components/providers/UserProvider';
+
 import Entypo from '@expo/vector-icons/Entypo';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -22,17 +24,17 @@ import { PostType } from '@util/types';
 
 
 
-interface FeedPostType {
+interface FeedPostProps {
     post: PostType;
-    ownPost?: boolean;
     showPinned?: boolean;
-    threadParam?: string
+    threadParam?: string;
     morePostsAvailable?: boolean;
 }
 
 
-export function FeedPost({ post, ownPost, showPinned = false, threadParam = '', morePostsAvailable }: FeedPostType) {
+export function FeedPost({ post, showPinned = false, threadParam = '', morePostsAvailable }: FeedPostProps) {
     const router = useRouter();
+    const userContext = useUser();
 
     const onPress = () => {
         router.push({ pathname: `/post/[postId]/view`, params: {
@@ -47,7 +49,12 @@ export function FeedPost({ post, ownPost, showPinned = false, threadParam = '', 
                 <Pfp pfpKey={post.author.pfpKey} style={styles.pfp} />
 
                 <View style={{ padding: 10, flex: 6, gap: 5 }}>
-                    <Header post={post} ownPost={ownPost} showPinned={showPinned} morePostsAvailable={morePostsAvailable} />
+                    <Header
+                        post={post}
+                        ownPost={userContext?.user?.id === post.author.id}
+                        showPinned={showPinned}
+                        morePostsAvailable={morePostsAvailable}
+                    />
 
                     <TextContent post={post} />
 
@@ -61,7 +68,15 @@ export function FeedPost({ post, ownPost, showPinned = false, threadParam = '', 
 }
 
 
-function Header({ post, ownPost, showPinned, morePostsAvailable }: FeedPostType) {
+
+interface HeaderProps {
+    post: PostType;
+    ownPost: boolean;
+    showPinned?: boolean;
+    morePostsAvailable?: boolean;
+}
+
+function Header({ post, ownPost, showPinned, morePostsAvailable }: HeaderProps) {
     return (
         <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
