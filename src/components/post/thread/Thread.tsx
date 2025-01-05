@@ -1,18 +1,18 @@
 import { useEffect, useRef } from 'react';
 
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 
 import { FlatList } from 'react-native-gesture-handler';
 
 import { useRouter } from 'expo-router';
 
-import { Loading } from '@components/Loading';
 import Pfp from '@components/Pfp';
 import TextContent from '@components/post/TextContent';
 import Info from '@components/post/Info';
 import PostActionsMenu from '@components/post/Actions';
 import { DisplayMedia } from '@components/post/media/Display';
 import { FeedPost } from '@components/post/FeedPost';
+import { Loading } from '@components/Loading';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
@@ -197,9 +197,9 @@ function FocusPost({ post, ownPost }: { post: PostType, ownPost?: boolean }) {
 function ThreadPost({ post, ownPost, type }: { post: PostType, ownPost?: boolean, type: LineType }) {
     return (
         <View style={{ paddingLeft: 5, width: '100%', flexDirection: 'row' }}>
-            <ThreadLine pfpKey={post.author.pfpKey} type={type} />
+            <ThreadLine username={post.author.username} pfpKey={post.author.pfpKey} type={type} />
 
-            <View style={{ padding: 10, flex: 6, gap: 10 }}>
+            <View style={{ paddingVertical: 15, padding: 10, flex: 6, gap: 10 }}>
                 <PostHeader post={post} ownPost={ownPost} />
 
                 <TextContent post={post} truncate={false} />
@@ -214,13 +214,23 @@ function ThreadPost({ post, ownPost, type }: { post: PostType, ownPost?: boolean
 
 
 
-function ThreadLine({ pfpKey, type }: { pfpKey: string, type: LineType }) {
+function ThreadLine({ username, pfpKey, type }: { username: string, pfpKey: string, type: LineType }) {
+    const router = useRouter();
+    const navigateToProfile = () => {
+        router.push({
+            pathname: '/profile/[username]/view',
+            params: { username }
+        });
+    }
+
     return (
         <View style={{ width: LEFT_COLUMN_WIDTH, alignItems: 'center' }}>
             {(type === 'full') && <View style={[styles.line, styles.fullLine]} />}
             {(type === 'up') && <View style={[styles.line, styles.upperLine]} />}
             {(type === 'down') && <View style={[styles.line, styles.lowerLine]} />}
-            <Pfp pfpKey={pfpKey} style={styles.pfp} />
+            <Pressable onPress={navigateToProfile} style={styles.pfpContainer}>
+                <Pfp pfpKey={pfpKey} style={styles.pfp} />
+            </Pressable>
         </View>
     );
 }
@@ -230,8 +240,16 @@ function ThreadLine({ pfpKey, type }: { pfpKey: string, type: LineType }) {
 
 
 function PostHeader({ post, ownPost }: ThreadPostType) {
+    const router = useRouter();
+    const navigateToProfile = () => {
+        router.push({
+            pathname: '/profile/[username]/view',
+            params: { username: post.author.username }
+        });
+    }
+
     return (
-        <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+        <Pressable onPress={navigateToProfile} style={{ width: '100%', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
                 <Text style={styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{post.author.displayName}</Text>
                 <Text style={styles.username} numberOfLines={1} ellipsizeMode='tail'>@{post.author.username}</Text>
@@ -241,7 +259,7 @@ function PostHeader({ post, ownPost }: ThreadPostType) {
             <View style={{ width: 10 }} />
 
             <PostActionsMenu post={post} ownPost={ownPost} />
-        </View>
+        </Pressable>
     );
 }
 
@@ -255,12 +273,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 5 
     },
-    pfp: {
+    pfpContainer: {
         top: PFP_TOP_MARGIN,
         width: PFP_SIZE,
         height: PFP_SIZE,
-        borderRadius: 50,
         zIndex: 2
+    },
+    pfp: {
+        width: PFP_SIZE,
+        height: PFP_SIZE,
+        borderRadius: 50
     },
     displayName: {
         color: COLORS.black,
