@@ -2,6 +2,10 @@ import { PixelRatio } from 'react-native';
 
 
 
+export const API_VERSION = 'v1';
+
+
+
 // LISTENER KEYS
 export const POST_OPERATION_EVENT_KEY = 'POST_OPERATION_EVENT_KEY';
 

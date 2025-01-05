@@ -1,5 +1,7 @@
 import { AUTH_TOKEN_COOKIE_KEY, DOMAIN } from './global';
 
+import { API_VERSION } from './global-client'
+
 import { getAuthCookie } from './storage';
 
 
@@ -10,7 +12,7 @@ type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export const fetchBasic = async (route: string, method: Method, body?: string) => {
     try {
-        const res = await fetch(`${DOMAIN}/api/app/${route}`, {
+        const res = await fetch(`${DOMAIN}/api/app/${API_VERSION}/${route}`, {
             method,
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +31,7 @@ export const fetchBasic = async (route: string, method: Method, body?: string) =
 export const fetchWithAuth = async (route: string, method: Method, body?: string) => {
     try {
         const authTokenCookie = await getAuthCookie();
-        const res = await fetch(`${DOMAIN}/api/app/${route}`, {
+        const res = await fetch(`${DOMAIN}/api/app/${API_VERSION}/${route}`, {
             method,
             body,
             headers: {
