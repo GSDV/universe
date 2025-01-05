@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { View, Text, TouchableOpacity } from 'react-native';
 
-import { useOperation } from '@components/providers/OperationProvider';
+import { useOperation } from '@providers/OperationProvider';
 
 import List from '@components/List';
 import { FeedPost } from '@components/post/FeedPost';

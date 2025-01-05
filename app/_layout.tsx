@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 
-import Providers from '@components/providers/Providers';
+import Providers from '@providers/Providers';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';

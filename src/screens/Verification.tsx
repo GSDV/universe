@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { useUser } from '@components/providers/UserProvider';
+import { useUser } from '@providers/UserProvider';
 
 import Button from '@components/Button';
 import { CheckIfLoading } from '@components/Loading';

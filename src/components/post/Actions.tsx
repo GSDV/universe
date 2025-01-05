@@ -3,7 +3,7 @@ import { Alert as AlertPopUp } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
-import { useOperation } from '@components/providers/OperationProvider';
+import { useOperation } from '@providers/OperationProvider';
 
 import { Ionicons } from '@expo/vector-icons';
 

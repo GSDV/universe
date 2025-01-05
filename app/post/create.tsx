@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { useUser } from '@components/providers/UserProvider';
+import { useUser } from '@providers/UserProvider';
 
 import CreatePostScreen from '@screens/post/Create';
 import { SafeAreaFull } from '@components/SafeArea';

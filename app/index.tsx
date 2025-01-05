@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 
 import NotLoggedIn from '@screens/NotLoggedIn';
 
-import { useUser } from '@components/providers/UserProvider';
+import { useUser } from '@providers/UserProvider';
 import { SafeAreaTop } from '@components/SafeArea';
 import { CheckIfLoading } from '@components/Loading';
 

@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert as AlertPop
 
 import { useRouter } from 'expo-router';
 
-import { useUser } from '@components/providers/UserProvider';
+import { useUser } from '@providers/UserProvider';
 
 import GoBackHeader from '@components/GoBackHeader';
 import { CheckIfLoading } from '@components/Loading';

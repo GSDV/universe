@@ -13,7 +13,7 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 
-import { useUser } from '@components/providers/UserProvider';
+import { useUser } from '@providers/UserProvider';
 
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';

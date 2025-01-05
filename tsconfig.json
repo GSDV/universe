@@ -7,9 +7,9 @@
             "@assets/*": ["./src/assets/*"],
             "@api/*": ["./src/api/*"],
             "@components/*": ["./src/components/*"],
-            "@styles/*": ["./src/styles/*"],
+            "@providers/*": ["./src/providers/*"],
+            "@screens/*": ["./src/screens/*"],
             "@util/*": ["./src/util/*"],
-            "@screens/*": ["./src/screens/*"]
         }
     },
     "include": [

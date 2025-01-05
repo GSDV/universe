@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { useLocalSearchParams } from 'expo-router';
 
-import { useOperation } from '@components/providers/OperationProvider';
+import { useOperation } from '@providers/OperationProvider';
 
 import GoBackHeader from '@components/GoBackHeader';
 

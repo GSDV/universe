@@ -7,7 +7,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
-import { useUser } from '@components/providers/UserProvider';
+import { useUser } from '@providers/UserProvider';
 
 import Entypo from '@expo/vector-icons/Entypo';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

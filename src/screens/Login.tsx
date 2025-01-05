@@ -4,7 +4,7 @@ import { View, Text, TextInput } from 'react-native';
 
 import { useFocusEffect, useRouter } from 'expo-router';
 
-import { useUser } from '@components/providers/UserProvider';
+import { useUser } from '@providers/UserProvider';
 
 import { CheckIfLoading } from '@components/Loading';
 import Button from '@components/Button';

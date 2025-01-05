@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { useOperation } from '@components/providers/OperationProvider';
+import { useOperation } from '@providers/OperationProvider';
 
 import { AntDesign, SimpleLineIcons } from '@expo/vector-icons';
 

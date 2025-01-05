@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { useUser } from '@components/providers/UserProvider';
+import { useUser } from '@providers/UserProvider';
 
 import Acccount from '@screens/account/Account';
 

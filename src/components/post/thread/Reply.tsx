@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, Animated, Keyboard, Dimensions
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 
-import { useOperation } from '@components/providers/OperationProvider';
+import { useOperation } from '@providers/OperationProvider';
 
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
