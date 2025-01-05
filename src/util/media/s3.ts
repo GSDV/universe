@@ -74,8 +74,8 @@ export const getMediaKeys = async (media: UploadedAsset[]) => {
 
 
 
-export const clientUploadMediaAndGetKeys = async (blobs: Blob[]) => {
-    const keyPromises = blobs.map((blob) => clientUploadMedia(blob));
+export const clientUploadMediaAndGetKeys = async (assets: Blob[]) => {
+    const keyPromises = assets.map((asset) => clientUploadMedia(asset));
     const imageKeys = await Promise.all(keyPromises);
 
     if (imageKeys.includes(null)) return null;
@@ -84,16 +84,17 @@ export const clientUploadMediaAndGetKeys = async (blobs: Blob[]) => {
 
 
 
-export const clientUploadMedia = async (blob: Blob) => {
-    const body = JSON.stringify({ fileType: blob.type, fileSize: blob.size });
+export const clientUploadMedia = async (asset: Blob) => {
+    const body = JSON.stringify({ fileType: asset.type, fileSize: asset.size });
     const resSignAndKeyJson = await fetchWithAuth(`post/s3`, 'POST', body);
     if (resSignAndKeyJson.cStatus!=200) return null;
 
-    const assetBlob = new Blob([blob], { type: blob.type });
-
     const resS3 = await fetch(resSignAndKeyJson.signedUrl, {
         method: 'PUT',
-        body: assetBlob
+        body: asset,
+        headers: {
+            'Content-Type': asset.type
+        }
     });
 
     return (resS3.ok) ? resSignAndKeyJson.key as string : null;
@@ -106,12 +107,13 @@ export const clientUploadPfp = async (asset: Blob) => {
     const resSignAndKeyJson = await fetchWithAuth(`pfp/s3`, 'POST', body);
     if (resSignAndKeyJson.cStatus!=200) return null;
 
-    const assetBlob = new Blob([asset], { type: asset.type });
-
     const resS3 = await fetch(resSignAndKeyJson.signedUrl, {
         method: 'PUT',
-        body: assetBlob
+        body: asset,
+        headers: {
+            'Content-Type': asset.type
+        }
     });
 
-    return (resS3.ok) ? resSignAndKeyJson.key : null;
+    return (resS3.ok) ? resSignAndKeyJson.key as string : null;
 }

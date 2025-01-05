@@ -60,6 +60,8 @@ export default function Index() {
         bio: user.bio
     });
 
+    const [bioLength, setBioLength] = useState<number>(user.bio.length);
+
     const canSave = ((userData.pfpUri !== pfpUri(user.pfpKey)) || (userData.displayName !== user.displayName) ||  (userData.username !== user.username));
     const [loading, setLoading] = useState<boolean>(false);
     const [alert, setAlert] = useState<AlertType | null>(null);
@@ -71,7 +73,7 @@ export default function Index() {
         } else if (name == 'displayName') {
             if (value.length > MAX_DISPLAY_NAME_LENGTH) value = value.substring(0, MAX_DISPLAY_NAME_LENGTH+1);
         } else if (name == 'bio') {
-            if (value.length > MAX_BIO_LENGTH) value = value.substring(0, MAX_BIO_LENGTH+1);
+            setBioLength(value.length);
         }
 
         setUserData(prevState => ({
@@ -155,7 +157,7 @@ export default function Index() {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 0.5
+            quality: 1
         });
 
         if (!result || result.canceled) return;
@@ -163,10 +165,7 @@ export default function Index() {
         const optimized = await ImageManipulator.manipulateAsync(
             result.assets[0].uri,
             [{ resize: { width: 300, height: 300 } }],
-            {
-                compress: 0.5,
-                format: ImageManipulator.SaveFormat.JPEG
-            }
+            { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
         );
 
         handleChange('pfpUri', {uri: optimized.uri});
@@ -226,7 +225,7 @@ export default function Index() {
                                             style={styles.input}
                                             value={userData.username}
                                             onChangeText={(v: string) => handleChange('username', v)}
-                                            autoCapitalize="none"
+                                            autoCapitalize='none'
                                             onFocus={handleFocus}
                                         />
                                     </View>
@@ -241,6 +240,9 @@ export default function Index() {
                                             onChangeText={(v: string) => handleChange('bio', v)}
                                             onFocus={handleFocus}
                                         />
+                                        <Text style={{ fontSize: FONT_SIZES.s, color: (bioLength<=MAX_BIO_LENGTH ? COLORS.gray : 'red') }}>
+                                            {bioLength}/{MAX_BIO_LENGTH} characters
+                                        </Text>
                                     </View>
 
                                     <View style={styles.buttonContainer}>

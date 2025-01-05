@@ -14,7 +14,9 @@ export const getMedia = async (selectionLimit: number) => {
             orderedSelection: true,
             selectionLimit,
             quality: 0.8,
-            videoMaxDuration: 60
+            videoMaxDuration: 60,
+            videoExportPreset: ImagePicker.VideoExportPreset.MediumQuality,
+            videoQuality: 1
         });
         if (!result || result.canceled) {
             return {
@@ -62,7 +64,7 @@ export const getMedia = async (selectionLimit: number) => {
                 const isVideo = asset.type === 'video';
     
                 if (isVideo) {
-                    // No compression for now
+                    // Add compression and save as mp4
                     return { uri: asset.uri, type: (asset.mimeType as string) };
                 } else {
                     const optimized = await ImageManipulator.manipulateAsync(
