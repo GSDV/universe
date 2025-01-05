@@ -8,8 +8,10 @@ import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
 
-import { DOMAIN, MAX_USERNAME_LENGTH } from '@util/global';
+import { MAX_USERNAME_LENGTH } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
+
+import { fetchBasic } from '@util/fetch';
 
 
 
@@ -41,12 +43,9 @@ export default function SignUp() {
     const onSubmit = async () => {
         setLoading(true);
         setAlert(null);
-        const res = await fetch(`${DOMAIN}/api/app/user/verification`, {
-            method: 'POST',
-            body: JSON.stringify({ data: userData })
-        });
 
-        const resJson = await res.json();
+        const body = JSON.stringify({ data: userData });
+        const resJson = await fetchBasic('user/verification', 'POST', body);
         if (resJson.cStatus == 200 || resJson.cStatus == 510) {
             const dataParam = encodeURIComponent(JSON.stringify(userData));
             router.push({ pathname: `/signup/verification`, params: { dataParam } });

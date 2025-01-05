@@ -10,9 +10,9 @@ import { CheckIfLoading } from '@components/Loading';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
 
-import { DOMAIN } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
+import { fetchBasic } from '@util/fetch';
 import { setAuthCookie } from '@util/storage';
 
 
@@ -43,11 +43,9 @@ export default function Login() {
     const onSubmit = async () => {
         setLoading(true);
         setAlert(null);
-        const res = await fetch(`${DOMAIN}/api/app/user`, {
-            method: 'PUT',
-            body: JSON.stringify({ email: userData.email, password: userData.password })
-        });
-        const resJson = await res.json();
+
+        const body = JSON.stringify({ email: userData.email, password: userData.password });
+        const resJson = await fetchBasic('user', 'PUT', body);
         if (resJson.cStatus == 200) {
             userContext.setUser(resJson.user);
             await setAuthCookie(resJson.authToken);

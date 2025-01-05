@@ -12,6 +12,7 @@ import { Alert, AlertType } from '@components/Alert';
 import { DOMAIN } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
+import { fetchBasic } from '@util/fetch';
 import { setAuthCookie } from '@util/storage';
 
 
@@ -50,11 +51,8 @@ export default function Verification() {
     const attemptResend = async () => {
         setLoading(true);
         setAlert(null);
-        const res = await fetch(`${DOMAIN}/api/app/user/verification`, {
-            method: 'POST',
-            body: JSON.stringify({ data })
-        });
-        const resJson = await res.json();
+        const body = JSON.stringify({ data });
+        const resJson = await fetchBasic('user/verification', 'POST', body);
         setAlert(resJson);
         setLoading(false);
     }
@@ -62,12 +60,9 @@ export default function Verification() {
     const attemptVerify = async () => {
         setLoading(true);
         setAlert(null);
-        const codeStr = code.join('');
-        const res = await fetch(`${DOMAIN}/api/app/user/verification`, {
-            method: 'PUT',
-            body: JSON.stringify({ data, codeStr })
-        });
-        const resJson = await res.json();
+
+        const body = JSON.stringify({ data, codeStr: code.join('') });
+        const resJson = await fetchBasic('user/verification', 'PUT', body);
         if (resJson.cStatus == 200) {
             userContext.setUser(resJson.user);
             await setAuthCookie(resJson.authToken);

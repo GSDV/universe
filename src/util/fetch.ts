@@ -14,10 +14,10 @@ export const fetchBasic = async (route: string, method: Method, body?: string) =
     try {
         const res = await fetch(`${DOMAIN}/api/${API_VERSION}/app/${route}`, {
             method,
+            body,
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body
+            }
         });
         const resJson = await res.json();
         return resJson;

@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 
-import { Switch, Text, View, StyleSheet, TouchableOpacity, TextInput, Keyboard, Pressable, ScrollView } from 'react-native';
+import {
+    Switch,
+    Text,
+    View,
+    StyleSheet,
+    TouchableOpacity,
+    TextInput,
+    Keyboard,
+    Pressable,
+    ScrollView
+} from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -16,11 +26,11 @@ import Pfp from '@components/Pfp';
 import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
 
-import { DOMAIN, AUTH_TOKEN_COOKIE_KEY, MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_POST_CONTENT_LENGTH } from '@util/global';
+import { MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_POST_CONTENT_LENGTH } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
+import { fetchWithAuth } from '@util/fetch';
 import { getMediaKeys, promptMediaPermissions } from '@util/media/s3';
-import { getAuthCookie } from '@util/storage';
 import { requestLocation } from '@util/location';
 import { getMedia } from '@util/media/pick';
 
@@ -95,18 +105,9 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
             ...location,
             media: mediaKeys
         }
-        
-        const authTokenCookie = await getAuthCookie();
-        const res = await fetch(`${DOMAIN}/api/app/post`, {
-            method: 'POST',
-            body: JSON.stringify({ postDataInput }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Cookie': `${AUTH_TOKEN_COOKIE_KEY}=${authTokenCookie}`
-            }
-        });
-        const resJson = await res.json();
 
+        const body = JSON.stringify({ postDataInput });
+        const resJson = await fetchWithAuth('post', 'POST', body);
         if (resJson.cStatus == 200) {
             operationContext.emitOperation({ name: 'CREATE_POST', postData: resJson.post });
             const postParam = encodeURIComponent(JSON.stringify(resJson.post));
