@@ -15,7 +15,10 @@ type Screen = 'account_posts' | 'account_replies' | 'search' | 'feed' | 'map' | 
 
 // Add the post to the account screen.
 type CreatePostOp = { name: 'CREATE_POST', postData: PostType }
-const processCreate = (posts: PostType[], op: CreatePostOp) => [op.postData, ...posts];
+const processCreate = (posts: PostType[], op: CreatePostOp) => {
+    if (posts.length != 0 && posts[0].pinned) return [posts[0], op.postData, ...posts.slice(1)];
+    return [op.postData, ...posts];
+}
 
 // Add the reply to the account screen and current reply section.
 type CreateReplyOp = { name: 'CREATE_REPLY', replyData: PostType }
