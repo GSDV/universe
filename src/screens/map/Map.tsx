@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 
 import { StyleSheet, View, Animated, Dimensions } from 'react-native';
 
+import { useOperation } from '@providers/OperationProvider';
+
 import MapView, { Region, Marker } from 'react-native-maps';
 
 import PostMarker from './PostMarker';
@@ -26,6 +28,8 @@ const DEFAULT_REGION = {
 
 
 export default function Map() {
+    const operationContext = useOperation();
+
     const mapRef = useRef<MapView>(null);
     const [currentRegion, setCurrentRegion] = useState<Region>(DEFAULT_REGION);
 
@@ -89,6 +93,16 @@ export default function Map() {
     const handleMapPress = () => {
         if (selectedPost) closePreview();
     }
+
+
+    const isFirstRender = useRef<boolean>(true);
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        if (operationContext.lastOperation) setPosts(prev => operationContext.conductOperation(prev, 'map'));
+    }, [operationContext.lastOperation]);
 
     return (
         <View style={styles.container}>
