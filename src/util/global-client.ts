@@ -22,27 +22,23 @@ export const imgUrl = (key: string) => `https://uni-verse.s3.us-east-2.amazonaws
 
 
 
-export const PRIMARY_1 = 'rgb(232, 70, 70)';
-export const PRIMARY_2 = 'rgb(212, 59, 59)';
+export const PRIMARY = 'rgb(232, 70, 70)';
 export const SECONDARY_1 = 'rgb(157, 2, 7)';
-export const WHITE = 'rgb(232, 230, 229)';
-export const LIGHT_GRAY = 'rgb(220, 220, 220)';
+export const WHITE = 'rgb(250, 250, 250)';
+export const LIGHT_GRAY = 'rgb(240, 240, 240)';
 export const GRAY = 'rgb(117, 117, 117)';
-export const DARK_GRAY = 'rgb(220, 220, 220)';
 export const BLACK = 'rgb(20, 20, 20)';
 
 export const COLORS = {
     white: WHITE,
     light_gray: LIGHT_GRAY,
     gray: GRAY,
-    dark_gray: DARK_GRAY,
     black: BLACK,
-    primary_1: PRIMARY_1,
-    primary_2: PRIMARY_2,
+    primary: PRIMARY,
     secondary_1: SECONDARY_1,
     text: BLACK,
     background: WHITE,
-    tint: PRIMARY_1
+    tint: PRIMARY
 }
 
 
