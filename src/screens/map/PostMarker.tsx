@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -12,9 +12,9 @@ export default function PostMarker({ post, onPress }: { post: PostType; onPress:
     const score = post.likeCount + post.replyCount/3;
 
     return (
-        <TouchableOpacity onPress={onPress} style={styles.container}>
+        <Pressable onPress={onPress} style={styles.container}>
             <Star score={score} />
-        </TouchableOpacity>
+        </Pressable>
     );
 }
 
