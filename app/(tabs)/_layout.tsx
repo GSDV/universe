@@ -30,7 +30,7 @@ export default function TabLayout() {
     return (
         <Tabs 
             initialRouteName='account' 
-            screenOptions={{ tabBarActiveTintColor: COLORS.tint, headerShown: false, }}
+            screenOptions={{ tabBarActiveTintColor: COLORS.tint, headerShown: false, tabBarStyle: { backgroundColor: COLORS.background, borderTopWidth: 1, borderTopColor: COLORS.light_gray } }}
             sceneContainerStyle={{ backgroundColor: COLORS.background }}
         >
             {tabs.map((tab, i) => (
