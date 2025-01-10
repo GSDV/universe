@@ -86,6 +86,10 @@ export default function Map() {
         }).start(() => setSelectedPost(null));
     }
 
+    const handleMapPress = () => {
+        if (selectedPost) closePreview();
+    }
+
     return (
         <View style={styles.container}>
             <MapView
@@ -95,6 +99,7 @@ export default function Map() {
                 onRegionChangeComplete={handleChangeRegion}
                 showsUserLocation
                 mapType='standard'
+                onPress={handleMapPress}
             >
                 {posts.map((p) => {
                     if (p.lat === null || p.lng === null) return null;
@@ -103,6 +108,7 @@ export default function Map() {
                             key={p.id}
                             coordinate={{ latitude: p.lat, longitude: p.lng }}
                             zIndex={p.likeCount}
+                            onPress={(e) => e.stopPropagation()}
                         >
                             <PostMarker post={p} onPress={() => openPreview(p)} />
                         </Marker>
