@@ -52,7 +52,7 @@ export default function List<T extends ListItem>({
             data={items}
             renderItem={({ item }) => renderItem(item)}
 
-            style={{ flex: 1, backgroundColor: COLORS.dark_gray }}
+            style={{ flex: 1, backgroundColor: COLORS.light_gray }}
             contentContainerStyle={{ flexGrow: 1, gap: 2 }}
 
             refreshControl={allowRefresh ?
