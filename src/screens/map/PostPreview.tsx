@@ -9,8 +9,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import TextContent from '@components/post/TextContent';
 import { DisplayMedia } from '@components/post/media/Display';
-import Info from '@components/post/Info';
 import Pfp from '@components/Pfp';
+import Info from '@components/post/Info';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
@@ -74,6 +74,7 @@ function Header({ post, closePreview }: PostPreviewProps) {
             {/* Spacer - only gets used when the display name is too long */}
             <View style={{ width: 10 }} />
 
+            {/* paddingLeft to allow larger close button hitbox */}
             <TouchableOpacity onPress={closePreview} style={{ paddingLeft: 10 }}>
                 <MaterialIcons name='close' size={28} color={COLORS.primary} />
             </TouchableOpacity>
