@@ -1,0 +1,113 @@
+import { useState } from 'react';
+
+import { StyleSheet, TouchableOpacity, View, Text, Pressable } from 'react-native';
+
+import { useRouter } from 'expo-router';
+
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
+
+import TextContent from '@components/post/TextContent';
+import { DisplayMedia } from '@components/post/media/Display';
+import Info from '@components/post/Info';
+import Pfp from '@components/Pfp';
+
+import { COLORS, FONT_SIZES } from '@util/global-client';
+
+import { PostType } from '@util/types';
+
+
+
+interface PostPreviewProps {
+    post: PostType;
+    closePreview: ()=>void;
+}
+
+
+
+export default function PostPreview({ post, closePreview }: PostPreviewProps) {
+    const router = useRouter();
+    const [showMedia, setShowMedia] = useState<boolean>(false);
+
+    const onPress = () => {
+        router.push({ pathname: `/post/[postId]/view`, params: {
+            postId: post.id,
+            postParam: encodeURIComponent(JSON.stringify(post)),
+        }});
+    }
+
+    return (
+        <Pressable onPress={onPress} style={styles.container}>
+            <Pfp pfpKey={post.author.pfpKey} style={styles.pfp} />
+
+            <View style={{ paddingLeft: 10, flex: 6, gap: 10 }}>
+                <Header post={post} closePreview={closePreview} />
+
+                <TextContent post={post} />
+
+                {showMedia && <DisplayMedia media={post.media} />}
+                {(post.media.length != 0 && !showMedia) && 
+                    <TouchableOpacity onPress={()=>setShowMedia(true)}>
+                        <Text style={{ color: COLORS.primary, fontSize: FONT_SIZES.m }}>Show Media</Text>
+                    </TouchableOpacity>
+                }
+
+                <Info post={post} />
+            </View>
+        </Pressable>
+    );
+}
+
+
+
+function Header({ post, closePreview }: PostPreviewProps) {
+    return (
+        <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+            <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+                    <Text style={styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{post.author.displayName}</Text>
+                    {post.author.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
+                </View>
+                <Text style={styles.username} numberOfLines={1} ellipsizeMode='tail'>@{post.author.username}</Text>
+            </View>
+
+            {/* Spacer - only gets used when the display name is too long */}
+            <View style={{ width: 10 }} />
+
+            <TouchableOpacity onPress={closePreview} style={{ paddingLeft: 10 }}>
+                <MaterialIcons name='close' size={28} color={COLORS.primary} />
+            </TouchableOpacity>
+        </View>
+    );
+}
+
+
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 10,
+        width: '100%',
+        borderRadius: 15,
+        backgroundColor: COLORS.background,
+        flexDirection: 'row',
+    },
+    pfpContainer: {
+        width: 35,
+        height: 35,
+        marginTop: 10
+    },
+    pfp: {
+        borderRadius: 50,
+        width: 35,
+        height: 35
+    },
+    displayName: {
+        color: COLORS.black,
+        fontSize: FONT_SIZES.m,
+        fontWeight: '500'
+    },
+    username: {
+        color: COLORS.gray,
+        fontSize: FONT_SIZES.m
+    }
+});
