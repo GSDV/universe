@@ -42,7 +42,7 @@ export default function Map() {
             longitude: location.coords.longitude,
             latitudeDelta: 0.02,
             longitudeDelta: 0.02,
-        }
+        };
         setCurrentRegion(newRegion);
         mapRef.current?.animateToRegion(newRegion, 500);
     }
