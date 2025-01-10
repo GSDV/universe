@@ -27,7 +27,7 @@ function Star({ score }: { score: number }) {
     if (score < 20) return (
         <>
             <MaterialCommunityIcons style={{ zIndex: 1, position: 'absolute' }} name='star-three-points' size={60} color={COLORS.black} />
-            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute', top: 11 }} name='star-three-points' size={40} color='#fcc449' />
+            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute', top: 11 }} name='star-three-points' size={40} color='#ffd970' />
         </>
     );
 
@@ -35,7 +35,7 @@ function Star({ score }: { score: number }) {
     if (score < 70) return (
         <>
             <MaterialCommunityIcons style={{ zIndex: 1, position: 'absolute' }} name='star-four-points' size={60} color={COLORS.black} />
-            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute' }} name='star-four-points' size={40} color='#fc7735' />
+            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute' }} name='star-four-points' size={40} color='#ff9b61' />
         </>
     );
 
@@ -43,7 +43,7 @@ function Star({ score }: { score: number }) {
     return (
         <>
             <MaterialCommunityIcons style={{ zIndex: 1, position: 'absolute' }} name='star' size={60} color={COLORS.black} />
-            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute' }} name='star' size={40} color='#ff5340' />
+            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute' }} name='star' size={40} color='#ff6666' />
         </>
     );
 }
