@@ -242,11 +242,11 @@ function DraftArea({ inputRef, toggleExpand, isExpanded }: DraftAreaProps) {
         <View style={{ flex: 1, padding: 15, paddingBottom: 0 }}>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={toggleExpand} >
-                    <Ionicons name='close-outline' size={25} color={COLORS.primary_1} />
+                    <Ionicons name='close-outline' size={25} color={COLORS.primary} />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={attemptPost} disabled={!canSubmit}>
-                    <Text style={{ fontSize: FONT_SIZES.m, color: (canSubmit ? COLORS.primary_1 : COLORS.gray) }}>Reply</Text>
+                    <Text style={{ fontSize: FONT_SIZES.m, color: (canSubmit ? COLORS.primary : COLORS.gray) }}>Reply</Text>
                 </TouchableOpacity>
             </View>
 
@@ -271,8 +271,8 @@ function DraftArea({ inputRef, toggleExpand, isExpanded }: DraftAreaProps) {
                     <View style={{ padding: 10, gap: 15 }}>
                         <CheckIfLoading loading={loadingMedia}>
                             <TouchableOpacity disabled={media.length==MAX_POST_MEDIA} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }} onPress={uploadMedia}>
-                                <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.primary_1 : COLORS.gray) }}>Add Media</Text>
-                                <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.primary_1 : COLORS.gray} />
+                                <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray) }}>Add Media</Text>
+                                <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray} />
                             </TouchableOpacity>
                             <DisplayUploadedMedia media={media} removeMedia={removeMedia} />
                         </CheckIfLoading>
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     },
     container: {
         position: 'absolute',
-        backgroundColor: COLORS.primary_1,
+        backgroundColor: COLORS.primary,
     },
     collapsedButton: {
         width: 56,

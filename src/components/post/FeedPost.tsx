@@ -94,7 +94,7 @@ function Header({ post, ownPost, showPinned, morePostsAvailable, navigateToProfi
                     <Pressable onPress={navigateToProfile} style={{ maxWidth: '50%' }}>
                         <Text style={styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{post.author.displayName}</Text>
                     </Pressable>
-                    {post.author.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary_1} />}
+                    {post.author.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
                 </View>
                 <Pressable onPress={navigateToProfile} style={{ alignSelf: 'flex-start' }}>
                     <Text style={styles.username} numberOfLines={1} ellipsizeMode='tail'>@{post.author.username}</Text>

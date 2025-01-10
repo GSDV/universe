@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         alignSelf: 'flex-start',
         borderRadius: 10,
-        backgroundColor: COLORS.primary_1,
+        backgroundColor: COLORS.primary,
         fontSize: FONT_SIZES.l,
         color: COLORS.white,
         overflow: 'hidden',

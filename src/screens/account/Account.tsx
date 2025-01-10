@@ -60,7 +60,7 @@ function AccountHeader({ userPrisma, ownAccount }: AccountHeader) {
                 <View style={{ flex: 1, gap: 2 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
                         <Text ellipsizeMode='tail' numberOfLines={1} style={styles.displayName}>{userPrisma.displayName}</Text>
-                        {userPrisma.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary_1} />}
+                        {userPrisma.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
                     </View>
                     <Text ellipsizeMode='tail' numberOfLines={1} style={styles.username}>@{userPrisma.username}</Text>
                 </View>
@@ -69,11 +69,11 @@ function AccountHeader({ userPrisma, ownAccount }: AccountHeader) {
             {ownAccount && 
             <>
                 <TouchableOpacity onPress={() => router.push(`/post/create`)}>
-                    <Ionicons name='add-outline' size={30} color={COLORS.primary_1} />
+                    <Ionicons name='add-outline' size={30} color={COLORS.primary} />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => router.push('/settings')}>
-                    <Ionicons name='settings-outline' size={30} color={COLORS.primary_1} />
+                    <Ionicons name='settings-outline' size={30} color={COLORS.primary} />
                 </TouchableOpacity>
             </>
             }
@@ -108,7 +108,7 @@ function Connections({ user, ownAccount }: { user: RedactedUserWithFollow, ownAc
 
     const [isFollowing, setIsFollowing] = useState<boolean>(user.isFollowed);
     const [followerCount, setFollowerCount] = useState<number>(user.followerCount);
-    const followButtonColor = isFollowing ? '#b8b8b8' : COLORS.primary_1;
+    const followButtonColor = isFollowing ? '#b8b8b8' : COLORS.primary;
 
     const toggleFollow = async () => {
         const followed = !isFollowing;

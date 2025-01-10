@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: FONT_SIZES.xxl,
         fontWeight: 'bold',
-        color: COLORS.primary_1
+        color: COLORS.primary
     },
     subtitle: {
         color: COLORS.black,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        backgroundColor: COLORS.primary_1,
+        backgroundColor: COLORS.primary,
         borderRadius: 15,
         width: 30,
         height: 30,

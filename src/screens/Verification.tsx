@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: FONT_SIZES.xxl,
         fontWeight: 'bold',
-        color: COLORS.primary_1
+        color: COLORS.primary
     },
     subtitle: {
         fontSize: FONT_SIZES.m,

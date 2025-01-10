@@ -16,7 +16,7 @@ export default function NotLoggedIn() {
         <ScrollView contentContainerStyle={{ flex: 1 }}>
             <View style={{ padding: 30, flex: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 30 }}>
                 <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
-                    <Text style={{ fontSize: FONT_SIZES.xxl, fontWeight: 600, color: COLORS.primary_1 }}>Welcome to {BRAND}</Text>
+                    <Text style={{ fontSize: FONT_SIZES.xxl, fontWeight: 600, color: COLORS.primary }}>Welcome to {BRAND}</Text>
                     <Text style={{ fontSize: FONT_SIZES.l, color: COLORS.black }}>To continue, please:</Text>
                 </View>
 

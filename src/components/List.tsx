@@ -59,7 +59,7 @@ export default function List<T extends ListItem>({
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={onRefresh}
-                        tintColor={COLORS.primary_1}
+                        tintColor={COLORS.primary}
                     />
                 :
                     <></>

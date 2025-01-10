@@ -69,7 +69,7 @@ export default function Login() {
     return (
     <>
         <View style={{ alignSelf: 'center', width: '80%', display: 'flex', flexDirection: 'column', gap: 30 }}>
-            <Text style={{ textAlign: 'center', fontSize: FONT_SIZES.xxl, fontWeight: 600, color: COLORS.primary_1 }}>Login</Text>
+            <Text style={{ textAlign: 'center', fontSize: FONT_SIZES.xxl, fontWeight: 600, color: COLORS.primary }}>Login</Text>
 
             <CheckIfLoading loading={loading}>
                 <LoginInput

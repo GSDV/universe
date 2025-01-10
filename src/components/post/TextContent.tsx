@@ -97,7 +97,7 @@ export default function TextContent({ post, style, truncate = true }: TextConten
                             return (
                                 <Text
                                     key={index}
-                                    style={{ color: COLORS.primary_1 }}
+                                    style={{ color: COLORS.primary }}
                                     onPress={() => handleLinkPress(segment.content)}
                                 >
                                     {segment.content}
@@ -107,7 +107,7 @@ export default function TextContent({ post, style, truncate = true }: TextConten
                             return (
                                 <Text
                                     key={index}
-                                    style={{ color: COLORS.primary_1, fontWeight: '700' }}
+                                    style={{ color: COLORS.primary, fontWeight: '700' }}
                                     onPress={() => handleUsernamePress(segment.content)}
                                 >
                                     {segment.content}
@@ -177,7 +177,7 @@ export default function TextContent({ post, style, truncate = true }: TextConten
 //                     (segment.type === 'link') ?
 //                         <Text
 //                             key={index}
-//                             style={{ color: COLORS.primary_1 }}
+//                             style={{ color: COLORS.primary }}
 //                             onPress={() => handleLinkPress(segment.content)}
 //                         >
 //                             {segment.content}
@@ -206,13 +206,13 @@ const styles = StyleSheet.create({
     },
     redactedText: {
         paddingRight: 10,
-        color: COLORS.secondary_1,
+        color: COLORS.secondary,
         fontSize: FONT_SIZES.m,
         fontWeight: 700
     },
     ellipsis: {
         width: 30,
         fontSize: FONT_SIZES.l,
-        color: COLORS.primary_1
+        color: COLORS.primary
     }
 });

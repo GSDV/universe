@@ -46,7 +46,7 @@ export default function Index() {
                     />
                     {input.trim() && 
                         <TouchableOpacity onPress={onSubmit}>
-                            <Feather name='send' size={24} color={COLORS.primary_1} />
+                            <Feather name='send' size={24} color={COLORS.primary} />
                         </TouchableOpacity>
                     }
                 </View>
@@ -208,7 +208,7 @@ export function FeedAccount({ user }: { user: RedactedUserWithFollow }) {
                 <View style={{ flex: 1, justifyContent: 'center', gap: 2 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                         <Text style={account_feed_styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{user.displayName}</Text>
-                        {user.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary_1} />}
+                        {user.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
                     </View>
                     <Text style={account_feed_styles.username} numberOfLines={1} ellipsizeMode='tail'>@{user.username}</Text>
                 </View>

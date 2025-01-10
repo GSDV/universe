@@ -5,7 +5,7 @@ import { COLORS } from '@util/global-client';
 
 
 export function Loading({ size = 'large' }: { size?: 'large' | 'small' }) {
-    return <ActivityIndicator size={size} color={COLORS.primary_1} />;
+    return <ActivityIndicator size={size} color={COLORS.primary} />;
 }
 
 

@@ -152,7 +152,7 @@ export default function Thread({ focusPost, ancestors, replies, loadingAncestors
 
 
 function ReplyBarrier() {
-    return <View style={{ width: '100%', height: THREAD_LINE_WIDTH, backgroundColor: COLORS.primary_1 }} />;
+    return <View style={{ width: '100%', height: THREAD_LINE_WIDTH, backgroundColor: COLORS.primary }} />;
 }
 
 
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     line: {
         position: 'absolute',
         width: THREAD_LINE_WIDTH,
-        backgroundColor: COLORS.primary_1,
+        backgroundColor: COLORS.primary,
         left: '50%',
         marginLeft: -THREAD_LINE_WIDTH / 2
     },

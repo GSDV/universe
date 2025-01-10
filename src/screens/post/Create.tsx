@@ -146,7 +146,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
                         <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.l }}>Location: </Text>
                         <Switch
                             style={{ transform: [{scaleX: .8}, {scaleY: .8}] }}
-                            trackColor={{ true: COLORS.primary_1 }}
+                            trackColor={{ true: COLORS.primary }}
                             onValueChange={() => setIncludesLocation((prev)=>!prev)}
                             value={includesLocation}
                         />
@@ -157,8 +157,8 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
                 <View style={{ flex: 7, gap: 10 }}>
                     <CheckIfLoading loading={loadingMedia}>
                         <TouchableOpacity disabled={media.length==MAX_POST_MEDIA} style={{ flexDirection: 'row', alignItems: 'center', maxWidth: 150, gap: 5 }} onPress={uploadMedia}>
-                            <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.primary_1 : COLORS.gray) }}>Add Media</Text>
-                            <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.primary_1 : COLORS.gray} />
+                            <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray) }}>Add Media</Text>
+                            <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray} />
                         </TouchableOpacity>
                         <DisplayUploadedMedia media={media} removeMedia={removeMedia} />
                     </CheckIfLoading>
@@ -175,12 +175,12 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
 function Header({ userPrisma, attemptPost, canSubmit }: { userPrisma: RedactedUserType, attemptPost: ()=>void, canSubmit: boolean }) {
     const router = useRouter();
 
-    const sendStyles = canSubmit ? COLORS.primary_1 : COLORS.gray;
+    const sendStyles = canSubmit ? COLORS.primary : COLORS.gray;
 
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={router.back}>
-                <Ionicons name='chevron-back' size={25} color={COLORS.primary_1} />
+                <Ionicons name='chevron-back' size={25} color={COLORS.primary} />
             </TouchableOpacity>
 
             <View style={{ flex: 1, display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'center' }}>
