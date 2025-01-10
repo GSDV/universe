@@ -1,6 +1,14 @@
 import { useState } from 'react';
 
-import { StyleSheet, TouchableOpacity, View, Text, Pressable } from 'react-native';
+import {
+    StyleSheet,
+    TouchableOpacity,
+    View,
+    Text,
+    Pressable,
+    ScrollView,
+    Dimensions
+} from 'react-native';
 
 import { useRouter } from 'expo-router';
 
@@ -27,7 +35,15 @@ interface PostPreviewProps {
 
 export default function PostPreview({ post, closePreview }: PostPreviewProps) {
     const router = useRouter();
+
+    const maxHeight = Dimensions.get('screen').height * 0.4;
+
+    const [scrollEnabled, setScrollEnabled] = useState<boolean>(false);
     const [showMedia, setShowMedia] = useState<boolean>(false);
+
+    const handleContentSizeChange = (_: number, height: number) => {
+        setScrollEnabled(height > maxHeight);
+    };
 
     const onPress = () => {
         router.push({ pathname: `/post/[postId]/view`, params: {
@@ -37,24 +53,31 @@ export default function PostPreview({ post, closePreview }: PostPreviewProps) {
     }
 
     return (
-        <Pressable onPress={onPress} style={styles.container}>
-            <Pfp pfpKey={post.author.pfpKey} style={styles.pfp} />
+        <ScrollView
+            style={{ maxHeight: maxHeight}}
+            scrollEnabled={scrollEnabled}
+            onContentSizeChange={handleContentSizeChange}
+            showsVerticalScrollIndicator={scrollEnabled}
+        >
+            <Pressable onPress={onPress} style={styles.container}>
+                <Pfp pfpKey={post.author.pfpKey} style={styles.pfp} />
 
-            <View style={{ paddingLeft: 10, flex: 6, gap: 10 }}>
-                <Header post={post} closePreview={closePreview} />
+                <View style={{ paddingLeft: 10, flex: 6, gap: 10 }}>
+                    <Header post={post} closePreview={closePreview} />
 
-                <TextContent post={post} />
+                    <TextContent post={post} />
 
-                {showMedia && <DisplayMedia media={post.media} />}
-                {(post.media.length != 0 && !showMedia) && 
-                    <TouchableOpacity onPress={()=>setShowMedia(true)}>
-                        <Text style={{ color: COLORS.primary, fontSize: FONT_SIZES.m }}>Show Media</Text>
-                    </TouchableOpacity>
-                }
+                    {showMedia && <DisplayMedia media={post.media} />}
+                    {(post.media.length != 0 && !showMedia) && 
+                        <TouchableOpacity onPress={()=>setShowMedia(true)}>
+                            <Text style={{ color: COLORS.primary, fontSize: FONT_SIZES.m }}>Show Media</Text>
+                        </TouchableOpacity>
+                    }
 
-                <Info post={post} />
-            </View>
-        </Pressable>
+                    <Info post={post} />
+                </View>
+            </Pressable>
+        </ScrollView>
     );
 }
 
