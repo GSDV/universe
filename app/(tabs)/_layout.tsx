@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { StyleSheet } from 'react-native';
+
 import { Tabs } from 'expo-router';
 
 import { TabBarIcon } from '@components/navigation/TabBarIcon';
@@ -30,7 +32,11 @@ export default function TabLayout() {
     return (
         <Tabs 
             initialRouteName='account' 
-            screenOptions={{ tabBarActiveTintColor: COLORS.tint, headerShown: false, tabBarStyle: { backgroundColor: COLORS.background, borderTopWidth: 1, borderTopColor: COLORS.light_gray } }}
+            screenOptions={{
+                tabBarActiveTintColor: COLORS.tint,
+                headerShown: false,
+                tabBarStyle: styles.tabBar,
+            }}
             sceneContainerStyle={{ backgroundColor: COLORS.background }}
         >
             {tabs.map((tab, i) => (
@@ -41,3 +47,13 @@ export default function TabLayout() {
         </Tabs>
     );
 }
+
+
+
+const styles = StyleSheet.create({
+    tabBar: {
+        backgroundColor: COLORS.background,
+        borderTopWidth: 1,
+        borderTopColor: COLORS.light_gray
+    }
+});
