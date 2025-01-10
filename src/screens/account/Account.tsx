@@ -108,7 +108,7 @@ function Connections({ user, ownAccount }: { user: RedactedUserWithFollow, ownAc
 
     const [isFollowing, setIsFollowing] = useState<boolean>(user.isFollowed);
     const [followerCount, setFollowerCount] = useState<number>(user.followerCount);
-    const followButtonColor = isFollowing ? '#b8b8b8' : COLORS.primary_2;
+    const followButtonColor = isFollowing ? '#b8b8b8' : COLORS.primary_1;
 
     const toggleFollow = async () => {
         const followed = !isFollowing;

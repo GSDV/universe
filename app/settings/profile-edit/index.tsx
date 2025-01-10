@@ -62,7 +62,7 @@ export default function Index() {
 
     const [bioLength, setBioLength] = useState<number>(user.bio.length);
 
-    const canSave = ((userData.pfpUri !== pfpUri(user.pfpKey)) || (userData.displayName !== user.displayName) ||  (userData.username !== user.username));
+    const canSave = ((userData.pfpUri !== pfpUri(user.pfpKey)) || (userData.displayName !== user.displayName) || (userData.username !== user.username) || (userData.bio !== user.bio));
     const [loading, setLoading] = useState<boolean>(false);
     const [alert, setAlert] = useState<AlertType | null>(null);
 
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        backgroundColor: COLORS.primary_2,
+        backgroundColor: COLORS.primary_1,
         borderRadius: 15,
         width: 30,
         height: 30,
