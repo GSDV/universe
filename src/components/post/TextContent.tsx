@@ -1,11 +1,21 @@
 import { useState } from 'react';
 
-import { Linking, StyleProp, Text, TextStyle, StyleSheet, NativeSyntheticEvent, TextLayoutEventData, TouchableOpacity } from 'react-native';
+import {
+    Linking,
+    StyleProp,
+    Text,
+    TextStyle,
+    StyleSheet,
+    NativeSyntheticEvent,
+    TextLayoutEventData,
+    TouchableOpacity
+} from 'react-native';
+
+import { useRouter } from 'expo-router';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { PostType } from '@util/types';
-import { useRouter } from 'expo-router';
 
 
 
@@ -45,10 +55,9 @@ export default function TextContent({ post, style, truncate = true }: TextConten
     while ((match = USERNAME_REGEX.exec(content)) !== null) {
         matches.push({ 
             type: 'username', 
-            content: match[1],  // Use match[1] instead of match[0]
-            index: match.index + (match[0].length - match[1].length) // Adjust index to skip space
+            content: match[1],
+            index: match.index + (match[0].length - match[1].length)
         });
-        // matches.push({ type: 'username', content: match[0], index: match.index });
     }
 
     matches.sort((a, b) => a.index - b.index);
@@ -126,74 +135,6 @@ export default function TextContent({ post, style, truncate = true }: TextConten
         </>
     );
 }
-
-
-// export default function TextContent({ post, style, truncate = true }: TextContentProps) {
-//     if (post.deleted) return <Text style={[styles.redactedText, style]}>This post has been deleted</Text>;
-
-//     const content = post.content;
-
-//     const [isTruncated, setIsTruncated] = useState<boolean>(truncate);
-//     const numLines = (truncate && isTruncated) ? MAX_PREVIEW_LINES : 0;
-
-//     const segments = [];
-//     let lastIndex = 0;
-
-//     let match;
-//     while ((match = URL_REGEX.exec(content)) !== null) {
-//         if (match.index > lastIndex) segments.push({ type: 'text', content: content.slice(lastIndex, match.index) });
-//         segments.push({ type: 'link', content: match[0] });
-//         lastIndex = match.index + match[0].length;
-//     }
-
-//     if (lastIndex < content.length) segments.push({ type: 'text', content: content.slice(lastIndex) });
-
-
-//     const handleLinkPress = async (url: string) => {
-//         try {
-//             const lowerCaseUrl = url.toLowerCase();
-//             const fullUrl = lowerCaseUrl.startsWith('http') ? lowerCaseUrl : `https://${lowerCaseUrl}`;
-//             const supported = await Linking.canOpenURL(url);
-//             if (supported) await Linking.openURL(fullUrl);
-//         } catch (error) {}
-//     }
-
-//     const handleTextLayout = (e: NativeSyntheticEvent<TextLayoutEventData>) => {
-//         if (!truncate) return;
-//         const renderedContent = e.nativeEvent.lines.map(line => line.text).join('');
-//         setIsTruncated(renderedContent !== content);
-//     }
-
-//     return (
-//         <>
-//             <Text
-//                 style={[styles.defaultText, style]}  
-//                 numberOfLines={numLines}
-//                 onTextLayout={handleTextLayout} 
-//                 ellipsizeMode='clip' 
-                
-//             >
-//                 {segments.map((segment, index) => (
-//                     (segment.type === 'link') ?
-//                         <Text
-//                             key={index}
-//                             style={{ color: COLORS.primary }}
-//                             onPress={() => handleLinkPress(segment.content)}
-//                         >
-//                             {segment.content}
-//                         </Text>
-//                     :
-//                         <Text key={index}>{segment.content}</Text>
-//                 ))}
-//             </Text>
-//             {isTruncated && (
-//                 <TouchableOpacity onPress={() => setIsTruncated(false)}>
-//                     <Text style={styles.ellipsis}>{`...`}</Text>
-//                 </TouchableOpacity>
-//             )}
-//         </>
-//     );
-// }
 
 
 
