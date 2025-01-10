@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 
-import { TextInput, View, Text, Platform, StatusBar, Keyboard, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import {
+    TextInput,
+    View,
+    Text,
+    Platform,
+    StatusBar,
+    Keyboard,
+    StyleSheet,
+    TouchableOpacity,
+    TouchableWithoutFeedback
+} from 'react-native';
 
 import { useRouter } from 'expo-router';
 
@@ -17,7 +27,6 @@ import { COLORS, FONT_SIZES } from '@util/global-client';
 import { fetchWithAuth } from '@util/fetch';
 
 import { PostType, RedactedUserWithFollow } from '@util/types';
-
 
 
 
@@ -72,7 +81,7 @@ const styles = StyleSheet.create({
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
+        backgroundColor: COLORS.light_gray,
         marginHorizontal: 16,
         marginVertical: 8,
         paddingHorizontal: 12,
@@ -87,10 +96,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
         height: '100%'
-    },
-  });
+    }
+});
   
-
 
 
 function PostsAndUsers({ query }: { query: string }) {
@@ -158,7 +166,7 @@ function PostsAndUsers({ query }: { query: string }) {
                 </TouchableOpacity>
             </View>
 
-            <View style={{ width: '100%', height: 5, backgroundColor: 'rgb(220, 220, 220)' }} />
+            <View style={{ width: '100%', height: 5, backgroundColor: COLORS.light_gray }} />
 
             <CheckIfLoading loading={loading}>
                 <>

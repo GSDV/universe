@@ -97,7 +97,7 @@ export default function Feed() {
                 </TouchableOpacity>
             </View>
 
-            <View style={{ width: '100%', height: 5, backgroundColor: 'rgb(220, 220, 220)' }} />
+            <View style={{ width: '100%', height: 5, backgroundColor: COLORS.light_gray }} />
 
             <CheckIfLoading loading={loading}>
                 <>{
