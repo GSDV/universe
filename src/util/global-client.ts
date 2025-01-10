@@ -22,13 +22,13 @@ export const imgUrl = (key: string) => `https://uni-verse.s3.us-east-2.amazonaws
 
 
 
+// UI
 export const PRIMARY = 'rgb(232, 70, 70)';
 export const SECONDARY_1 = 'rgb(157, 2, 7)';
 export const WHITE = 'rgb(250, 250, 250)';
 export const LIGHT_GRAY = 'rgb(240, 240, 240)';
 export const GRAY = 'rgb(117, 117, 117)';
 export const BLACK = 'rgb(20, 20, 20)';
-
 export const COLORS = {
     white: WHITE,
     light_gray: LIGHT_GRAY,
@@ -39,9 +39,7 @@ export const COLORS = {
     text: BLACK,
     background: WHITE,
     tint: PRIMARY
-}
-
-
+};
 
 const baseFontSize = 16;
 export const FONT_SIZES = {
@@ -51,15 +49,6 @@ export const FONT_SIZES = {
     xl: PixelRatio.getFontScale() * baseFontSize * 1.4,
     xxl: PixelRatio.getFontScale() * baseFontSize * 1.8
 };
-
-
-
-export const INITIAL_MAP_REGION = {
-    latitude: 40.1055826,
-    longitude: -88.22841,
-    latitudeDelta: 0.1,
-    longitudeDelta: 0.1
-}
 
 
 
@@ -90,7 +79,6 @@ export const formatPostDate = (date: string) => {
     // "Jun 6, 2020"
     return post.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
-
 
 // For formatting the like and reply count on a post
 export const formatInteraction = (num: number) => {
