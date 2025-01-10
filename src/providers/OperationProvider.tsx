@@ -19,6 +19,7 @@ const processCreate = (posts: PostType[], op: CreatePostOp) => {
     if (posts.length != 0 && posts[0].pinned) return [posts[0], op.postData, ...posts.slice(1)];
     return [op.postData, ...posts];
 }
+const processAddToMap = (posts: PostType[], op: CreatePostOp) => [op.postData, ...posts];
 
 // Add the reply to the account screen and current reply section.
 type CreateReplyOp = { name: 'CREATE_REPLY', replyData: PostType }
@@ -109,6 +110,7 @@ export function OperationProvider({ children }: { children: React.ReactNode }) {
         const opName = lastOperation.name;
 
         if (opName === 'CREATE_POST' && screen === 'account_posts') return processCreate(posts, lastOperation);
+        if (opName === 'CREATE_POST' && screen == 'map') return processAddToMap(posts, lastOperation);
         if (opName === 'CREATE_REPLY' && (screen === 'account_replies' || screen === 'focus_replies')) return processCreateReply(posts, lastOperation);
         if (opName === 'REPLY_COUNT') return processReply(posts, lastOperation);
         if (opName === 'LIKE')  return processLike(posts, lastOperation);
