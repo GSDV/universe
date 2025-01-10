@@ -1,15 +1,15 @@
 import { Image, ImageStyle, StyleProp } from 'react-native';
 
-import { DEFAULT_PFP, imgUrl } from '@util/global-client';
+import { COLORS, DEFAULT_PFP, imgUrl } from '@util/global-client';
 
 
 
 export default function Pfp({ pfpKey, style }: { pfpKey: string, style?: StyleProp<ImageStyle> }) {
     return (
         <>{pfpKey=='' ? 
-            <Image style={style} source={DEFAULT_PFP} />
+            <Image style={[{backgroundColor: COLORS.background}, style]} source={DEFAULT_PFP} />
         :
-            <Image style={style} source={{ uri: imgUrl(pfpKey) }} />
+            <Image style={[{backgroundColor: COLORS.background}, style]} source={{ uri: imgUrl(pfpKey) }} />
         }</>
     );
 }
