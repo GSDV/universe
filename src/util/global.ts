@@ -4,7 +4,7 @@
 
 export const DOMAIN = 'http://localhost:3005';
 export const BRAND = 'UniVerse';
-export const CONTACT_EMAIL = 'contact@universe.com';
+export const CONTACT_EMAIL = 'contact@joinuniverse.app';
 
 
 
@@ -53,7 +53,6 @@ export const MAX_POST_CONTENT_LENGTH = 200;
 export const MIN_REPLY_CONTENT_LENGTH = 2;
 export const MAX_REPLY_CONTENT_LENGTH = 200;
 export const MAX_POST_MEDIA = 4;
-
 
 export const MIME_TYPE_MAP = new Map<string, string>([
     ['image/jpeg', '.jpeg'],
