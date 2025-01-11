@@ -8,6 +8,7 @@ import MapView, { Region, Marker } from 'react-native-maps';
 
 import PostMarker from './PostMarker';
 import PostPreview from './PostPreview';
+import LoadingSymbol from './LoadingSymbol';
 
 import { COLORS } from '@util/global-client';
 
@@ -23,7 +24,7 @@ const DEFAULT_REGION = {
     longitude: -97.6965825,
     latitudeDelta: 10.6008835,
     longitudeDelta: 30.2541415,
-}
+};
 
 
 
@@ -33,6 +34,7 @@ export default function Map() {
     const mapRef = useRef<MapView>(null);
     const [currentRegion, setCurrentRegion] = useState<Region>(DEFAULT_REGION);
 
+    const [loading, setLoading] = useState<boolean>(false);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
     const slideAnim = useRef(new Animated.Value(0)).current;
@@ -56,6 +58,7 @@ export default function Map() {
     }, []);
 
     const handleChangeRegion = async (newRegion: Region) => {
+        setLoading(true);
         const screen_bl = {
             lat: newRegion.latitude - (newRegion.latitudeDelta/2),
             lng: newRegion.longitude - (newRegion.longitudeDelta/2) 
@@ -69,6 +72,7 @@ export default function Map() {
         const params = new URLSearchParams({ screenCoords });
         const resJson = await fetchWithAuth(`map?${params}`, 'GET');
         if (resJson.cStatus == 200) setPosts(resJson.posts);
+        setLoading(false);
     }
 
     const openPreview = (post: PostType) => {
@@ -144,6 +148,7 @@ export default function Map() {
                     <PostPreview post={selectedPost} closePreview={closePreview} />
                 </Animated.View>
             )}
+            {loading && <LoadingSymbol />}
         </View>
     );
 }
