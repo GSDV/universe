@@ -15,7 +15,7 @@ import { PostType } from '@util/types';
 
 
 export default function Feed() {
-    const [view, setView] = useState<'hot' | 'new' | 'school'>('hot');
+    const [view, setView] = useState<'hot' | 'new' | 'following' | 'school'>('hot');
 
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -26,6 +26,10 @@ export default function Feed() {
     const [newPosts, setNewPosts] = useState<PostType[]>([]);
     const [newCursor, setNewCursor] = useState<string>('');
     const [moreNewAvailable, setMoreNewAvailable] = useState<boolean>(false);
+
+    const [followingPosts, setFollowingPosts] = useState<PostType[]>([]);
+    const [followingCursor, setFollowingCursor] = useState<string>('');
+    const [moreFollowingAvailable, setMoreFollowingAvailable] = useState<boolean>(false);
 
     const [schoolPosts, setSchoolPosts] = useState<PostType[]>([]);
     const [schoolCursor, setSchoolCursor] = useState<string>('');
@@ -48,6 +52,16 @@ export default function Feed() {
             setNewCursor(resJson.nextCursor);
             setNewPosts([...oldPosts, ...resJson.posts]);
             setMoreNewAvailable(resJson.moreAvailable);
+        }
+    }
+
+    const fetchAndUpdateFollowing = async (cursor: string, oldPosts: PostType[]) => {
+        const params = new URLSearchParams({ cursor });
+        const resJson = await fetchWithAuth(`feed/following?${params.toString()}`, 'GET');
+        if (resJson.cStatus == 200) {
+            setFollowingCursor(resJson.nextCursor);
+            setFollowingPosts([...oldPosts, ...resJson.posts]);
+            setMoreFollowingAvailable(resJson.moreAvailable);
         }
     }
 
@@ -92,6 +106,12 @@ export default function Feed() {
 
                 <Text style={{ color: COLORS.gray, fontSize: FONT_SIZES.m }}>|</Text>
 
+                <TouchableOpacity onPress={() => setView('following')}>
+                    <Text style={{ color: ((view==='following') ? COLORS.black : COLORS.gray), fontSize: FONT_SIZES.m }}>Following</Text>
+                </TouchableOpacity>
+
+                <Text style={{ color: COLORS.gray, fontSize: FONT_SIZES.m }}>|</Text>
+
                 <TouchableOpacity onPress={() => setView('school')}>
                     <Text style={{ color: ((view==='school') ? COLORS.black : COLORS.gray), fontSize: FONT_SIZES.m }}>My School</Text>
                 </TouchableOpacity>
@@ -117,6 +137,15 @@ export default function Feed() {
                             cursor={newCursor} 
                             moreAvailable={moreNewAvailable} 
                             fetchAndUpdate={fetchAndUpdateNew} 
+                            renderItem={renderPost}
+                            noResultsText='no posts yet'
+                        />,
+                    'following':
+                        <List<PostType> 
+                            items={followingPosts} 
+                            cursor={followingCursor} 
+                            moreAvailable={moreFollowingAvailable} 
+                            fetchAndUpdate={fetchAndUpdateFollowing} 
                             renderItem={renderPost}
                             noResultsText='no posts yet'
                         />,
