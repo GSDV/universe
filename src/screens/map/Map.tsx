@@ -68,7 +68,7 @@ export default function Map() {
 
         const params = new URLSearchParams({ screenCoords });
         const resJson = await fetchWithAuth(`map?${params}`, 'GET');
-        setPosts(resJson.posts);
+        if (resJson.cStatus == 200) setPosts(resJson.posts);
     }
 
     const openPreview = (post: PostType) => {
