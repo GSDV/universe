@@ -38,7 +38,7 @@ export default function RootLayout() {
 
                     <Stack.Screen name='(tabs)' options={{ headerShown: false, animation: 'fade', gestureEnabled: false, contentStyle }} />
 
-                    <Stack.Screen name='profile/[username]/view' options={{ headerShown: false, contentStyle }} />
+                    <Stack.Screen name='profile/[username]/view' options={{ headerShown: false, contentStyle }} getId={({ params }) => params?.username} />
 
                     <Stack.Screen name='settings/index' options={{ headerShown: false, contentStyle }} />
                     <Stack.Screen name='settings/profile-edit/index' options={{ headerShown: false, contentStyle }} />
@@ -48,7 +48,7 @@ export default function RootLayout() {
                     <Stack.Screen name='signup/verification/index' options={{ headerShown: false, contentStyle }} />
 
                     <Stack.Screen name='post/create' options={{ headerShown: false, contentStyle }} />
-                    <Stack.Screen name='post/[postId]/view' options={{ headerShown: false, contentStyle }} />
+                    <Stack.Screen name='post/[postId]/view' options={{ headerShown: false, contentStyle }} getId={({ params }) => params?.postId} />
 
                     <Stack.Screen name='+not-found' options={{ headerShown: false, contentStyle }} />
                 </Stack>
