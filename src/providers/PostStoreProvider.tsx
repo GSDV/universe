@@ -38,7 +38,7 @@ export function PostStoreProvider({ children }: { children: React.ReactNode }) {
 
     const getPost = useCallback((postId: string) => {
         return store.get(postId);
-    }, []);
+    }, [store]);
 
     return (
         <PostStoreContext.Provider value={{ addPost, removePost, getPost }}>
