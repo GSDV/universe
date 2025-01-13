@@ -229,15 +229,20 @@ function DraftArea({ inputRef, toggleExpand, isExpanded, addReply }: DraftAreaPr
         const resJson = await fetchWithAuth(`reply`, 'POST', body);
 
         if (resJson.cStatus == 200) {
+            if (isExpanded) {
+                requestAnimationFrame(() => {
+                    toggleExpand();
+                    setLoading(false);
+                });
+            }
             addReply(resJson.reply);
             operationContext.emitOperation({ name: 'REPLY_COUNT', replyToId: postId });
-            if (isExpanded) toggleExpand();
             setContent('');
             setMedia([]);
         } else {
             setAlert(resJson);
+            setLoading(false);
         }
-        setLoading(false);
     }
 
     return (
