@@ -5,30 +5,27 @@ import { View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import { useOperation } from '@providers/OperationProvider';
+import { usePostStore } from '@providers/PostStoreProvider';
 
+import Thread from '@components/post/thread/Thread';
+import ReplyInput from '@components/post/thread/Reply';
 import GoBackHeader from '@components/GoBackHeader';
 
-import { PostType } from '@util/types';
-import Thread from '@components/post/thread/Thread';
-
-import ReplyInput from '@components/post/thread/Reply';
 import { fetchWithAuth } from '@util/fetch';
+
+import { PostType } from '@util/types';
 
 
 
 // We NEVER fetch the post from the server when loading this page.
-// It is ALWAYS passed in as "post" parameter using JSON.stringify() and encodeURI.
+// It is ALWAYS passed in using JSON.stringify(), encodeURI, and postStore.
 export default function Index() {
     const operationContext = useOperation();
+    const postContext = usePostStore();
 
     const postId = useLocalSearchParams().postId as string;
 
-    // Thread of ancestor posts (may be empty)
-    const threadParam = useLocalSearchParams().threadParam as string;
-    const thread = (!threadParam) ? [] : JSON.parse(decodeURIComponent(threadParam)) as PostType[];
-
-    const focusedPostParam = useLocalSearchParams().postParam as string;
-    const [focusPost, setFocusPost] = useState<PostType>(JSON.parse(decodeURIComponent(focusedPostParam)));
+    const [focusPost, setFocusPost] = useState<PostType>();
 
     const [ancestors, setAncestors] = useState<PostType[]>([]);
     const [loadingAncestors, setLoadingAncestors] = useState<boolean>(true);
@@ -37,14 +34,15 @@ export default function Index() {
     const [loadingReplies, setLoadingReplies] = useState<boolean>(true);
 
 
-    const fetchAncestors = async () => {
+    const fetchAncestors = async (passedInFocusPost: PostType, threadParam: string) => {
         // Post is a root (non-reply) post:
-        if (!focusPost.replyToId) {
+        if (!passedInFocusPost.replyToId) {
             setAncestors([]);
             setLoadingAncestors(false);
             return;
         }
 
+        const thread = (!threadParam) ? [] : JSON.parse(decodeURIComponent(threadParam)) as PostType[];
         // Passed in thread of ancestors
         if (thread.length != 0) {
             setAncestors(thread);
@@ -52,28 +50,34 @@ export default function Index() {
             return;
         }
 
-        const resJson = await fetchWithAuth(`post/${focusPost.id}/ancestors`, 'GET');
+        const resJson = await fetchWithAuth(`post/${passedInFocusPost.id}/ancestors`, 'GET');
         setAncestors(resJson.thread);
         setLoadingAncestors(false);
     }
 
 
-    const fetchReplies = async () => {
-        if (focusPost.replyCount == 0) {
+    const fetchReplies = async (passedInFocusPost: PostType) => {
+        if (passedInFocusPost.replyCount == 0) {
             setReplies([]);
             setLoadingReplies(false);
             return;
         }
 
-        const resJson = await fetchWithAuth(`post/${focusPost.id}/replies`, 'GET');
+        const resJson = await fetchWithAuth(`post/${passedInFocusPost.id}/replies`, 'GET');
         setReplies(resJson.replies);
         setLoadingReplies(false);
     }
 
 
     useEffect(() => {
-        fetchAncestors();
-        fetchReplies();
+        const postContextRes = postContext.getPost(postId);
+        // For TypeScript:
+        if (postContextRes === undefined) return;
+        const { postParam, threadParam } = postContextRes;
+        const passedInFocusPost = JSON.parse(decodeURIComponent(postParam));
+        setFocusPost(passedInFocusPost);
+        fetchAncestors(passedInFocusPost, threadParam);
+        fetchReplies(passedInFocusPost);
     }, []);
 
     const isFirstRender = useRef<boolean>(true);
@@ -87,7 +91,10 @@ export default function Index() {
             // Skip CREATE_REPLY for posts that are not being replied to (nested post views):
             if (lastOp.name === 'CREATE_REPLY' && lastOp.replyData.replyToId !== postId) return;
             setAncestors(prev => operationContext.conductOperation(prev, 'focus_ancestors'));
-            setFocusPost(prev => operationContext.conductOperation([prev], 'focus_post')[0]);
+            setFocusPost(prev => {
+                if (prev === undefined) return;
+                return operationContext.conductOperation([prev], 'focus_post')[0];
+            });
             setReplies(prev => operationContext.conductOperation(prev, 'focus_replies'));
         }
     }, [operationContext.lastOperation]);
@@ -95,13 +102,13 @@ export default function Index() {
     return (
         <View style={{ flex: 1 }}>
             <GoBackHeader />
-            <Thread
+            {(focusPost !== undefined && ancestors !== undefined) && <Thread
                 focusPost={focusPost}
                 ancestors={ancestors}
                 replies={replies}
                 loadingAncestors={loadingAncestors}
                 loadingReplies={loadingReplies}
-            />
+            />}
             <ReplyInput />
         </View>
     );

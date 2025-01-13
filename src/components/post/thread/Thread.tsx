@@ -130,21 +130,11 @@ export default function Thread({ focusPost, ancestors, replies, loadingAncestors
     return (
         <FlatList 
             ref={flatListRef}
-            initialScrollIndex={loadingAncestors ? 0 : renderableItems.findIndex(item => item.type === 'focused')}
             contentContainerStyle={{ paddingBottom: '50%' }}
             data={renderableItems}
             keyExtractor={(item, idx) => item.id}
             renderItem={renderItem}
             scrollsToTop={false}
-            onScrollToIndexFailed={info => {
-                setTimeout(() => {
-                    flatListRef.current?.scrollToIndex({
-                        index: info.index,
-                        animated: true,
-                        viewPosition: 0
-                    });
-                }, 200);
-            }}
         />
     );
 }
