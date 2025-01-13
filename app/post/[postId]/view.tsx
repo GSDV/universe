@@ -68,6 +68,10 @@ export default function Index() {
         setLoadingReplies(false);
     }
 
+    // Do not use operation context as we already have an increment reply count operation, and cannot have more than one operation at a time.
+    // Consider alternatives to operation context.
+    const addReply = (reply: PostType) => setReplies(prev=>[reply, ...prev]);
+
 
     useEffect(() => {
         const postContextRes = postContext.getPost(postId);
@@ -89,7 +93,6 @@ export default function Index() {
         const lastOp = operationContext.lastOperation;
         if (lastOp) {
             // Skip CREATE_REPLY for posts that are not being replied to (nested post views):
-            if (lastOp.name === 'CREATE_REPLY' && lastOp.replyData.replyToId !== postId) return;
             setAncestors(prev => operationContext.conductOperation(prev, 'focus_ancestors'));
             setFocusPost(prev => {
                 if (prev === undefined) return;
@@ -109,7 +112,7 @@ export default function Index() {
                 loadingAncestors={loadingAncestors}
                 loadingReplies={loadingReplies}
             />}
-            <ReplyInput />
+            <ReplyInput addReply={addReply} />
         </View>
     );
 }
