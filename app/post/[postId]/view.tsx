@@ -9,7 +9,7 @@ import { usePostStore } from '@providers/PostStoreProvider';
 
 import Thread from '@components/post/thread/Thread';
 import ReplyInput from '@components/post/thread/Reply';
-import GoBackHeader from '@components/GoBackHeader';
+import { GoBackFromPostHeader } from '@components/GoBackHeader';
 
 import { fetchWithAuth } from '@util/fetch';
 
@@ -82,6 +82,7 @@ export default function Index() {
         setFocusPost(passedInFocusPost);
         fetchAncestors(passedInFocusPost, threadParam);
         fetchReplies(passedInFocusPost);
+        console.log("RUNNING FOR: ", passedInFocusPost.content)
     }, []);
 
     const isFirstRender = useRef<boolean>(true);
@@ -104,7 +105,7 @@ export default function Index() {
 
     return (
         <View style={{ flex: 1 }}>
-            <GoBackHeader />
+            <GoBackFromPostHeader />
             {(focusPost !== undefined && ancestors !== undefined) && <Thread
                 focusPost={focusPost}
                 ancestors={ancestors}
