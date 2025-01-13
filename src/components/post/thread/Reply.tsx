@@ -19,11 +19,11 @@ import { fetchWithAuth } from '@util/fetch';
 import { getMediaKeys, promptMediaPermissions } from '@util/media/s3';
 import { getMedia } from '@util/media/pick';
 
-import { PostDataInput } from '@util/types';
+import { PostDataInput, PostType } from '@util/types';
 
 
 
-export default function ReplyInput() {
+export default function ReplyInput({ addReply }: { addReply: (reply: PostType)=>void }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const expandAnimation = useRef(new Animated.Value(0)).current;
     const fadeAnimation = useRef(new Animated.Value(0)).current;
@@ -134,6 +134,7 @@ export default function ReplyInput() {
                             inputRef={inputRef} 
                             toggleExpand={toggleExpand} 
                             isExpanded={isExpanded}
+                            addReply={addReply}
                         />
                     </Animated.View>
                 </Animated.View>
@@ -160,11 +161,12 @@ function Button({ toggleExpand }: { toggleExpand: ()=>void }) {
 
 interface DraftAreaProps {
     inputRef: React.RefObject<TextInput>;
-    toggleExpand: ()=>void;
+    toggleExpand: () => void;
     isExpanded: boolean;
+    addReply: (reply: PostType) => void;
 }
 
-function DraftArea({ inputRef, toggleExpand, isExpanded }: DraftAreaProps) {
+function DraftArea({ inputRef, toggleExpand, isExpanded, addReply }: DraftAreaProps) {
     const operationContext = useOperation();
     const insets = useSafeAreaInsets();
 
@@ -227,7 +229,7 @@ function DraftArea({ inputRef, toggleExpand, isExpanded }: DraftAreaProps) {
         const resJson = await fetchWithAuth(`reply`, 'POST', body);
 
         if (resJson.cStatus == 200) {
-            operationContext.emitOperation({ name: 'CREATE_REPLY', replyData: resJson.reply });
+            addReply(resJson.reply);
             operationContext.emitOperation({ name: 'REPLY_COUNT', replyToId: postId });
             if (isExpanded) toggleExpand();
             setContent('');
