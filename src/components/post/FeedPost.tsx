@@ -8,6 +8,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-nativ
 import { useRouter } from 'expo-router';
 
 import { useUser } from '@providers/UserProvider';
+import { usePostStore } from '@providers/PostStoreProvider';
+
 
 import Entypo from '@expo/vector-icons/Entypo';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -31,17 +33,16 @@ interface FeedPostProps {
     morePostsAvailable?: boolean;
 }
 
-
 export function FeedPost({ post, showPinned = false, threadParam = '', morePostsAvailable }: FeedPostProps) {
     const router = useRouter();
+
     const userContext = useUser();
+    const postContext = usePostStore();
 
     const onPress = () => {
-        router.push({ pathname: `/post/[postId]/view`, params: {
-            postId: post.id,
-            postParam: encodeURIComponent(JSON.stringify(post)),
-            threadParam
-        }});
+        const postParam = encodeURIComponent(JSON.stringify(post));
+        postContext.addPost(post.id, {postParam, threadParam});
+        router.navigate({ pathname: `/post/[postId]/view`, params: { postId: post.id, viewId: `${post.id}${(new Date()).toISOString()}` }});
     }
 
     const navigateToProfile = () => {

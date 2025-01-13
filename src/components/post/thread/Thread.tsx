@@ -6,6 +6,8 @@ import { FlatList } from 'react-native-gesture-handler';
 
 import { useRouter } from 'expo-router';
 
+import { usePostStore } from '@providers/PostStoreProvider';
+
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Pfp from '@components/Pfp';
@@ -47,6 +49,9 @@ interface ThreadProps {
 
 export default function Thread({ focusPost, ancestors, replies, loadingAncestors, loadingReplies }: ThreadProps) {
     const router = useRouter();
+
+    const postContext = usePostStore();
+
     const flatListRef = useRef<FlatList>(null);
 
     const renderableItems: RenderItemType[] = [
@@ -79,11 +84,10 @@ export default function Thread({ focusPost, ancestors, replies, loadingAncestors
 
     const openAncestor = (item: RenderItemType, idx: number) => {
         const { type, ...post } = item;
-        router.push({ pathname: `/post/[postId]/view`, params: {
-            postId: post.id,
-            postParam: encodeURIComponent(JSON.stringify(post)),
-            threadParam: encodeURIComponent(JSON.stringify(ancestors.slice(0, idx)))
-        } });
+        const postParam = encodeURIComponent(JSON.stringify(post));
+        const threadParam = encodeURIComponent(JSON.stringify(ancestors.slice(0, idx)));
+        postContext.addPost(post.id, {postParam, threadParam});
+        router.navigate({ pathname: `/post/[postId]/view`, params: { postId: post.id, viewId: `${post.id}${(new Date()).toISOString()}` }});
     }
 
     const renderItem = ({ item, index }: { item: RenderItemType, index: number }) => {
