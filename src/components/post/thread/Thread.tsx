@@ -6,6 +6,8 @@ import { FlatList } from 'react-native-gesture-handler';
 
 import { useRouter } from 'expo-router';
 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 import Pfp from '@components/Pfp';
 import TextContent from '@components/post/TextContent';
 import Info from '@components/post/Info';
@@ -241,7 +243,10 @@ function PostHeader({ post, ownPost }: ThreadPostType) {
     return (
         <Pressable onPress={navigateToProfile} style={{ width: '100%', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                <Text style={styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{post.author.displayName}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+                    <Text style={styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{post.author.displayName}</Text>
+                    {post.author.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
+                </View>
                 <Text style={styles.username} numberOfLines={1} ellipsizeMode='tail'>@{post.author.username}</Text>
             </View>
 
