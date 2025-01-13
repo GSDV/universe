@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { useOperation } from '@providers/OperationProvider';
+import { usePostStore } from '@providers/PostStoreProvider';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
@@ -42,6 +43,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
     const router = useRouter();
 
     const operationContext = useOperation();
+    const postContext = usePostStore();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingMedia, setLoadingMedia] = useState<boolean>(false);
@@ -110,8 +112,11 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
         const resJson = await fetchWithAuth('post', 'POST', body);
         if (resJson.cStatus == 200) {
             operationContext.emitOperation({ name: 'CREATE_POST', postData: resJson.post });
+
             const postParam = encodeURIComponent(JSON.stringify(resJson.post));
-            router.replace({ pathname: `/post/[postId]/view`, params: {postId: resJson.postId, postParam} });
+            const threadParam = '';
+            postContext.addPost(resJson.post.id, {postParam, threadParam});
+            router.replace({ pathname: `/post/[postId]/view`, params: { postId: resJson.post.id }});
         } else {
             setAlert(resJson);
             setLoading(false);
@@ -218,7 +223,7 @@ const styles = StyleSheet.create({
     displayName: {
         color: COLORS.black,
         fontSize: FONT_SIZES.m,
-        fontWeight: 900
+        fontWeight: '500'
     },
     username: {
         color: COLORS.gray,
