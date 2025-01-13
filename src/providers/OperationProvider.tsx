@@ -21,10 +21,6 @@ const processCreate = (posts: PostType[], op: CreatePostOp) => {
 }
 const processAddToMap = (posts: PostType[], op: CreatePostOp) => [op.postData, ...posts];
 
-// Add the reply to the account screen and current reply section.
-type CreateReplyOp = { name: 'CREATE_REPLY', replyData: PostType }
-const processCreateReply = (posts: PostType[], op: CreateReplyOp) => [op.replyData, ...posts];
-
 // Increase replyCount field of the post that was just replied to.
 type ReplyCountOp = { name: 'REPLY_COUNT', replyToId: string }
 const processReply = (posts: PostType[], op: ReplyCountOp) => posts.map(p => (p.id === op.replyToId) ? { ...p, replyCount: p.replyCount + 1 } : p);
@@ -73,7 +69,7 @@ const processPin = (posts: PostType[], op: PinOP) => {
 
 
 
-type OperationType = CreatePostOp | CreateReplyOp | ReplyCountOp | LikeOp | UnlikeOp | DeleteOp | BlockOp | PinOP;
+type OperationType = CreatePostOp | ReplyCountOp | LikeOp | UnlikeOp | DeleteOp | BlockOp | PinOP;
 
 
 
@@ -111,7 +107,6 @@ export function OperationProvider({ children }: { children: React.ReactNode }) {
 
         if (opName === 'CREATE_POST' && screen === 'account_posts') return processCreate(posts, lastOperation);
         if (opName === 'CREATE_POST' && screen == 'map') return processAddToMap(posts, lastOperation);
-        if (opName === 'CREATE_REPLY' && (screen === 'account_replies' || screen === 'focus_replies')) return processCreateReply(posts, lastOperation);
         if (opName === 'REPLY_COUNT') return processReply(posts, lastOperation);
         if (opName === 'LIKE')  return processLike(posts, lastOperation);
         if (opName === 'UNLIKE') return processUnlike(posts, lastOperation);
