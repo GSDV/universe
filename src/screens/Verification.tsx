@@ -9,7 +9,6 @@ import Button from '@components/Button';
 import { CheckIfLoading } from '@components/Loading';
 import { Alert, AlertType } from '@components/Alert';
 
-import { DOMAIN } from '@util/global';
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchBasic } from '@util/fetch';
@@ -155,5 +154,5 @@ const styles = StyleSheet.create({
         height: 50,
         marginHorizontal: 5,
         color: COLORS.black
-    },
+    }
 });

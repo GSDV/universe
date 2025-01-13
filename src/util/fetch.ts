@@ -1,4 +1,4 @@
-import { AUTH_TOKEN_COOKIE_KEY, DOMAIN } from './global';
+import { AUTH_TOKEN_COOKIE_KEY } from './global';
 
 import { API_VERSION } from './global-client'
 
@@ -12,6 +12,9 @@ type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export const fetchBasic = async (route: string, method: Method, body?: string) => {
     try {
+        const DOMAIN = process.env.EXPO_PUBLIC_DOMAIN;
+        if (DOMAIN === undefined) throw new Error('EXPO_PUBLIC_DOMAIN is undefined.');
+
         const res = await fetch(`${DOMAIN}/api/${API_VERSION}/app/${route}`, {
             method,
             body,
@@ -30,6 +33,9 @@ export const fetchBasic = async (route: string, method: Method, body?: string) =
 
 export const fetchWithAuth = async (route: string, method: Method, body?: string) => {
     try {
+        const DOMAIN = process.env.EXPO_PUBLIC_DOMAIN;
+        if (DOMAIN === undefined) throw new Error('EXPO_PUBLIC_DOMAIN is undefined.');
+
         const authTokenCookie = await getAuthCookie();
         const res = await fetch(`${DOMAIN}/api/${API_VERSION}/app/${route}`, {
             method,
