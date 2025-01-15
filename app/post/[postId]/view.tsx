@@ -82,7 +82,6 @@ export default function Index() {
         setFocusPost(passedInFocusPost);
         fetchAncestors(passedInFocusPost, threadParam);
         fetchReplies(passedInFocusPost);
-        console.log("RUNNING FOR: ", passedInFocusPost.content)
     }, []);
 
     const isFirstRender = useRef<boolean>(true);
