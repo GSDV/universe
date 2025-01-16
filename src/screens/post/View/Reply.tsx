@@ -4,8 +4,6 @@ import { View, Text, TextInput, TouchableOpacity, Animated, Keyboard, Dimensions
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 
-import { useOperation } from '@providers/OperationProvider';
-
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 import { Alert, AlertType } from '@components/Alert';
@@ -23,7 +21,7 @@ import { PostDataInput, PostType } from '@util/types';
 
 
 
-export default function ReplyInput({ addReply }: { addReply: (reply: PostType)=>void }) {
+export default function ReplyInput({ addNewReply }: { addNewReply: (reply: PostType)=>void }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const expandAnimation = useRef(new Animated.Value(0)).current;
     const fadeAnimation = useRef(new Animated.Value(0)).current;
@@ -134,7 +132,7 @@ export default function ReplyInput({ addReply }: { addReply: (reply: PostType)=>
                             inputRef={inputRef} 
                             toggleExpand={toggleExpand} 
                             isExpanded={isExpanded}
-                            addReply={addReply}
+                            addNewReply={addNewReply}
                         />
                     </Animated.View>
                 </Animated.View>
@@ -163,11 +161,10 @@ interface DraftAreaProps {
     inputRef: React.RefObject<TextInput>;
     toggleExpand: () => void;
     isExpanded: boolean;
-    addReply: (reply: PostType) => void;
+    addNewReply: (reply: PostType)=>void;
 }
 
-function DraftArea({ inputRef, toggleExpand, isExpanded, addReply }: DraftAreaProps) {
-    const operationContext = useOperation();
+function DraftArea({ inputRef, toggleExpand, isExpanded, addNewReply }: DraftAreaProps) {
     const insets = useSafeAreaInsets();
 
     const postId = useLocalSearchParams().postId as string;
@@ -235,8 +232,8 @@ function DraftArea({ inputRef, toggleExpand, isExpanded, addReply }: DraftAreaPr
                     setLoading(false);
                 });
             }
-            addReply(resJson.reply);
-            operationContext.emitOperation({ name: 'REPLY_COUNT', replyToId: postId });
+
+            addNewReply(resJson.reply);
             setContent('');
             setMedia([]);
         } else {

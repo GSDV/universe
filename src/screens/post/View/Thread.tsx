@@ -1,12 +1,19 @@
-import { useEffect, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
-import { Text, View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import {
+    Text,
+    View,
+    StyleSheet,
+    TouchableOpacity,
+    Pressable,
+    NativeSyntheticEvent,
+    NativeScrollEvent
+} from 'react-native';
 
 import { FlatList } from 'react-native-gesture-handler';
-
 import { useRouter } from 'expo-router';
 
-import { usePostStore } from '@providers/PostStoreProvider';
+import { usePostStore } from '@providers/PostStore';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -32,32 +39,73 @@ const PFP_SIZE = 40;
 const LEFT_COLUMN_WIDTH = PFP_SIZE + 10;
 
 
-
 interface RenderPostType extends PostType {
     type: 'ancestor' | 'focused' | 'reply';
 }
 
-type RenderItemType = RenderPostType | { id: string, type: 'loading' | 'reply-barrier' | 'no-replies' };
+type RenderItemType = RenderPostType | { 
+    id: string, 
+    type: 'loading-ancestors' | 'loading-replies' | 'reply-barrier' | 'no-replies' 
+};
 
 interface ThreadProps {
-    focusPost: PostType,
-    ancestors: PostType[],
-    replies: PostType[],
-    loadingAncestors: boolean,
-    loadingReplies: boolean
+    focusPost: PostType;
+    ancestors: PostType[];
+    fetchAncestors: () => void;
+    loadingAncestors: boolean;
+    replies: PostType[];
+    fetchReplies: () => void;
+    loadingReplies: boolean;
+    moreRepliesAvailable: boolean;
 }
 
-export default function Thread({ focusPost, ancestors, replies, loadingAncestors, loadingReplies }: ThreadProps) {
+export default function Thread({
+    focusPost,
+    ancestors,
+    fetchAncestors,
+    loadingAncestors,
+    replies,
+    fetchReplies,
+    loadingReplies,
+    moreRepliesAvailable
+}: ThreadProps) {
     const router = useRouter();
-
-    const postContext = usePostStore();
-
     const flatListRef = useRef<FlatList>(null);
+    const [isNearTop, setIsNearTop] = useState(false);
+
+    const addPost = usePostStore(state => state.addPost);
+    
+    const openAncestor = (item: RenderItemType) => {
+        const { type, ...post } = item;
+        addPost(post as any);
+        router.navigate({ 
+            pathname: `/post/[postId]/view`, 
+            params: { 
+                postId: post.id, 
+                viewId: `${post.id}${(new Date()).toISOString()}` 
+            }
+        });
+    }
+
+    // Handle scroll events to detect when we're near the top
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        const shouldLoadAncestors = offsetY < 100 && !loadingAncestors && 
+            focusPost.replyToId !== null && ancestors.length === 0;
+        
+        console.log(offsetY, shouldLoadAncestors);
+        // if (shouldLoadAncestors && !isNearTop) {
+        //     setIsNearTop(true);
+        //     fetchAncestors();
+        // } else if (offsetY >= 100 && isNearTop) {
+        //     setIsNearTop(false);
+        // }
+    };
 
     const renderableItems: RenderItemType[] = [
         // Loading and displaying ancestors:
         ...(loadingAncestors ? 
-            [{ type: 'loading' as const, id: 'loading-ancestors' }]
+            [{ type: 'loading-ancestors' as const, id: 'loading-ancestors' }]
         :
             ancestors.map((p) => ({ type: 'ancestor' as const, ...p }))
         ),
@@ -69,7 +117,7 @@ export default function Thread({ focusPost, ancestors, replies, loadingAncestors
 
         // Loading and displaying replies:
         ...(loadingReplies ? 
-            [{ type: 'loading' as const, id: 'loading-replies' }]
+            [{ type: 'loading-replies' as const, id: 'loading-replies' }]
         :
             replies.map((p) => ({ type: 'reply' as const, ...p }))
         ),
@@ -82,65 +130,43 @@ export default function Thread({ focusPost, ancestors, replies, loadingAncestors
         )
     ];
 
-    const openAncestor = (item: RenderItemType, idx: number) => {
-        const { type, ...post } = item;
-        const postParam = encodeURIComponent(JSON.stringify(post));
-        const threadParam = encodeURIComponent(JSON.stringify(ancestors.slice(0, idx)));
-        postContext.addPost(post.id, {postParam, threadParam});
-        router.navigate({ pathname: `/post/[postId]/view`, params: { postId: post.id, viewId: `${post.id}${(new Date()).toISOString()}` }});
-    }
-
     const renderItem = ({ item, index }: { item: RenderItemType, index: number }) => {
         if (item.type === 'focused') {
             return <FocusPost post={item} />;
         }
 
         if (item.type === 'ancestor') {
-            return <AncestorPost post={item} openAncestor={() => openAncestor(item, index)} />
+            return <AncestorPost post={item} openAncestor={() => openAncestor(item)} />
         }
 
         if (item.type === 'reply') {
             const { type, ...post } = item;
-            const threadParam = encodeURIComponent(JSON.stringify([...ancestors, focusPost]));
             return (<>
                 <View style={{ width: '100%', height: 2, backgroundColor: COLORS.light_gray }} />
-                <FeedPost post={post} threadParam={threadParam} />
+                <FeedPost post={post} />
             </>);
         }
 
-        if (item.type === 'loading') return <Loading size='small' />;
-
-        if (item.type === 'reply-barrier') return <ReplyBarrier />
-
+        if (item.type === 'loading-ancestors') return <Loading size='small' />;
+        if (item.type === 'loading-replies') return <LoadingReplies />;
+        if (item.type === 'reply-barrier') return <ReplyBarrier />;
         if (item.type === 'no-replies') return <NoReplies />;
 
-        // For TypeScript:
         return <></>;
     }
 
-
-    // Used to gracefully scroll to the focused post in long thread
-    useEffect(() => {
-        if (!loadingAncestors) {
-            const focusedIndex = renderableItems.findIndex(item => item.type === 'focused');
-            setTimeout(() => {
-                flatListRef.current?.scrollToIndex({
-                    index: focusedIndex,
-                    animated: true,
-                    viewPosition: 0
-                });
-            }, 300);
-        }
-    }, [loadingAncestors]);
-
     return (
-        <FlatList 
+        <FlatList
             ref={flatListRef}
-            contentContainerStyle={{ paddingBottom: '50%' }}
+            contentContainerStyle={{ paddingBottom: '100%' }}
             data={renderableItems}
-            keyExtractor={(item, idx) => item.id}
+            keyExtractor={(item) => item.id}
             renderItem={renderItem}
             scrollsToTop={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16} // For smooth scroll handling
+            onEndReached={moreRepliesAvailable ? fetchReplies : null}
+            onEndReachedThreshold={0.5}
         />
     );
 }
@@ -155,6 +181,16 @@ function ReplyBarrier() {
 
 function NoReplies() {
     return <Text style={{ padding: 20, textAlign: 'center', color: COLORS.black, fontSize: FONT_SIZES.s }}>no replies yet</Text>;
+}
+
+
+
+function LoadingReplies() {
+    return (
+        <View style={{ padding: 30 }}>
+            <Loading size='small' />
+        </View>
+    );
 }
 
 
