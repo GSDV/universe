@@ -1,17 +1,14 @@
 import { UserProvider } from './UserProvider';
-import { PostStoreProvider } from './PostStoreProvider';
-import { OperationProvider } from './OperationProvider';
+import { AccountPostProvider } from './AccountPostProvider';
 
 
 
 export default function Providers({ children }: { children: React.ReactNode }) {
     return (
         <UserProvider>
-        <PostStoreProvider>
-        <OperationProvider>
+        <AccountPostProvider>
             {children}
-        </OperationProvider>
-        </PostStoreProvider>
+        </AccountPostProvider>
         </UserProvider>
     );
 }
