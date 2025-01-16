@@ -3,7 +3,8 @@ import { Alert as AlertPopUp } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
-import { useOperation } from '@providers/OperationProvider';
+import { useAccountPost } from '@providers/AccountPostProvider';
+import { usePostStore } from '@providers/PostStore';
 
 import { Ionicons } from '@expo/vector-icons';
 
@@ -25,12 +26,15 @@ interface PostActionsMenuProps {
 
 export default function PostActionsMenu({ post, ownPost, morePostsAvailable = true }: PostActionsMenuProps) {
     const router = useRouter();
-    const operationContext = useOperation();
+
+    const accountPostContext = useAccountPost();
+
+    const redactPost = usePostStore((state) => state.redactPost);
 
     const handlePinChange = async () => {
         const body = JSON.stringify({ postId: post.id, pin: !post.pinned });
         fetchWithAuth(`post/pin`, 'PUT', body);
-        operationContext.emitOperation({ name: 'PIN', selectedPostId: post.id, morePostsAvailable })
+        accountPostContext.emitOperation({ name: 'PIN', selectedPostId: post.id, morePostsAvailable });
     }
 
     const handleDelete = () => {
@@ -39,7 +43,8 @@ export default function PostActionsMenu({ post, ownPost, morePostsAvailable = tr
             { text: 'Delete', onPress: async () => {
                 // Async call
                 fetchWithAuth(`post/${post.id}`, 'DELETE');
-                operationContext.emitOperation({ name: 'DELETE', postId: post.id });
+                redactPost(post.id);
+                accountPostContext.emitOperation({ name: 'DELETE', postId: post.id });
                 router.back();
             }, style: 'destructive' },
         ]);
