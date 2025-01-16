@@ -11,6 +11,7 @@ interface PostStore {
     removePost: (postId: string) => void;
     likePost: (postId: string) => void;
     unlikePost: (postId: string) => void;
+    redactPost: (postId: string) => void;
 }
 
 export const usePostStore = create<PostStore>((set) => ({
@@ -44,7 +45,21 @@ export const usePostStore = create<PostStore>((set) => ({
             return { posts: newPosts };
         })
     ),
-    
+
+    redactPost: (postId) => (
+        set((state) => ({
+            posts: {
+                ...state.posts,
+                [postId]: {
+                    ...state.posts[postId],
+                    content: '',
+                    media: [],
+                    deleted: true
+                },
+            },
+        }))
+    ),
+
     likePost: (postId) => (
         set((state) => ({
             posts: {
@@ -56,7 +71,7 @@ export const usePostStore = create<PostStore>((set) => ({
             },
         }))
     ),
-    
+
     unlikePost: (postId) => (
         set((state) => ({
             posts: {
@@ -83,5 +98,6 @@ export const usePostActions = () => {
         unlikePost: state.unlikePost,
         updatePost: state.updatePost,
         removePost: state.removePost,
+        redactPost: state.redactPost
     }));
 };
