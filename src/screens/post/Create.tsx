@@ -43,7 +43,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
     const router = useRouter();
 
     const accountPostContext = useAccountPost();
-    const postContext = usePostStore();
+    const addPost = usePostStore((state) => state.addPost);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingMedia, setLoadingMedia] = useState<boolean>(false);
@@ -112,7 +112,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
         const resJson = await fetchWithAuth('post', 'POST', body);
         if (resJson.cStatus == 200) {
             accountPostContext.emitOperation({ name: 'CREATE_POST', postData: resJson.post });
-            postContext.addPost(resJson.post);
+            addPost(resJson.post);
             router.replace({
                 pathname: `/post/[postId]/view`,
                 params: {
