@@ -2,12 +2,14 @@ import { TouchableOpacity, View } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { usePostStore } from '@providers/PostStore';
+
 import { Ionicons } from '@expo/vector-icons';
 
 import { SafeAreaTop } from '@components/SafeArea';
 
 import { COLORS } from '@util/global-client';
-import { usePostStore } from '@providers/PostStoreProvider';
+import { useCallback } from 'react';
 
 
 
@@ -29,13 +31,14 @@ export default function GoBackHeader() {
 export function GoBackFromPostHeader() {
     const router = useRouter();
 
-    const postContext = usePostStore();
+    const removePost = usePostStore((state) => state.removePost);
+
     const postId = useLocalSearchParams().postId as string;
 
-    const goBack = () => {
-        postContext.removePost(postId);
+    const goBack = useCallback(() => {
+        removePost(postId);
         router.back();
-    }
+    }, [postId, removePost, router]);
 
     return (
         <View>
