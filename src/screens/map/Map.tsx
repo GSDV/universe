@@ -35,8 +35,6 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import { StyleSheet, View, Animated, Dimensions } from 'react-native';
 
-import { useOperation } from '@providers/OperationProvider';
-
 import MapClusteredView from 'react-native-map-clustering';
 import { Region, Marker } from 'react-native-maps';
 
@@ -63,8 +61,6 @@ const DEFAULT_REGION = {
 
 
 export default function Map() {
-    const operationContext = useOperation();
-
     const mapRef = useRef<MapClusteredView>(null);
     const [mapRegion, setMapRegion] = useState<Region>(DEFAULT_REGION);
 
@@ -143,16 +139,6 @@ export default function Map() {
     const handleMapPress = () => {
         if (selectedPost) closePreview();
     }
-
-
-    const isFirstRender = useRef<boolean>(true);
-    useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-            return;
-        }
-        if (operationContext.lastOperation) setPosts(prev => operationContext.conductOperation(prev, 'map'));
-    }, [operationContext.lastOperation]);
 
 
     return (
