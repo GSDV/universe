@@ -3,13 +3,14 @@
 // Note: Even though the post schema has a "pinned" field, we need a separate one so that pins do not show up in search, maps, etc.
 // morePostsAvailable is only used for resorting after un/pinning.
 
+import { useCallback } from 'react';
+
 import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
 import { useUser } from '@providers/UserProvider';
-import { usePostStore } from '@providers/PostStoreProvider';
-
+import { usePostStore } from '@providers/PostStore';
 
 import Entypo from '@expo/vector-icons/Entypo';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -29,28 +30,34 @@ import { PostType } from '@util/types';
 interface FeedPostProps {
     post: PostType;
     showPinned?: boolean;
-    threadParam?: string;
     morePostsAvailable?: boolean;
 }
 
-export function FeedPost({ post, showPinned = false, threadParam = '', morePostsAvailable }: FeedPostProps) {
+export function FeedPost({ post, showPinned = false, morePostsAvailable }: FeedPostProps) {
     const router = useRouter();
 
     const userContext = useUser();
-    const postContext = usePostStore();
 
-    const onPress = () => {
-        const postParam = encodeURIComponent(JSON.stringify(post));
-        postContext.addPost(post.id, {postParam, threadParam});
-        router.navigate({ pathname: `/post/[postId]/view`, params: { postId: post.id, viewId: `${post.id}${(new Date()).toISOString()}` }});
-    }
+    const addPost = usePostStore(state => state.addPost);
 
-    const navigateToProfile = () => {
+    const onPress = useCallback(() => {
+        // Post is most likely already added, but just in case:
+        addPost(post);
+        router.navigate({ 
+            pathname: `/post/[postId]/view`, 
+            params: { 
+                postId: post.id, 
+                viewId: `${post.id}${(new Date()).toISOString()}` 
+            }
+        });
+    }, [post, addPost, router]);
+
+    const navigateToProfile = useCallback(() => {
         router.push({
             pathname: '/profile/[username]/view',
             params: { username: post.author.username }
         });
-    }
+    }, [router, post.author.username]);
 
     return (
         <TouchableOpacity onPress={onPress} style={{ paddingVertical: 10, paddingLeft: 10, width: '100%', flexDirection: 'row', backgroundColor: COLORS.background }}>
