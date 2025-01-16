@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { useOperation } from '@providers/OperationProvider';
+import { usePostStore } from '@providers/PostStore';
 
 import { AntDesign, SimpleLineIcons } from '@expo/vector-icons';
 
@@ -15,7 +15,8 @@ import { PostType } from '@util/types';
 
 
 export default function Info({ post }: { post: PostType }) {
-    const operationContext = useOperation();
+    const likePost = usePostStore((state) => state.likePost);
+    const unlikePost = usePostStore((state) => state.unlikePost);
 
     const [likeState, setLikeState] = useState<{ count: number, isLiked: boolean }>({
         count: post.likeCount, isLiked: post.isLiked
@@ -35,8 +36,8 @@ export default function Info({ post }: { post: PostType }) {
         }));
 
         requestAnimationFrame(() => {
-            if (didLike) operationContext.emitOperation({ name: 'LIKE', postId: post.id });
-            else operationContext.emitOperation({ name: 'UNLIKE', postId: post.id });
+            if (didLike) likePost(post.id);
+            else unlikePost(post.id);
         });
 
         // Async call
