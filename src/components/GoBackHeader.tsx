@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { TouchableOpacity, View } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -9,7 +11,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaTop } from '@components/SafeArea';
 
 import { COLORS } from '@util/global-client';
-import { useCallback } from 'react';
 
 
 
