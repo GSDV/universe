@@ -1,7 +1,7 @@
 // Operations for only the Account screen.
 // May be called from anywhere.
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import { ACCOUNT_POSTS_PER_BATCH } from '@util/global';
 import { POST_OPERATION_EVENT_KEY } from '@util/global-client';
@@ -71,11 +71,7 @@ interface AccountPostContextType {
 
 
 
-const AccountPostContext = createContext<AccountPostContextType>({ 
-    lastOperation: null,
-    emitOperation: (op: OperationType) => {},
-    conductOperation: (posts: PostType[], screen: Screen) => []
-});
+const AccountPostContext = createContext<AccountPostContextType | null>(null);
 
 
 
@@ -89,9 +85,11 @@ export function AccountPostProvider({ children }: { children: React.ReactNode })
         return () => subscriber.remove();
     }, []);
 
-    const emitOperation = (op: OperationType) => eventEmitter.emit(POST_OPERATION_EVENT_KEY, op);
+    const emitOperation = useCallback((op: OperationType) => {
+        eventEmitter.emit(POST_OPERATION_EVENT_KEY, op);
+    }, []);
 
-    const conductOperation = (posts: PostType[], screen: Screen) => {
+    const conductOperation = useCallback((posts: PostType[], screen: Screen) => {
         if (!lastOperation) return posts;
         const opName = lastOperation.name;
 
@@ -100,7 +98,7 @@ export function AccountPostProvider({ children }: { children: React.ReactNode })
         if (opName === 'PIN' && screen === 'posts') return processPin(posts, lastOperation);
         if (opName === 'DELETE') return processDelete(posts, lastOperation);
         return posts;
-    }
+    }, [lastOperation]);
 
     return (
         <AccountPostContext.Provider value={{ lastOperation, emitOperation, conductOperation }}>
@@ -111,4 +109,8 @@ export function AccountPostProvider({ children }: { children: React.ReactNode })
 
 
 
-export const useAccountPost = () => useContext(AccountPostContext);
+export const useAccountPost = () => {
+    const context = useContext(AccountPostContext);
+    if (context === null) throw new Error(`useAccountPost must be used in AccountPostProvider.`);
+    return context;
+}
