@@ -15,8 +15,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
-import { useOperation } from '@providers/OperationProvider';
-import { usePostStore } from '@providers/PostStoreProvider';
+import { useAccountPost } from '@providers/AccountPostProvider';
+import { usePostStore } from '@providers/PostStore';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
@@ -42,7 +42,7 @@ import { PostDataInput, RedactedUserType } from '@util/types';
 export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedUserType }) {
     const router = useRouter();
 
-    const operationContext = useOperation();
+    const accountPostContext = useAccountPost();
     const postContext = usePostStore();
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -111,12 +111,15 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
         const body = JSON.stringify({ postDataInput });
         const resJson = await fetchWithAuth('post', 'POST', body);
         if (resJson.cStatus == 200) {
-            operationContext.emitOperation({ name: 'CREATE_POST', postData: resJson.post });
-
-            const postParam = encodeURIComponent(JSON.stringify(resJson.post));
-            const threadParam = '';
-            postContext.addPost(resJson.post.id, {postParam, threadParam});
-            router.replace({ pathname: `/post/[postId]/view`, params: { postId: resJson.post.id }});
+            accountPostContext.emitOperation({ name: 'CREATE_POST', postData: resJson.post });
+            postContext.addPost(resJson.post);
+            router.replace({
+                pathname: `/post/[postId]/view`,
+                params: {
+                    postId: resJson.post.id,
+                    viewId: `${resJson.post.id}${(new Date()).toISOString()}`
+                }
+            });
         } else {
             setAlert(resJson);
             setLoading(false);
@@ -126,50 +129,50 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
     return (
         <Pressable onPress={Keyboard.dismiss} style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={{ flex: 1, paddingBottom: useSafeAreaInsets().bottom }}>
-            <Header userPrisma={userPrisma} attemptPost={attemptPost} canSubmit={canSubmit} />
-            <CheckIfLoading loading={loading}>
-            <View style={{ flex: 1, padding: 20, gap: 30 }}>
-                <View style={{ flex: 3, gap: 3 }}>
-                    {alert && <Alert alert={alert} />}
+                <Header userPrisma={userPrisma} attemptPost={attemptPost} canSubmit={canSubmit} />
+                <CheckIfLoading loading={loading}>
+                <View style={{ flex: 1, padding: 20, gap: 30 }}>
+                    <View style={{ flex: 3, gap: 3 }}>
+                        {alert && <Alert alert={alert} />}
 
-                    <View style={{width: '100%', height: 1, backgroundColor: '#cfcfcf'}} />
-                    <TextInput
-                        style={{ flex: 1, padding: 5, fontSize: FONT_SIZES.l, color: COLORS.black }} 
-                        placeholder={`What's happening?`} 
-                        value={content} 
-                        onChangeText={handleInput} 
-                        multiline={true} 
-                        maxLength={MAX_POST_CONTENT_LENGTH}
-                        textAlignVertical='top'
-                    />
-                    <Text style={{ color: (validContent ? COLORS.gray : 'red'), fontSize: FONT_SIZES.m }}>{content.length}/{MAX_POST_CONTENT_LENGTH} characters</Text>
-                    <View style={{ width: '100%', height: 1, backgroundColor: '#cfcfcf' }} />
-                </View>
-
-                <View style={{ width: '100%', gap: 5 }}>
-                    <View style={{ width: '100%', flexDirection: 'row', gap: 5, alignItems: 'center' }}>
-                        <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.l }}>Location: </Text>
-                        <Switch
-                            style={{ transform: [{scaleX: .8}, {scaleY: .8}] }}
-                            trackColor={{ true: COLORS.primary }}
-                            onValueChange={() => setIncludesLocation((prev)=>!prev)}
-                            value={includesLocation}
+                        <View style={{width: '100%', height: 1, backgroundColor: '#cfcfcf'}} />
+                        <TextInput
+                            style={{ flex: 1, padding: 5, fontSize: FONT_SIZES.l, color: COLORS.black }} 
+                            placeholder={`What's happening?`} 
+                            value={content} 
+                            onChangeText={handleInput} 
+                            multiline={true} 
+                            maxLength={MAX_POST_CONTENT_LENGTH}
+                            textAlignVertical='top'
                         />
+                        <Text style={{ color: (validContent ? COLORS.gray : 'red'), fontSize: FONT_SIZES.m }}>{content.length}/{MAX_POST_CONTENT_LENGTH} characters</Text>
+                        <View style={{ width: '100%', height: 1, backgroundColor: '#cfcfcf' }} />
                     </View>
-                    {includesLocation && <Text style={{ color: COLORS.gray, fontSize: FONT_SIZES.m }}>your post will appear on the map</Text>}
-                </View>
 
-                <View style={{ flex: 7, gap: 10 }}>
-                    <CheckIfLoading loading={loadingMedia}>
-                        <TouchableOpacity disabled={media.length==MAX_POST_MEDIA} style={{ flexDirection: 'row', alignItems: 'center', maxWidth: 150, gap: 5 }} onPress={uploadMedia}>
-                            <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray) }}>Add Media</Text>
-                            <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray} />
-                        </TouchableOpacity>
-                        <DisplayUploadedMedia media={media} removeMedia={removeMedia} />
-                    </CheckIfLoading>
+                    <View style={{ width: '100%', gap: 5 }}>
+                        <View style={{ width: '100%', flexDirection: 'row', gap: 5, alignItems: 'center' }}>
+                            <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.l }}>Location: </Text>
+                            <Switch
+                                style={{ transform: [{scaleX: .8}, {scaleY: .8}] }}
+                                trackColor={{ true: COLORS.primary }}
+                                onValueChange={() => setIncludesLocation((prev)=>!prev)}
+                                value={includesLocation}
+                            />
+                        </View>
+                        {includesLocation && <Text style={{ color: COLORS.gray, fontSize: FONT_SIZES.m }}>your post will appear on the map</Text>}
+                    </View>
+
+                    <View style={{ flex: 7, gap: 10 }}>
+                        <CheckIfLoading loading={loadingMedia}>
+                            <TouchableOpacity disabled={media.length==MAX_POST_MEDIA} style={{ flexDirection: 'row', alignItems: 'center', maxWidth: 150, gap: 5 }} onPress={uploadMedia}>
+                                <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray) }}>Add Media</Text>
+                                <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray} />
+                            </TouchableOpacity>
+                            <DisplayUploadedMedia media={media} removeMedia={removeMedia} />
+                        </CheckIfLoading>
+                    </View>
                 </View>
-            </View>
-            </CheckIfLoading>
+                </CheckIfLoading>
             </ScrollView>
         </Pressable>
     );
