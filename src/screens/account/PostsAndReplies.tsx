@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { View, Text, TouchableOpacity } from 'react-native';
 
-import { useOperation } from '@providers/OperationProvider';
+import { useAccountPost } from '@providers/AccountPostProvider';
 
 import List from '@components/List';
 import { FeedPost } from '@components/post/FeedPost';
@@ -17,7 +17,7 @@ import { PostType } from '@util/types';
 
 
 export default function PostsAndReplies({ userId }: { userId: string }) {
-    const operationContext = useOperation();
+    const accountPostContext = useAccountPost();
 
     const [view, setView] = useState<'posts' | 'replies'>('posts');
     const [loading, setLoading] = useState<boolean>(true);
@@ -50,7 +50,7 @@ export default function PostsAndReplies({ userId }: { userId: string }) {
             setMoreRepliesAvailable(resJson.moreAvailable);
         }
     }
-    
+
     // Used only once, to initially load first few posts and replies.
     const fetchInitialPR = async () => {
         setLoading(true);
@@ -69,17 +69,12 @@ export default function PostsAndReplies({ userId }: { userId: string }) {
 
     const renderReply = (reply: PostType) => <FeedPost post={reply} />;
 
-    const isFirstRender = useRef<boolean>(true);
     useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-            return;
-        }
-        if (operationContext.lastOperation) {
-            setPosts(prev => operationContext.conductOperation(prev, 'account_posts'));
-            setReplies(prev => operationContext.conductOperation(prev, 'account_replies'));
-        }
-    }, [operationContext.lastOperation]);
+        const { lastOperation: lastOp, conductOperation } = accountPostContext;
+        if (!lastOp) return;
+        setPosts(prev => conductOperation(prev, 'posts'));
+        setReplies(prev => conductOperation(prev, 'replies'));
+    }, [accountPostContext.lastOperation]);
 
     return (
         <View style={{ flex: 1 }}>
