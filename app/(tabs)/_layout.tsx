@@ -36,8 +36,8 @@ export default function TabLayout() {
                 tabBarActiveTintColor: COLORS.tint,
                 headerShown: false,
                 tabBarStyle: styles.tabBar,
+                sceneStyle: { backgroundColor: COLORS.background }
             }}
-            sceneContainerStyle={{ backgroundColor: COLORS.background }}
         >
             {tabs.map((tab, i) => (
                 <Tabs.Screen key={i} name={tab.fileName} options={{ title: tab.title, tabBarIcon: ({ color, focused }) => (
