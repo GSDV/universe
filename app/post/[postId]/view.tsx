@@ -49,7 +49,7 @@ export default function Index() {
         const resJson = await fetchWithAuth(`post/${focusPost.id}/ancestors`, 'GET');
         setAncestors(resJson.thread);
         setLoadingAncestors(false);
-    }, [focusPost, loadingAncestors]);
+    }, [focusPost]);
 
     const fetchReplies = useCallback(async () => {
         if (loadingReplies || !focusPost) return;
@@ -68,7 +68,7 @@ export default function Index() {
             setMoreRepliesAvailable(resJson.moreAvailable);
         }
         setLoadingReplies(false);
-    }, [focusPost, loadingReplies, repliesCursor]);
+    }, [focusPost]);
 
     const addNewReply = useCallback((reply: PostType) => {
         if (focusPost === undefined) return;
