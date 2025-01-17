@@ -28,29 +28,31 @@ export default function Index() {
 
     const postId = useLocalSearchParams().postId as string;
     const focusPost = usePost(postId);
-    if (focusPost === undefined) return <SomethingWentWrong />;
 
     const [ancestors, setAncestors] = useState<PostType[]>([]);
     const [loadingAncestors, setLoadingAncestors] = useState<boolean>(false);
 
     const [replies, setReplies] = useState<PostType[]>([]);
-    const [loadingReplies, setLoadingReplies] = useState<boolean>(true);
+    const [loadingReplies, setLoadingReplies] = useState<boolean>(false);
     const [repliesCursor, setRepliesCursor] = useState<string>('');
     const [moreRepliesAvailable, setMoreRepliesAvailable] = useState<boolean>(false);
 
     const fetchAncestors = useCallback(async () => {
+        if (loadingAncestors || !focusPost) return;
         // Post is a root (non-reply) post:
         if (!focusPost.replyToId) {
             setAncestors([]);
             setLoadingAncestors(false);
             return;
         }
+        setLoadingAncestors(true);
         const resJson = await fetchWithAuth(`post/${focusPost.id}/ancestors`, 'GET');
         setAncestors(resJson.thread);
         setLoadingAncestors(false);
-    }, [focusPost.id, focusPost.replyToId]);
+    }, [focusPost, loadingAncestors]);
 
     const fetchReplies = useCallback(async () => {
+        if (loadingReplies || !focusPost) return;
         if (focusPost.replyCount == 0) {
             setReplies([]);
             setLoadingReplies(false);
@@ -66,9 +68,10 @@ export default function Index() {
             setMoreRepliesAvailable(resJson.moreAvailable);
         }
         setLoadingReplies(false);
-    }, [focusPost.id, focusPost.replyCount, repliesCursor]);
+    }, [focusPost, loadingReplies, repliesCursor]);
 
     const addNewReply = useCallback((reply: PostType) => {
+        if (focusPost === undefined) return;
         // Add reply to account screen:
         accountPostContext.emitOperation({ name: 'CREATE_REPLY', postData: reply });
         // Update the focused post reply count:
@@ -77,14 +80,18 @@ export default function Index() {
         addPost(reply);
         // Add reply to top of replies:
         setReplies(prev => [reply, ...prev]);
-    }, [focusPost.id, focusPost.replyCount]);
+    }, [focusPost]);
+
 
     useEffect(() => {
+        if (!focusPost) return;
         // We only initially fetch some replies.
         // Ancestors are fetched if user swipes up.
         fetchReplies();
-    }, []);
+    }, [focusPost, fetchReplies]);
 
+
+    if (focusPost === undefined) return <SomethingWentWrong />;
 
     return (
         <View style={{ flex: 1 }}>
