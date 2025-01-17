@@ -12,7 +12,7 @@ import {
 
 import { useRouter } from 'expo-router';
 
-import { usePostStore } from '@providers/PostStoreProvider';
+// import { usePostStore } from '@providers/PostStoreProvider';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -38,7 +38,7 @@ interface PostPreviewProps {
 export default function PostPreview({ post, closePreview }: PostPreviewProps) {
     const router = useRouter();
 
-    const postContext = usePostStore();
+    // const postContext = usePostStore();
 
     const maxHeight = Dimensions.get('screen').height * 0.4;
 
@@ -50,9 +50,9 @@ export default function PostPreview({ post, closePreview }: PostPreviewProps) {
     };
 
     const onPress = () => {
-        const postParam = encodeURIComponent(JSON.stringify(post));
-        const threadParam = '';
-        postContext.addPost(post.id, {postParam, threadParam});
+        // const postParam = encodeURIComponent(JSON.stringify(post));
+        // const threadParam = '';
+        // postContext.addPost(post.id, {postParam, threadParam});
         router.navigate({ pathname: `/post/[postId]/view`, params: { postId: post.id, viewId: `${post.id}${(new Date()).toISOString()}` }});
     }
 
