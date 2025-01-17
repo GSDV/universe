@@ -33,8 +33,6 @@ interface TextContentProps {
 }
 
 export default function TextContent({ post, style, truncate = true }: TextContentProps) {
-    if (post.deleted) return <Text style={[styles.redactedText, style]}>This post has been deleted</Text>;
-
     const router = useRouter();
 
     const content = post.content;
@@ -47,6 +45,8 @@ export default function TextContent({ post, style, truncate = true }: TextConten
 
     const matches = [];
     let match;
+
+    if (post.deleted) return <Text style={[styles.redactedText, style]}>This post has been deleted</Text>;
 
     while ((match = URL_REGEX.exec(content)) !== null) {
         matches.push({ type: 'link', content: match[0], index: match.index });
