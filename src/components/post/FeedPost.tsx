@@ -3,14 +3,14 @@
 // Note: Even though the post schema has a "pinned" field, we need a separate one so that pins do not show up in search, maps, etc.
 // morePostsAvailable is only used for resorting after un/pinning.
 
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
 import { useUser } from '@providers/UserProvider';
-import { usePostStore } from '@providers/PostStore';
+import { usePost, usePostStore } from '@/src/hooks/PostStore';
 
 import Entypo from '@expo/vector-icons/Entypo';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -28,19 +28,23 @@ import { PostType } from '@util/types';
 
 
 interface FeedPostProps {
-    post: PostType;
+    postId: string
     showPinned?: boolean;
     morePostsAvailable?: boolean;
 }
 
-export function FeedPost({ post, showPinned = false, morePostsAvailable }: FeedPostProps) {
+export function FeedPost({ postId, showPinned = false, morePostsAvailable }: FeedPostProps) {
     const router = useRouter();
 
     const userContext = useUser();
 
     const addPost = usePostStore(state => state.addPost);
 
+    const postData = usePost(postId);
+    const [post, setPost] = useState<PostType | undefined>(postData);
+
     const onPress = useCallback(() => {
+        if (post === undefined) return;
         // Post is most likely already added, but just in case:
         addPost(post);
         router.navigate({ 
@@ -53,11 +57,21 @@ export function FeedPost({ post, showPinned = false, morePostsAvailable }: FeedP
     }, [post, addPost, router]);
 
     const navigateToProfile = useCallback(() => {
+        if (post === undefined) return;
         router.push({
             pathname: '/profile/[username]/view',
             params: { username: post.author.username }
         });
-    }, [router, post.author.username]);
+    }, [router, post?.author.username]);
+
+    useEffect(() => {
+        if (postData === undefined) return;
+        setPost(postData);
+    }, [postData]);
+
+
+    // Should never happen, but for TypeScript:
+    if (post === undefined) return <Text>Something went wrong!</Text>;
 
     return (
         <TouchableOpacity onPress={onPress} style={{ paddingVertical: 10, paddingLeft: 10, width: '100%', flexDirection: 'row', backgroundColor: COLORS.background }}>
