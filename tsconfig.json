@@ -5,11 +5,12 @@
         "strict": true,
         "paths": {
             "@assets/*": ["./src/assets/*"],
-            "@api/*": ["./src/api/*"],
             "@components/*": ["./src/components/*"],
+            "@hooks/*": ["./src/hooks/*"],
             "@providers/*": ["./src/providers/*"],
             "@screens/*": ["./src/screens/*"],
             "@util/*": ["./src/util/*"],
+            "@/*": ["./*"]
         }
     },
     "include": [
