@@ -47,7 +47,7 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
 
     const onPress = useCallback(() => {
         if (post === undefined) return;
-        // Post is most likely already added, but just in case:
+        // In case the post has been removed elsewhere:
         addPost(post);
         router.navigate({
             pathname: `/post/[postId]/view`,
