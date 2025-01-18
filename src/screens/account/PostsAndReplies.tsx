@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { View, Text, TouchableOpacity } from 'react-native';
 
+import { usePostStore } from '@hooks/PostStore';
+
 import { useAccountPost } from '@providers/AccountPostProvider';
 
 import List from '@components/List';
@@ -19,6 +21,8 @@ import { PostType } from '@util/types';
 export default function PostsAndReplies({ userId }: { userId: string }) {
     const accountPostContext = useAccountPost();
 
+    const addPost = usePostStore(state => state.addPost);
+
     const [view, setView] = useState<'posts' | 'replies'>('posts');
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -35,6 +39,7 @@ export default function PostsAndReplies({ userId }: { userId: string }) {
         const params = new URLSearchParams({ getPinned, cursor });
         const resJson = await fetchWithAuth(`user/${userId}/post?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
+            resJson.posts.map((p: any) => addPost(p));
             setPostsCursor(resJson.nextCursor);
             setPosts([...oldPosts, ...resJson.posts]);
             setMorePostsAvailable(resJson.moreAvailable);
@@ -45,6 +50,7 @@ export default function PostsAndReplies({ userId }: { userId: string }) {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`user/${userId}/reply?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
+            resJson.replies.map((p: any) => addPost(p));
             setRepliesCursor(resJson.nextCursor);
             setReplies([...oldReplies, ...resJson.replies]);
             setMoreRepliesAvailable(resJson.moreAvailable);
@@ -65,9 +71,9 @@ export default function PostsAndReplies({ userId }: { userId: string }) {
         fetchInitialPR();
     }, []);
 
-    const renderPost = (post: PostType) => <FeedPost post={post} showPinned={true} />;
+    const renderPost = (post: PostType) => <FeedPost postId={post.id} showPinned={true} />;
 
-    const renderReply = (reply: PostType) => <FeedPost post={reply} />;
+    const renderReply = (reply: PostType) => <FeedPost postId={reply.id} />;
 
     useEffect(() => {
         const { lastOperation: lastOp, conductOperation } = accountPostContext;
