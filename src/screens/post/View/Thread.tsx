@@ -1,11 +1,14 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Text, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { FlatList } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 
-import { usePostStore } from '@providers/PostStore';
+import { usePostStore } from '@/src/hooks/PostStore';
+import { useTabBarScroll } from '@/src/hooks/useTabBarScroll';
 
 import { AncestorPost, FocusPost, THREAD_LINE_WIDTH } from './Post'
 import { FeedPost } from '@components/post/FeedPost';
@@ -13,7 +16,9 @@ import { Loading } from '@components/Loading';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
-import { PostType } from '@util/types';;
+import { getUniqueString } from '@util/unique';
+
+import { PostType } from '@util/types';
 
 
 
@@ -47,20 +52,26 @@ export default function Thread({
     loadingReplies,
     moreRepliesAvailable
 }: ThreadProps) {
+    const navigation = useNavigation<StackNavigationProp<any>>();
+
     const router = useRouter();
+
+    const { handleTabBarScroll } = useTabBarScroll();
 
     const flatListRef = useRef<FlatList>(null);
 
     const addPost = usePostStore(state => state.addPost);
+    const removePost = usePostStore(state => state.removePost);
+
     
     const openAncestor = (item: RenderItemType) => {
         const { type, ...post } = item;
         addPost(post as any);
-        router.navigate({ 
-            pathname: `/post/[postId]/view`, 
-            params: { 
-                postId: post.id, 
-                viewId: `${post.id}${(new Date()).toISOString()}` 
+        router.navigate({
+            pathname: `/post/[postId]/view`,
+            params: {
+                postId: post.id,
+                viewId: getUniqueString(post.id)
             }
         });
     }
@@ -75,7 +86,9 @@ export default function Thread({
             (ancestors.length === 0)
         );
         if (shouldLoadAncestors) fetchAncestors();
-    };
+
+        handleTabBarScroll(event);
+    }
 
     const renderableItems: RenderItemType[] = [
         // Loading and displaying ancestors:
@@ -118,7 +131,7 @@ export default function Thread({
             const { type, ...post } = item;
             return (<>
                 <View style={{ width: '100%', height: 2, backgroundColor: COLORS.light_gray }} />
-                <FeedPost post={post} />
+                <FeedPost postId={post.id} />
             </>);
         }
 
@@ -129,6 +142,17 @@ export default function Thread({
 
         return <></>;
     }
+
+
+    // Cleanup, remove fetched replies from PostStore.
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+            // If we are about to exit from a post view
+            if (focusPost.replyToId === null) removePost(focusPost.id);
+            replies.map((p) => removePost(p.id));
+        });
+        return unsubscribe;
+      }, [navigation]);
 
     return (
         <FlatList
