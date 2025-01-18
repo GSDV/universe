@@ -23,6 +23,8 @@ import Info from '@components/post/Info';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
+import { getUniqueString } from '@util/unique';
+
 import { PostType } from '@util/types';
 
 
@@ -47,11 +49,11 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
         if (post === undefined) return;
         // Post is most likely already added, but just in case:
         addPost(post);
-        router.navigate({ 
-            pathname: `/post/[postId]/view`, 
-            params: { 
-                postId: post.id, 
-                viewId: `${post.id}${(new Date()).toISOString()}` 
+        router.navigate({
+            pathname: `/post/[postId]/view`,
+            params: {
+                postId: post.id,
+                viewId: getUniqueString(post.id)
             }
         });
     }, [post, addPost, router]);
@@ -59,8 +61,11 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
     const navigateToProfile = useCallback(() => {
         if (post === undefined) return;
         router.push({
-            pathname: '/profile/[username]/view',
-            params: { username: post.author.username }
+            pathname: `/profile/[username]/view`,
+            params: {
+                username: post.author.username,
+                viewId: getUniqueString(post.author.username)
+            }
         });
     }, [router, post?.author.username]);
 
