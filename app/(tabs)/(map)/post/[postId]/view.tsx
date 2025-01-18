@@ -6,7 +6,7 @@ import { usePost } from '@/src/hooks/PostStore';
 
 import PostView from '@screens/post/View/View';
 
-import { GoBackFromPostHeader } from '@components/GoBackHeader';
+import GoBackHeader from '@components/GoBackHeader';
 import SomethingWentWrong from '@components/Error';
 
 
@@ -19,7 +19,7 @@ export default function Index() {
 
     return (
         <View style={{ flex: 1 }}>
-            <GoBackFromPostHeader />
+            <GoBackHeader />
             <PostView />
         </View>
     );
