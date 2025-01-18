@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
-
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { usePostStore } from '@providers/PostStore';
+import { usePostStore } from '@/src/hooks/PostStore';
 
 import { AntDesign, SimpleLineIcons } from '@expo/vector-icons';
 
@@ -15,12 +13,7 @@ import { PostType } from '@util/types';
 
 
 export default function Info({ post }: { post: PostType }) {
-    const likePost = usePostStore((state) => state.likePost);
-    const unlikePost = usePostStore((state) => state.unlikePost);
-
-    const [likeState, setLikeState] = useState<{ count: number, isLiked: boolean }>({
-        count: post.likeCount, isLiked: post.isLiked
-    });
+    const addPost = usePostStore(state => state.addPost);
 
     const university = post.author.university;
     const getUniName = () => university?.name ?? '';
@@ -29,26 +22,23 @@ export default function Info({ post }: { post: PostType }) {
     const onPressLike = async () => {
         if (post.deleted) return;
 
-        const didLike = !likeState.isLiked;
-        setLikeState(prev => ({
-            count: (didLike) ? prev.count+1 : prev.count -1,
-            isLiked: didLike
-        }));
+        const postCopy = {...post};
+        const didLike = !post.isLiked;
 
-        requestAnimationFrame(() => {
-            if (didLike) likePost(post.id);
-            else unlikePost(post.id);
-        });
+        if (didLike) {
+            postCopy.likeCount++;
+            postCopy.isLiked = true;
+        }
+        else {
+            postCopy.likeCount--;
+            postCopy.isLiked = false;
+        }
+        addPost(postCopy);
 
         // Async call
         const body = JSON.stringify({ liked: didLike });
         fetchWithAuth(`post/${post.id}/like`, 'POST', body);
     }
-
-    // This useEffect handles updating for when a parent component recieves an operation event.
-    useEffect(() => {
-        setLikeState({ count: post.likeCount, isLiked: post.isLiked });
-    }, [post.likeCount, post.isLiked])
 
     return (
         <View style={styles.container}>
@@ -56,8 +46,8 @@ export default function Info({ post }: { post: PostType }) {
 
             <View style={styles.interactionContainer}>
                 <TouchableOpacity onPress={onPressLike} style={styles.infoContainers}>
-                    <Text style={styles.info}>{formatInteraction(likeState.count)} </Text>
-                    {likeState.isLiked ? <AntDesign name='heart' size={15} color='#ff578f' /> : <AntDesign name='hearto' size={15} color={COLORS.black} /> }
+                    <Text style={styles.info}>{formatInteraction(post.likeCount)} </Text>
+                    {post.isLiked ? <AntDesign name='heart' size={15} color='#ff578f' /> : <AntDesign name='hearto' size={15} color={COLORS.black} /> }
                 </TouchableOpacity>
                 
                 <View style={styles.infoContainers}>
