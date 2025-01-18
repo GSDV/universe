@@ -45,7 +45,10 @@ export default function PostView() {
         }
         setLoadingAncestors(true);
         const resJson = await fetchWithAuth(`post/${focusPost.id}/ancestors`, 'GET');
-        setAncestors(resJson.thread);
+        if (resJson.cStatus == 200) {
+            resJson.thread.map((p: any) => addPost(p));
+            setAncestors(resJson.thread);
+        }
         setLoadingAncestors(false);
     }, [focusPost]);
 
@@ -61,6 +64,7 @@ export default function PostView() {
         const params = new URLSearchParams({ cursor: repliesCursor });
         const resJson = await fetchWithAuth(`post/${focusPost.id}/replies?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
+            resJson.replies.map((p: any) => addPost(p));
             setReplies(prev => [...prev, ...resJson.replies]);
             setRepliesCursor(resJson.nextCursor);
             setMoreRepliesAvailable(resJson.moreAvailable);
@@ -86,7 +90,7 @@ export default function PostView() {
         // We only initially fetch some replies.
         // Ancestors are fetched if user swipes up.
         fetchReplies();
-    }, [focusPost, fetchReplies]);
+    }, []);
 
 
     // For TypeScript, undefined catches will be in tab root "view.tsx".
