@@ -135,7 +135,7 @@ function PostsAndUsers({ query }: { query: string }) {
         }
     }
 
-    const renderPost = (post: PostType) => <FeedPost post={post} />;
+    const renderPost = (post: PostType) => <FeedPost postId={post.id} />;
 
     const renderUser = (user: RedactedUserWithFollow) => <FeedAccount user={user} />;
 
