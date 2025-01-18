@@ -75,7 +75,7 @@ export default function Feed() {
         }
     }
 
-    const renderPost = (post: PostType) => <FeedPost post={post} />;
+    const renderPost = (post: PostType) => <FeedPost postId={post.id} />;
 
     const intialFetch = async () => {
         setLoading(true);
