@@ -15,8 +15,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
+import { usePostStore } from '@/src/hooks/PostStore';
 import { useAccountPost } from '@providers/AccountPostProvider';
-import { usePostStore } from '@providers/PostStore';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
@@ -66,7 +66,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
         if (!havePermissions) return;
 
         setLoadingMedia(true);
-        
+
         const { optimizedMedia, resp } = await getMedia(MAX_POST_MEDIA-media.length);
         if (optimizedMedia === null) setAlert(resp);
         else setMedia((prev) => [...prev, ...optimizedMedia]);
