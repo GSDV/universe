@@ -1,5 +1,6 @@
+// Must use `{' '}` for react native to render a space in some instances.
+
 import {
-    View,
     Linking,
     Text,
     Alert as AlertPopUp,
@@ -30,15 +31,13 @@ export default function TermsAndPrivacyPolicy() {
     const openPrivacyPolicy = async () => openLink(`https://www.joinuniverse.app/privacy-policy`);
 
     return (
-        <View>
             <Text style={styles.text}>
-                By using UniVerse, you agree to our 
+                By using UniVerse, you agree to our{' '}
                 <Text style={styles.link} onPress={openTerms}>Terms</Text>
-                and
+                {' and '}
                 <Text style={styles.link} onPress={openPrivacyPolicy}>Privacy Policy</Text>
                 .
             </Text>
-        </View>
     );
 }
 
@@ -46,11 +45,11 @@ export default function TermsAndPrivacyPolicy() {
 
 const styles = StyleSheet.create({
     text: {
-        color: COLORS.light_gray,
-        fontSize: FONT_SIZES.m
+        color: COLORS.gray,
+        fontSize: FONT_SIZES.m,
+        textAlign: 'center'
     },
     link: {
-        color: COLORS.primary,
-        textDecorationLine: 'underline'
+        color: COLORS.primary
     }
 });
