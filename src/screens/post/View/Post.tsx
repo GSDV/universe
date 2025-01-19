@@ -1,6 +1,10 @@
+import { useEffect, useState } from 'react';
+
 import { Text, View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 
 import { useRouter } from 'expo-router';
+
+import { usePost } from '@hooks/PostStore';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -12,7 +16,10 @@ import { DisplayMedia } from '@components/post/media/Display';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
+import { getUniqueString } from '@util/unique';
+
 import { PostType } from '@util/types';
+
 
 
 export const THREAD_LINE_WIDTH = 3;
@@ -20,8 +27,8 @@ export const THREAD_LINE_WIDTH = 3;
 export const PFP_TOP_MARGIN = 10;
 export const PFP_SIZE = 40;
 
-
 const LEFT_COLUMN_WIDTH = PFP_SIZE + 10;
+
 
 
 interface ThreadPostType {
@@ -34,8 +41,20 @@ type LineType = 'up' | 'down' | 'full' | 'none';
 
 
 // Direct ancestor to post that was pressed on.
-export function AncestorPost({ post, ownPost, openAncestor }: { post: PostType, ownPost?: boolean, openAncestor: ()=>void }) {
-    const type = (!post.replyToId) ? 'down' : 'full';
+export function AncestorPost({ postId, ownPost, openAncestor }: { postId: string, ownPost?: boolean, openAncestor: ()=>void }) {
+    const postData = usePost(postId);
+    const [post, setPost] = useState<PostType | undefined>(postData);
+
+    const type = (!post?.replyToId) ? 'down' : 'full';
+
+    useEffect(() => {
+        if (postData === undefined) return;
+        setPost(postData);
+    }, [postData]);
+
+     // Should never happen, but for TypeScript:
+    if (post === undefined) return <ErrorPost />;
+    
     return (
         <TouchableOpacity onPress={openAncestor}>
             <ThreadPost post={post} ownPost={ownPost} type={type} />
@@ -46,8 +65,20 @@ export function AncestorPost({ post, ownPost, openAncestor }: { post: PostType, 
 
 
 // Post that was pressed on.
-export function FocusPost({ post, ownPost }: { post: PostType, ownPost?: boolean }) {
-    const type = (!post.replyToId) ? 'none' : 'up';
+export function FocusPost({ postId, ownPost }: { postId: string, ownPost?: boolean }) {
+    const postData = usePost(postId);
+    const [post, setPost] = useState<PostType | undefined>(postData);
+
+    const type = (!post?.replyToId) ? 'none' : 'up';
+
+    useEffect(() => {
+        if (postData === undefined) return;
+        setPost(postData);
+    }, [postData]);
+
+     // Should never happen, but for TypeScript:
+     if (post === undefined) return <ErrorPost />;
+
     return <ThreadPost post={post} ownPost={ownPost} type={type} />;
 }
 
@@ -79,7 +110,10 @@ function ThreadLine({ username, pfpKey, type }: { username: string, pfpKey: stri
     const navigateToProfile = () => {
         router.push({
             pathname: '/profile/[username]/view',
-            params: { username }
+            params: {
+                username,
+                viewId: getUniqueString(username)
+            }
         });
     }
 
@@ -102,7 +136,10 @@ function PostHeader({ post, ownPost }: ThreadPostType) {
     const navigateToProfile = () => {
         router.push({
             pathname: '/profile/[username]/view',
-            params: { username: post.author.username }
+            params: {
+                username: post.author.username,
+                viewId: getUniqueString(post.author.username,)
+            }
         });
     }
 
@@ -121,6 +158,16 @@ function PostHeader({ post, ownPost }: ThreadPostType) {
 
             <PostActionsMenu post={post} ownPost={ownPost} />
         </Pressable>
+    );
+}
+
+
+
+function ErrorPost() {
+    return (
+        <View style={{ padding: 10, paddingLeft: LEFT_COLUMN_WIDTH, width: '100%' }}>
+            <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>Something went wrong!</Text>
+        </View>
     );
 }
 
