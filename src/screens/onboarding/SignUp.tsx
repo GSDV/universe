@@ -1,9 +1,11 @@
 import { useCallback, useState } from 'react';
 
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 import { useFocusEffect, useRouter } from 'expo-router';
 
+import TermsAndPrivacyPolicy from './TermsAndPrivacyPolicy';
+import Input from './Input';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
@@ -56,7 +58,7 @@ export default function SignUp() {
         }
     }
 
-    // When navigating back from verification page, keep user data but take off loading and alert
+    // When navigating back from verification page, keep user data but take off loading and alert.
     useFocusEffect(
         useCallback(() => {
                 setLoading(false);
@@ -69,28 +71,28 @@ export default function SignUp() {
             <Text style={styles.title}>Create Account</Text>
 
             <CheckIfLoading loading={loading}>
-                <SignUpInput
+                <Input
                     title='Display Name'
                     placeholder='John Doe'
                     subtitle='Can be anything!'
                     value={userData.displayName}
                     onChange={(input: string) => handleChange('displayName', input)} />
 
-                <SignUpInput
+                <Input
                     title='Username'
                     placeholder='john_doe'
                     subtitle='a-z, 0-9, and underscores'
                     value={userData.username}
                     onChange={(input: string) => handleChange('username', input)} />
 
-                <SignUpInput
+                <Input
                     title='Email'
                     placeholder='john10@illinois.edu'
                     subtitle='School email'
                     value={userData.email}
                     onChange={(input: string) => handleChange('email', input)} />
 
-                <SignUpInput
+                <Input
                     title='Password'
                     placeholder='supersecretpassword'
                     value={userData.password}
@@ -98,31 +100,14 @@ export default function SignUp() {
                     isSecure={true} />
 
                 <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Sign Up</Button>
+
+                <TermsAndPrivacyPolicy />
             </CheckIfLoading>
 
             {alert && <Alert alert={alert} />}
         </View>
     );
 }
-
-
-
-function SignUpInput({ placeholder, value, onChange, title, subtitle, isSecure }: { placeholder: string, value: string, onChange: (input: string)=>void, title: string, subtitle?: string, isSecure?: boolean }) {
-    return (
-        <View style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <Text style={{fontSize: FONT_SIZES.m}}>{title}</Text>
-            <TextInput
-                style={{ padding: 5, width: '100%', backgroundColor: 'white', fontSize: FONT_SIZES.m }}
-                placeholder={placeholder}
-                value={value}
-                onChangeText={onChange}
-                secureTextEntry={isSecure}
-            />
-            {subtitle && <Text style={{color: COLORS.gray, fontSize: FONT_SIZES.s}}>{subtitle}</Text>}
-        </View>
-    );
-}
-
 
 
 const styles = StyleSheet.create({

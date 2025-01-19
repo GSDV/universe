@@ -1,7 +1,8 @@
 import { ScrollView } from 'react-native';
 
+import Login from '@screens/onboarding/Login';
+
 import GoBackHeader from '@components/GoBackHeader';
-import Login from '@screens/Login';
 
 
 

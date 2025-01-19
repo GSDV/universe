@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import Verification from '@screens/Verification';
+import Verification from '@screens/onboarding/Verification';
 
 import GoBackHeader from '@components/GoBackHeader';
 

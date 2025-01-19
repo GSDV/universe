@@ -65,7 +65,7 @@ export default function Verification() {
         if (resJson.cStatus == 200) {
             userContext.setUser(resJson.user);
             await setAuthCookie(resJson.authToken);
-            router.replace('/(tabs)/account');
+            router.replace('/(tabs)/(account)');
         } else {
             setAlert(resJson);
             setLoading(false);
