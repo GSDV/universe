@@ -4,6 +4,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
+import { usePostStore } from '@hooks/PostStore';
+
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { FeedPost } from '@components/post/FeedPost';
@@ -20,6 +22,8 @@ import { PostType, RedactedUserWithFollow } from '@util/types';
 
 
 export default function PostsAndUsers({ query }: { query: string }) {
+    const addPost = usePostStore(state => state.addPost);
+
     const [view, setView] = useState<'posts' | 'users'>('posts');
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -37,6 +41,7 @@ export default function PostsAndUsers({ query }: { query: string }) {
         const params = new URLSearchParams({ query, cursor });
         const resJson = await fetchWithAuth(`search/posts?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
+            resJson.posts.map((p: any) => addPost(p));
             setPostsCursor(resJson.nextCursor);
             setPosts([...oldPosts, ...resJson.posts]);
             setMorePostsAvailable(resJson.moreAvailable);
