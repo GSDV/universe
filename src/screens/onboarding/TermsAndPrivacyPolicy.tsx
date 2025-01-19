@@ -43,6 +43,7 @@ export default function TermsAndPrivacyPolicy() {
 }
 
 
+
 const styles = StyleSheet.create({
     text: {
         color: COLORS.light_gray,
@@ -52,4 +53,4 @@ const styles = StyleSheet.create({
         color: COLORS.primary,
         textDecorationLine: 'underline'
     }
-})
+});
