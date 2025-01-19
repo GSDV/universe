@@ -2,9 +2,11 @@ import { StyleSheet, Animated } from 'react-native';
 
 import { Tabs, usePathname } from 'expo-router';
 
-import { TabBarIcon } from '@components/navigation/TabBarIcon';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { COLORS } from '@util/global-client';
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 
@@ -13,9 +15,7 @@ export const tabBarAnimation = new Animated.Value(0);
 
 
 
-type IconName = React.ComponentProps<typeof TabBarIcon>['name'];
-
-
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
 interface TabType {
     fileName: string;
@@ -26,6 +26,8 @@ interface TabType {
 
 
 export default function TabLayout() {
+    const insets = useSafeAreaInsets();
+
     const pathname = usePathname();
     const isPostOrProfile = pathname.includes('/post/') || pathname.includes('/profile/');
 
@@ -57,8 +59,12 @@ export default function TabLayout() {
                 tabBarShowLabel: false,
                 tabBarStyle: [
                     styles.tabBar,
-                    { transform: [{ translateY: animatedTranslateY }] }
-                ]
+                    {
+                        transform: [{ translateY: animatedTranslateY }],
+                        paddingBottom: insets.bottom,
+                    }
+                ],
+                tabBarItemStyle: styles.tabBarItem
             }}
         >
             {tabs.map((tab, i) => (
@@ -67,9 +73,10 @@ export default function TabLayout() {
                     name={tab.fileName}
                     options={{
                         tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon 
+                            <Ionicons 
                                 name={focused ? tab.iconFocused : tab.iconUnfocused}
                                 color={color}
+                                size={28}
                             />
                         )
                     }} 
@@ -79,15 +86,19 @@ export default function TabLayout() {
     );
 }
 
+
+
 const styles = StyleSheet.create({
     tabBar: {
         position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
-        paddingBottom: 0,
         backgroundColor: COLORS.background,
         borderTopWidth: 1,
         borderTopColor: COLORS.light_gray
+    },
+    tabBarItem: {
+        paddingVertical: 5
     }
 });
