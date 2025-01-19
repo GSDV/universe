@@ -9,7 +9,7 @@ export default function Input({ placeholder, value, onChange, title, subtitle, i
         <View style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
             <Text style={{fontSize: FONT_SIZES.m}}>{title}</Text>
             <TextInput
-                style={{ padding: 5, width: '100%', backgroundColor: 'white', fontSize: FONT_SIZES.m }}
+                style={{ padding: 7, paddingHorizontal: 10, borderRadius: 5, width: '100%', backgroundColor: 'white', fontSize: FONT_SIZES.m }}
                 placeholder={placeholder}
                 value={value}
                 onChangeText={onChange}
