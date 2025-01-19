@@ -52,6 +52,10 @@ export const FONT_SIZES = {
 
 
 
+export const TAB_BAR_HEIGHT = 80;
+
+
+
 // UI FORMATTING:
 export const formatPostDate = (date: string) => {
     const post = new Date(date);

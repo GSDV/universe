@@ -4,7 +4,7 @@ import { Tabs, usePathname } from 'expo-router';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { COLORS } from '@util/global-client';
+import { COLORS, TAB_BAR_HEIGHT } from '@util/global-client';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -59,10 +59,7 @@ export default function TabLayout() {
                 tabBarShowLabel: false,
                 tabBarStyle: [
                     styles.tabBar,
-                    {
-                        transform: [{ translateY: animatedTranslateY }],
-                        paddingBottom: insets.bottom,
-                    }
+                    { transform: [{ translateY: animatedTranslateY }] }
                 ],
                 tabBarItemStyle: styles.tabBarItem
             }}
@@ -94,6 +91,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
+        height: TAB_BAR_HEIGHT,
         backgroundColor: COLORS.background,
         borderTopWidth: 1,
         borderTopColor: COLORS.light_gray

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { View, Text, FlatList, RefreshControl } from 'react-native';
 
-import { COLORS, FONT_SIZES } from '@util/global-client';
+import { COLORS, FONT_SIZES, TAB_BAR_HEIGHT } from '@util/global-client';
 
 
 
@@ -53,7 +53,7 @@ export default function List<T extends ListItem>({
             renderItem={({ item }) => renderItem(item)}
 
             style={{ flex: 1, backgroundColor: COLORS.light_gray }}
-            contentContainerStyle={{ flexGrow: 1, gap: 2 }}
+            contentContainerStyle={{ flexGrow: 1, gap: 2, paddingBottom: TAB_BAR_HEIGHT }}
 
             refreshControl={allowRefresh ?
                     <RefreshControl
