@@ -12,15 +12,15 @@ export default function FeedStack() {
     return (
         <Stack>
             <Stack.Screen name='index' options={{ headerShown: false, contentStyle }} />
-            <Stack.Screen 
-                name='post/[postId]/view' 
-                options={{ headerShown: false, contentStyle }} 
-                getId={({ params }) => params?.postId}
+            <Stack.Screen
+                name='post/[postId]/view'
+                options={{ headerShown: false, contentStyle }}
+                getId={({ params }) => params?.viewId}
             />
-            <Stack.Screen 
-                name='profile/[username]/view' 
-                options={{ headerShown: false, contentStyle }} 
-                getId={({ params }) => params?.username}
+            <Stack.Screen
+                name='profile/[username]/view'
+                options={{ headerShown: false, contentStyle }}
+                getId={({ params }) => params?.viewId}
             />
         </Stack>
     );
