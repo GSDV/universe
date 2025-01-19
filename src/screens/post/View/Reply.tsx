@@ -4,6 +4,8 @@ import { View, Text, TextInput, TouchableOpacity, Animated, Keyboard, Dimensions
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 
+import { replyButtonAnimation } from '@hooks/useTabBarScroll';
+
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 import { Alert, AlertType } from '@components/Alert';
@@ -22,11 +24,13 @@ import { PostDataInput, PostType } from '@util/types';
 
 
 export default function ReplyInput({ addNewReply }: { addNewReply: (reply: PostType)=>void }) {
-    const [isExpanded, setIsExpanded] = useState(false);
+    const insets = useSafeAreaInsets();
+
+    const inputRef = useRef<TextInput>(null);
     const expandAnimation = useRef(new Animated.Value(0)).current;
     const fadeAnimation = useRef(new Animated.Value(0)).current;
-    const inputRef = useRef<TextInput>(null);
-    const insets = useSafeAreaInsets();
+
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const expandHeight = Dimensions.get('window').height * 0.4;
     const buttonSize = 56;
@@ -88,10 +92,17 @@ export default function ReplyInput({ addNewReply }: { addNewReply: (reply: PostT
         outputRange: [20, 0],
     });
 
-    const animatedBottom = expandAnimation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [20 + insets.bottom, 0],
-    });
+    // Combining replyButton bottom animation and expanded view.
+    const animatedCombined = Animated.add(
+        expandAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [20 + insets.bottom, 0],
+        }),
+        replyButtonAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [(isExpanded ? 0 : 50), -(-20 + insets.bottom)], // Negative because we're moving up.
+        })
+    );
 
     return (
         <KeyboardAvoidingView 
@@ -106,9 +117,9 @@ export default function ReplyInput({ addNewReply }: { addNewReply: (reply: PostT
                         {
                             height: animatedHeight,
                             width: animatedWidth,
-                            left: animatedLeft,
-                            bottom: animatedBottom,
                             borderRadius: animatedRadius,
+                            left: animatedLeft,
+                            bottom: animatedCombined
                         },
                     ]}
                 >
@@ -179,9 +190,7 @@ function DraftArea({ inputRef, toggleExpand, isExpanded, addNewReply }: DraftAre
     const validContent: boolean = (content.replace(/\s+/g, '').length >= MIN_REPLY_CONTENT_LENGTH);
     const canSubmit: boolean = (validContent && !loading && !loadingMedia);
 
-
     const handleInput = (input: string) => setContent((input.length > MAX_POST_CONTENT_LENGTH) ? input.slice(0, MAX_POST_CONTENT_LENGTH) : input);
-
 
     const uploadMedia = async () => {
         setAlert(null);
@@ -203,7 +212,6 @@ function DraftArea({ inputRef, toggleExpand, isExpanded, addNewReply }: DraftAre
         setMedia(prevItems => prevItems.filter((_, i) => i !== index));
     }
 
-
     const attemptPost = async () => {
         setLoading(true);
         setAlert(null);
@@ -220,7 +228,7 @@ function DraftArea({ inputRef, toggleExpand, isExpanded, addNewReply }: DraftAre
             content: content,
             hasLocation: false,
             media: mediaKeys
-        }
+        };
 
         const body = JSON.stringify({ replyDataInput, parentPostId: postId });
         const resJson = await fetchWithAuth(`reply`, 'POST', body);
