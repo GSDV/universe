@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import { View, Text, TouchableOpacity } from 'react-native';
 
+import { usePostStore } from '@hooks/PostStore';
+
 import { FeedPost } from '@components/post/FeedPost';
 import List from '@components/List';
 import { CheckIfLoading } from '@components/Loading';
@@ -15,6 +17,8 @@ import { PostType } from '@util/types';
 
 
 export default function Feed() {
+    const addPost = usePostStore(state => state.addPost);
+
     const [view, setView] = useState<'hot' | 'new' | 'following' | 'school'>('hot');
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -39,6 +43,7 @@ export default function Feed() {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`feed/hot?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
+            resJson.posts.map((p: any) => addPost(p));
             setHotCursor(resJson.nextCursor);
             setHotPosts([...oldPosts, ...resJson.posts]);
             setMoreHotAvailable(resJson.moreAvailable);
@@ -49,6 +54,7 @@ export default function Feed() {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`feed/new?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
+            resJson.posts.map((p: any) => addPost(p));
             setNewCursor(resJson.nextCursor);
             setNewPosts([...oldPosts, ...resJson.posts]);
             setMoreNewAvailable(resJson.moreAvailable);
@@ -59,6 +65,7 @@ export default function Feed() {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`feed/following?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
+            resJson.posts.map((p: any) => addPost(p));
             setFollowingCursor(resJson.nextCursor);
             setFollowingPosts([...oldPosts, ...resJson.posts]);
             setMoreFollowingAvailable(resJson.moreAvailable);
@@ -69,6 +76,7 @@ export default function Feed() {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`feed/school?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
+            resJson.posts.map((p: any) => addPost(p));
             setSchoolCursor(resJson.nextCursor);
             setSchoolPosts([...oldPosts, ...resJson.posts]);
             setMoreSchoolAvailable(resJson.moreAvailable);
