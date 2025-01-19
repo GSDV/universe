@@ -15,7 +15,6 @@ export default function Index() {
     const postId = useLocalSearchParams().postId as string;
     const focusPost = usePost(postId);
 
-    console.log("Search Post View")
     if (focusPost === undefined) return <SomethingWentWrong />;
 
     return (
