@@ -35,7 +35,7 @@ export default function Index() {
         if (resJson.cStatus == 200) {
             const user = resJson.user;
             userContext.setUser(user);
-            router.replace({pathname: `/(tabs)/account`});
+            router.replace(`/(tabs)/(account)`);
         }
         setLoading(false);
     }
