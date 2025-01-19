@@ -7,8 +7,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { FlatList } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 
-import { usePostStore } from '@/src/hooks/PostStore';
-import { useTabBarScroll } from '@/src/hooks/useTabBarScroll';
+import { usePostStore } from '@hooks/PostStore';
+import { useTabBarScroll } from '@hooks/useTabBarScroll';
 
 import { AncestorPost, FocusPost, THREAD_LINE_WIDTH } from './Post'
 import { FeedPost } from '@components/post/FeedPost';

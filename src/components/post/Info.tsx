@@ -1,6 +1,6 @@
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { usePostStore } from '@/src/hooks/PostStore';
+import { usePostStore } from '@hooks/PostStore';
 
 import { AntDesign, SimpleLineIcons } from '@expo/vector-icons';
 

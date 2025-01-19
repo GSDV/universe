@@ -10,7 +10,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-nativ
 import { useRouter } from 'expo-router';
 
 import { useUser } from '@providers/UserProvider';
-import { usePost, usePostStore } from '@/src/hooks/PostStore';
+import { usePost, usePostStore } from '@hooks/PostStore';
 
 import Entypo from '@expo/vector-icons/Entypo';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

@@ -15,7 +15,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
-import { usePostStore } from '@/src/hooks/PostStore';
+import { usePostStore } from '@hooks/PostStore';
 import { useAccountPost } from '@providers/AccountPostProvider';
 
 import Ionicons from '@expo/vector-icons/Ionicons';

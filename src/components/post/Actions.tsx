@@ -3,8 +3,8 @@ import { Alert as AlertPopUp } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
+import { usePostStore } from '@hooks/PostStore';
 import { useAccountPost } from '@providers/AccountPostProvider';
-import { usePostStore } from '@providers/PostStore';
 
 import { Ionicons } from '@expo/vector-icons';
 

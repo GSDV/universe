@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { useLocalSearchParams } from 'expo-router';
 
-import { usePostStore, usePost } from '@/src/hooks/PostStore';
+import { usePostStore, usePost } from '@hooks/PostStore';
 
 import { useAccountPost } from '@providers/AccountPostProvider';
 

@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import { useLocalSearchParams } from 'expo-router';
 
-import { usePost } from '@/src/hooks/PostStore';
+import { usePost } from '@hooks/PostStore';
 
 import PostView from '@screens/post/View/View';
 
