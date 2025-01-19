@@ -63,7 +63,6 @@ export default function Thread({
     const addPost = usePostStore(state => state.addPost);
     const removePost = usePostStore(state => state.removePost);
 
-    
     const openAncestor = (item: RenderItemType) => {
         const { type, ...post } = item;
         addPost(post as any);
@@ -120,11 +119,11 @@ export default function Thread({
 
     const renderItem = ({ item, index }: { item: RenderItemType, index: number }) => {
         if (item.type === 'focused') {
-            return <FocusPost post={item} />;
+            return <FocusPost postId={item.id} />;
         }
 
         if (item.type === 'ancestor') {
-            return <AncestorPost post={item} openAncestor={() => openAncestor(item)} />
+            return <AncestorPost postId={item.id} openAncestor={() => openAncestor(item)} />
         }
 
         if (item.type === 'reply') {
