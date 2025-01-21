@@ -22,12 +22,18 @@ export default function Index() {
 
     const [loading, setLoading] = useState<boolean>(false);
 
+    /**
+     * Must, in this order:
+     * 1. Reset auth cookie on client
+     * 2. Navigate to root
+     * 3. Reset userContext
+     * 4. Delete auth cookie on server
+    **/
     const attemptLogout = async () => {
-        // Must navigate BEFORE resetting userContext and AuthCookie.
-        // If not, Account screen will throw error for using null userPrisma.
-        router.navigate('/');
-        userContext.setUser(null);
         await setAuthCookie('');
+        router.dismissAll();
+        await fetchWithAuth(`user/${userContext.user?.id}/auth`, 'DELETE');
+        userContext.setUser(null);
     }
 
 
@@ -36,11 +42,7 @@ export default function Index() {
             { text: 'Cancel', onPress: () => {}, style: 'cancel' },
             { text: 'Send', onPress: async (text: string | undefined) => {
                 if (text === undefined || text.trim().toUpperCase() !== 'DELETE') return;
-
                 setLoading(true);
-                // Async call
-                await (new Promise(resolve => setTimeout(resolve, 2000)));
-
                 const userId = userContext.user?.id ?? '';
                 const body = JSON.stringify({ userId });
                 const resJson = await fetchWithAuth(`user/${userId}`, 'DELETE', body);
