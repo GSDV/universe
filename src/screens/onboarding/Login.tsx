@@ -77,7 +77,7 @@ export default function SignUp() {
                     onChange={(input: string) => handleChange('password', input)}
                     isSecure={true} />
 
-                <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Sign Up</Button>
+                <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Login</Button>
 
                 <TermsAndPrivacyPolicy />
             </CheckIfLoading>
