@@ -140,7 +140,7 @@ export default function Index() {
 
         if (resJson.cStatus == 200) {
             userContext.setUser(resJson.user);
-            router.replace(`/account`);
+            router.replace(`/(tabs)/(account)`);
         }
         else {
             setAlert(resJson);
@@ -154,7 +154,7 @@ export default function Index() {
         if (!havePermissions) return;
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: 'images',
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1
@@ -182,7 +182,7 @@ export default function Index() {
             <GoBackHeader />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
-                behavior={'padding'}
+                behavior='padding'
                 keyboardVerticalOffset={-20}
             >
                 <ScrollView 
