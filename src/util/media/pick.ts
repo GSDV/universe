@@ -2,14 +2,22 @@
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 
-import { ACCEPTED_FILES, ACCEPTED_IMGS, ACCEPTED_VIDS, IMG_SIZE_LIMIT, IMG_SIZE_LIMIT_TXT, VID_SIZE_LIMIT, VID_SIZE_LIMIT_TXT } from '@util/global';
+import {
+    ACCEPTED_FILES,
+    ACCEPTED_IMGS,
+    ACCEPTED_VIDS,
+    IMG_SIZE_LIMIT,
+    IMG_SIZE_LIMIT_TXT,
+    VID_SIZE_LIMIT,
+    VID_SIZE_LIMIT_TXT
+} from '@util/global';
 
 
 
 export const getMedia = async (selectionLimit: number) => {
     try {
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ['videos', 'images'],
             allowsMultipleSelection: true,
             orderedSelection: true,
             selectionLimit,
@@ -64,7 +72,6 @@ export const getMedia = async (selectionLimit: number) => {
                 const isVideo = asset.type === 'video';
     
                 if (isVideo) {
-                    // Add compression and save as mp4
                     return { uri: asset.uri, type: (asset.mimeType as string) };
                 } else {
                     const optimized = await ImageManipulator.manipulateAsync(
