@@ -12,7 +12,7 @@ import {
 
 import { useRouter } from 'expo-router';
 
-// import { usePostStore } from '@providers/PostStoreProvider';
+import { usePostStore } from '@hooks/PostStore';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -25,6 +25,7 @@ import Info from '@components/post/Info';
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { PostType } from '@util/types';
+import { getUniqueString } from '@util/unique';
 
 
 
@@ -38,7 +39,7 @@ interface PostPreviewProps {
 export default function PostPreview({ post, closePreview }: PostPreviewProps) {
     const router = useRouter();
 
-    // const postContext = usePostStore();
+    const addPost = usePostStore(state => state.addPost);
 
     const maxHeight = Dimensions.get('screen').height * 0.4;
 
@@ -50,10 +51,15 @@ export default function PostPreview({ post, closePreview }: PostPreviewProps) {
     };
 
     const onPress = () => {
-        // const postParam = encodeURIComponent(JSON.stringify(post));
-        // const threadParam = '';
-        // postContext.addPost(post.id, {postParam, threadParam});
-        router.navigate({ pathname: `/post/[postId]/view`, params: { postId: post.id, viewId: `${post.id}${(new Date()).toISOString()}` }});
+        // In case the post has been removed elsewhere:
+        addPost(post);
+        router.navigate({
+            pathname: `/post/[postId]/view`,
+            params: {
+                postId: post.id,
+                viewId: getUniqueString(post.id)
+            }
+        });
     }
 
     return (
