@@ -44,12 +44,13 @@ import PostPreview from './PostPreview';
 import PostMarker from './PostMarker';
 import LoadingSymbol from './LoadingSymbol';
 
-import { COLORS } from '@util/global-client';
+import { COLORS, TAB_BAR_HEIGHT } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 import { requestLocation } from '@util/location';
 
 import { PostType } from '@util/types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 
@@ -65,6 +66,8 @@ const DEFAULT_REGION = {
 export default function Map() {
     const addPost = usePostStore(state => state.addPost);
     const removePost = usePostStore(state => state.removePost);
+
+    const insets = useSafeAreaInsets();
 
     const mapRef = useRef<MapClusteredView>(null);
     const [mapRegion, setMapRegion] = useState<Region>(DEFAULT_REGION);
@@ -139,7 +142,7 @@ export default function Map() {
         Animated.spring(slideAnim, {
             toValue: 0,
             useNativeDriver: true,
-            speed: 9,
+            speed: 2,
             bounciness: 1
         }).start(() => setSelectedPost(null));
     }
@@ -187,7 +190,7 @@ export default function Map() {
                         { transform: [{
                             translateY: slideAnim.interpolate({
                                 inputRange: [0, 1],
-                                outputRange: [Dimensions.get('window').height, 0]
+                                outputRange: [Dimensions.get('window').height, (-1 * TAB_BAR_HEIGHT)]
                             })
                         }] }
                     ]}
