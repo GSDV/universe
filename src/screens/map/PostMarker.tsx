@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native';
+import React, { Pressable, StyleSheet } from 'react-native';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
