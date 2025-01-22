@@ -16,7 +16,8 @@ export const showActionSheet = (options: Option[], destructiveIdxs: number[] = [
             destructiveButtonIndex: destructiveIdxs.map(i=>i+1)
         },
         async (buttonIndex) => {
-            actions[buttonIndex-1]();
+            console.log(buttonIndex, actions.length)
+            actions[buttonIndex]();
         }
     );
 }
