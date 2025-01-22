@@ -50,7 +50,6 @@ import { fetchWithAuth } from '@util/fetch';
 import { requestLocation } from '@util/location';
 
 import { PostType } from '@util/types';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 
@@ -66,8 +65,6 @@ const DEFAULT_REGION = {
 export default function Map() {
     const addPost = usePostStore(state => state.addPost);
     const removePost = usePostStore(state => state.removePost);
-
-    const insets = useSafeAreaInsets();
 
     const mapRef = useRef<MapClusteredView>(null);
     const [mapRegion, setMapRegion] = useState<Region>(DEFAULT_REGION);
