@@ -6,8 +6,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { COLORS, TAB_BAR_HEIGHT } from '@util/global-client';
 
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 
 
 // Create a shared Animated.Value for tab bar hiding.
@@ -26,8 +24,6 @@ interface TabType {
 
 
 export default function TabLayout() {
-    const insets = useSafeAreaInsets();
-
     const pathname = usePathname();
     const isPostOrProfile = pathname.includes('/post/') || pathname.includes('/profile/');
 
