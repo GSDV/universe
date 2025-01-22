@@ -35,6 +35,8 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import { StyleSheet, View, Animated, Dimensions } from 'react-native';
 
+import { usePostStore } from '@hooks/PostStore';
+
 import MapClusteredView from 'react-native-map-clustering';
 import { Region, Marker } from 'react-native-maps';
 
@@ -61,6 +63,9 @@ const DEFAULT_REGION = {
 
 
 export default function Map() {
+    const addPost = usePostStore(state => state.addPost);
+    const removePost = usePostStore(state => state.removePost);
+
     const mapRef = useRef<MapClusteredView>(null);
     const [mapRegion, setMapRegion] = useState<Region>(DEFAULT_REGION);
 
@@ -69,7 +74,9 @@ export default function Map() {
     const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
     const slideAnim = useRef(new Animated.Value(0)).current;
 
+    // Every time we fetch new posts, remove current ones from PostStore
     const fetchPosts = async () => {
+        posts.map(p => removePost(p.id));
         const screen_bl = {
             lat: mapRegion.latitude - (mapRegion.latitudeDelta/2),
             lng: mapRegion.longitude - (mapRegion.longitudeDelta/2) 
@@ -118,6 +125,7 @@ export default function Map() {
 
 
     const openPreview = (post: PostType) => {
+        addPost(post);
         setSelectedPost(post);
         Animated.spring(slideAnim, {
             toValue: 1,
