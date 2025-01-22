@@ -22,18 +22,21 @@ export default function Index() {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    /**
-     * Must, in this order:
-     * 1. Reset auth cookie on client
-     * 2. Navigate to root
-     * 3. Reset userContext
-     * 4. Delete auth cookie on server
-    **/
+
     const attemptLogout = async () => {
+        setLoading(true);
         await setAuthCookie('');
-        router.dismissAll();
-        await fetchWithAuth(`user/${userContext.user?.id}/auth`, 'DELETE');
         userContext.setUser(null);
+        await fetchWithAuth(`user/${userContext.user?.id}/auth`, 'DELETE');
+        router.dismissAll();
+        setLoading(false);
+    }
+
+    const promptLogout = () => {
+        AlertPopUp.alert('Do you want to logout?', '', [
+            { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+            { text: 'Yes', onPress: attemptLogout }
+        ]);
     }
 
 
@@ -65,6 +68,7 @@ export default function Index() {
         ]);
     }
 
+
     return (
         <ScrollView contentContainerStyle={{ flex: 1 }}>
             <GoBackHeader />
@@ -76,7 +80,7 @@ export default function Index() {
                         <Text style={styles.buttonText}>Edit Profile</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={attemptLogout}>
+                    <TouchableOpacity onPress={promptLogout}>
                         <Text style={styles.buttonText}>Logout</Text>
                     </TouchableOpacity>
 
