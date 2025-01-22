@@ -1,4 +1,4 @@
-import { ScrollView } from 'react-native';
+import { Platform, KeyboardAvoidingView, Pressable, Keyboard, ScrollView } from 'react-native';
 
 import SignUp from '@screens/onboarding/SignUp';
 
@@ -8,9 +8,21 @@ import GoBackHeader from '@components/GoBackHeader';
 
 export default function Index() {
     return (
-        <ScrollView contentContainerStyle={{ flex: 1, gap: 20 }}>
-            <GoBackHeader />
-            <SignUp />
-        </ScrollView>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1 }}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+            <Pressable onPress={Keyboard.dismiss} style={{ flex: 1 }}>
+                <ScrollView
+                    contentContainerStyle={{ flexGrow: 1, gap: 20 }}
+                    keyboardShouldPersistTaps='handled'
+                    showsVerticalScrollIndicator={false}
+                >
+                    <GoBackHeader />
+                    <SignUp />
+                </ScrollView>
+            </Pressable>
+        </KeyboardAvoidingView>
     );
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Keyboard } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
@@ -42,6 +42,7 @@ export default function SignUp() {
     };
 
     const onSubmit = async () => {
+        Keyboard.dismiss();
         setLoading(true);
         setAlert(null);
 
