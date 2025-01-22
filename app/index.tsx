@@ -35,8 +35,11 @@ export default function Index() {
         if (resJson.cStatus == 200) {
             const user = resJson.user;
             userContext.setUser(user);
-            router.replace(`/(tabs)/(account)`);
+            router.push(`/(tabs)/(account)`);
         }
+
+        // Sleep function so that the fade animation does not show NotLoggedIn content when succesfully loging in.
+        await (new Promise(resolve => setTimeout(resolve, 3000)));
         setLoading(false);
     }
 
