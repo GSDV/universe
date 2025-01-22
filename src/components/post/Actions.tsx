@@ -41,10 +41,9 @@ export default function PostActionsMenu({ post, ownPost, morePostsAvailable = tr
         AlertPopUp.alert('Delete post?', 'This cannot be undone.', [
             { text: 'Cancel', onPress: () => {}, style: 'cancel' },
             { text: 'Delete', onPress: async () => {
-                // Async call
-                fetchWithAuth(`post/${post.id}`, 'DELETE');
                 redactPost(post.id);
                 accountPostContext.emitOperation({ name: 'DELETE', postId: post.id });
+                await fetchWithAuth(`post/${post.id}`, 'DELETE');
                 router.back();
             }, style: 'destructive' },
         ]);
@@ -53,12 +52,14 @@ export default function PostActionsMenu({ post, ownPost, morePostsAvailable = tr
     const handleReport = () => {
         AlertPopUp.prompt('Report Post', 'Please describe why you are reporting this post:', [
             { text: 'Cancel', onPress: () => {}, style: 'cancel' },
-            { text: 'Send', onPress: (reportText: string | undefined) => {
-                AlertPopUp.alert('Post Reported', 'Your report has been sent.', [{ text: 'OK', onPress: () => {} }]);
-                if (!reportText || reportText.length > MAX_REPORT_LENGTH) return;
-                // Async call
+            { text: 'Send', onPress: async (reportText: string | undefined) => {
+                if (!reportText || reportText.length > MAX_REPORT_LENGTH) {
+                    AlertPopUp.alert(`Report not sent.`, `Please keep reports under ${MAX_REPORT_LENGTH}.`, [{ text: 'OK', onPress: () => {} }]);
+                    return;
+                }
                 const body = JSON.stringify({ reportText });
-                fetchWithAuth(`post/${post.id}/report`, 'POST', body);
+                await fetchWithAuth(`post/${post.id}/report`, 'POST', body);
+                AlertPopUp.alert('Post Reported', 'Your report has been sent.', [{ text: 'OK', onPress: () => {} }]);
             } }
         ], 'plain-text');
     }
