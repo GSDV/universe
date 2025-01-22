@@ -58,7 +58,8 @@ export default function PostActionsMenu({ post, ownPost, morePostsAvailable = tr
                     return;
                 }
                 const body = JSON.stringify({ reportText });
-                await fetchWithAuth(`post/${post.id}/report`, 'POST', body);
+                // Async call:
+                fetchWithAuth(`post/${post.id}/report`, 'POST', body);
                 AlertPopUp.alert('Post Reported', 'Your report has been sent.', [{ text: 'OK', onPress: () => {} }]);
             } }
         ], 'plain-text');
