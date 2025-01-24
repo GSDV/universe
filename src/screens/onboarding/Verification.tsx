@@ -50,9 +50,12 @@ export default function Verification() {
     const attemptResend = async () => {
         setLoading(true);
         setAlert(null);
+
         const body = JSON.stringify({ data });
         const resJson = await fetchBasic('user/verification', 'POST', body);
-        setAlert(resJson);
+        // cStatus is always "error" to show red text instead of green.
+        // Consider simply changing Alert component to always show red text, even for 200s.
+        setAlert({ cStatus: 100, msg: resJson.msg });
         setLoading(false);
     }
 
