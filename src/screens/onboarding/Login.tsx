@@ -10,6 +10,7 @@ import TermsAndPrivacyPolicy from './TermsAndPrivacyPolicy';
 import Input from './Input';
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
+import GoToResetPassword from './GoToResetPassword';
 import { CheckIfLoading } from '@components/Loading';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
@@ -83,6 +84,7 @@ export default function SignUp() {
                 <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Login</Button>
 
                 <TermsAndPrivacyPolicy />
+                <GoToResetPassword />
             </CheckIfLoading>
 
             {alert && <Alert alert={alert} />}
