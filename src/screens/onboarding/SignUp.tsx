@@ -77,28 +77,32 @@ export default function SignUp() {
                     placeholder='John Doe'
                     subtitle='Can be anything!'
                     value={userData.displayName}
-                    onChange={(input: string) => handleChange('displayName', input)} />
+                    onChange={(input: string) => handleChange('displayName', input)}
+                />
 
                 <Input
                     title='Username'
                     placeholder='john_doe'
                     subtitle='a-z, 0-9, and underscores'
                     value={userData.username}
-                    onChange={(input: string) => handleChange('username', input)} />
+                    onChange={(input: string) => handleChange('username', input)}
+                />
 
                 <Input
                     title='Email'
                     placeholder='john10@illinois.edu'
                     subtitle='School email'
                     value={userData.email}
-                    onChange={(input: string) => handleChange('email', input)} />
+                    onChange={(input: string) => handleChange('email', input)}
+                />
 
                 <Input
                     title='Password'
                     placeholder='supersecretpassword'
                     value={userData.password}
                     onChange={(input: string) => handleChange('password', input)}
-                    isSecure={true} />
+                    isSecure={true}
+                />
 
                 <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Sign Up</Button>
 

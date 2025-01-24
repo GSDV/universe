@@ -69,14 +69,16 @@ export default function SignUp() {
                     placeholder='john10@illinois.edu'
                     subtitle='School email'
                     value={userData.email}
-                    onChange={(input: string) => handleChange('email', input)} />
+                    onChange={(input: string) => handleChange('email', input)}
+                />
 
                 <Input
                     title='Password'
                     placeholder='supersecretpassword'
                     value={userData.password}
                     onChange={(input: string) => handleChange('password', input)}
-                    isSecure={true} />
+                    isSecure={true}
+                />
 
                 <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Login</Button>
 
