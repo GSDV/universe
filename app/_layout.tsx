@@ -44,6 +44,7 @@ export default function RootLayout() {
                     <Stack.Screen name='signup/index' options={{ headerShown: false, contentStyle }} />
                     <Stack.Screen name='signup/verification/index' options={{ headerShown: false, contentStyle }} />
                     <Stack.Screen name='post/create' options={{ headerShown: false, contentStyle }} />
+                    <Stack.Screen name='reset-password/index' options={{ headerShown: false, contentStyle }} />
                     <Stack.Screen name='+not-found' options={{ headerShown: false, contentStyle }} />
                 </Stack>
             </Providers>

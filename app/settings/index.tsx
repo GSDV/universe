@@ -80,6 +80,10 @@ export default function Index() {
                         <Text style={styles.buttonText}>Edit Profile</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity onPress={() => router.push('/reset-password')}>
+                        <Text style={styles.buttonText}>Reset Password</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity onPress={promptLogout}>
                         <Text style={styles.buttonText}>Logout</Text>
                     </TouchableOpacity>
