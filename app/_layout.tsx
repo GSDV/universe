@@ -23,7 +23,7 @@ const contentStyle = { backgroundColor: COLORS.background };
 
 export default function RootLayout() {
     const [loaded] = useFonts({
-        Helvetica: require('../src/assets/fonts/HelveticaNeue/Regular.ttf')
+        Helvetica: require('../assets/fonts/HelveticaNeue/Regular.ttf')
     });
 
     useEffect(() => {
