@@ -4,10 +4,6 @@ import { useState } from 'react';
 
 import { View, Text, StyleSheet, Keyboard, TextInput } from 'react-native';
 
-import { useRouter } from 'expo-router';
-
-import { useUser } from '@providers/UserProvider';
-
 import Button from '@components/Button';
 import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
@@ -19,10 +15,6 @@ import { fetchBasic } from '@util/fetch';
 
 
 export default function ResetPassword() {
-    const router = useRouter();
-
-    const userContext = useUser();
-
     const [loading, setLoading] = useState<boolean>(false);
     const [alert, setAlert] = useState<AlertType | null>(null);
 
