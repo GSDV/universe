@@ -4,11 +4,11 @@
     "slug": "universe",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/icon.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./src/assets/images/splash.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#f5f5f5"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/splash.png",
         "backgroundColor": "#ffffff"
       }
     },
@@ -41,7 +41,7 @@
     },
     "fonts": [
       {
-        "asset": "assets/fonts/SpaceMono-Regular.ttf",
+        "asset": "./assets/fonts/SpaceMono-Regular.ttf",
         "family": "SpaceMono"
       }
     ],

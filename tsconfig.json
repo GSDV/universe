@@ -4,7 +4,7 @@
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "paths": {
-            "@assets/*": ["./src/assets/*"],
+            "@assets/*": ["./assets/*"],
             "@components/*": ["./src/components/*"],
             "@hooks/*": ["./src/hooks/*"],
             "@providers/*": ["./src/providers/*"],
