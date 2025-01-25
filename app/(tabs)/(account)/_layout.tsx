@@ -13,6 +13,11 @@ export default function AccountStack() {
         <Stack>
             <Stack.Screen name='index' options={{ headerShown: false, contentStyle }} />
             <Stack.Screen
+                name='post/create/index'
+                options={{ headerShown: false, contentStyle }}
+                getId={({ params }) => params?.viewId}
+            />
+            <Stack.Screen
                 name='post/[postId]/view'
                 options={{ headerShown: false, contentStyle }}
                 getId={({ params }) => params?.viewId}
