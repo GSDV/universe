@@ -13,7 +13,7 @@ import { CheckIfLoading } from '@components/Loading';
 import { UploadedAsset, DisplayUploadedMedia } from '@components/post/media/Display';
 
 import { MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_REPLY_CONTENT_LENGTH } from '@util/global';
-import { COLORS, FONT_SIZES } from '@util/global-client';
+import { COLORS, FONT_SIZES, TAB_BAR_HEIGHT } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 import { getMediaKeys, promptMediaPermissions } from '@util/media/s3';
@@ -262,7 +262,7 @@ function DraftArea({ inputRef, toggleExpand, isExpanded, addNewReply }: DraftAre
                 </TouchableOpacity>
             </View>
 
-            <ScrollView contentContainerStyle={{ gap: 10, paddingBottom: insets.bottom }} showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={{ gap: 10, paddingBottom: TAB_BAR_HEIGHT }} showsVerticalScrollIndicator={false}>
                 <CheckIfLoading loading={loading}>
                     {alert && <Alert alert={alert} />}
 
