@@ -34,6 +34,7 @@ import { fetchWithAuth } from '@util/fetch';
 import { getMediaKeys, promptMediaPermissions } from '@util/media/s3';
 import { requestLocation } from '@util/location';
 import { getMedia } from '@util/media/pick';
+import { getUniqueString } from '@util/unique';
 
 import { PostDataInput, RedactedUserType } from '@util/types';
 
@@ -117,7 +118,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
                 pathname: `/post/[postId]/view`,
                 params: {
                     postId: resJson.post.id,
-                    viewId: `${resJson.post.id}${(new Date()).toISOString()}`
+                    viewId: getUniqueString(resJson.post.id)
                 }
             });
         } else {
