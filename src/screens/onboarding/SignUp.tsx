@@ -73,23 +73,20 @@ export default function SignUp() {
 
             <CheckIfLoading loading={loading}>
                 <Input
-                    title='Display Name'
                     placeholder='John Doe'
-                    subtitle='Can be anything!'
+                    subtitle='Display name, can be anything!'
                     value={userData.displayName}
                     onChange={(input: string) => handleChange('displayName', input)}
                 />
 
                 <Input
-                    title='Username'
-                    placeholder='john_doe'
-                    subtitle='a-z, 0-9, and underscores'
+                    placeholder='johndoe'
+                    subtitle='Username, a-z and 0-9'
                     value={userData.username}
                     onChange={(input: string) => handleChange('username', input)}
                 />
 
                 <Input
-                    title='Email'
                     placeholder='john10@illinois.edu'
                     subtitle='School email'
                     value={userData.email}
@@ -97,8 +94,8 @@ export default function SignUp() {
                 />
 
                 <Input
-                    title='Password'
                     placeholder='supersecretpassword'
+                    subtitle='Password'
                     value={userData.password}
                     onChange={(input: string) => handleChange('password', input)}
                     isSecure={true}

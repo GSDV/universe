@@ -66,16 +66,15 @@ export default function Login() {
 
             <CheckIfLoading loading={loading}>
                 <Input
-                    title='Email'
                     placeholder='john10@illinois.edu'
-                    subtitle='School email'
+                    subtitle='Email'
                     value={userData.email}
                     onChange={(input: string) => handleChange('email', input)}
                 />
 
                 <Input
-                    title='Password'
                     placeholder='supersecretpassword'
+                    subtitle='Password'
                     value={userData.password}
                     onChange={(input: string) => handleChange('password', input)}
                     isSecure={true}
