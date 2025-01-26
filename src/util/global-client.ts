@@ -25,7 +25,7 @@ export const imgUrl = (key: string) => `https://uni-verse.s3.us-east-2.amazonaws
 // UI
 export const PRIMARY = 'rgb(232, 70, 70)';
 export const SECONDARY = 'rgb(157, 2, 7)';
-export const WHITE = 'rgb(245, 245, 245)';
+export const WHITE = 'rgb(255, 255, 255)';
 export const LIGHT_GRAY = 'rgb(230, 230, 230)';
 export const GRAY = 'rgb(117, 117, 117)';
 export const BLACK = 'rgb(20, 20, 20)';
