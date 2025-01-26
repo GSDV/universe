@@ -20,7 +20,7 @@ import { setAuthCookie } from '@util/storage';
 
 
 
-export default function SignUp() {
+export default function Login() {
     const router = useRouter();
 
     const userContext = useUser();
