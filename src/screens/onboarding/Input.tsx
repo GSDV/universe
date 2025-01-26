@@ -9,7 +9,7 @@ interface InputProps {
     subtitle?: string;
     value: string;
     onChange: (input: string)=>void;
-    isSecure?: boolean; 
+    isSecure?: boolean;
 }
 
 export default function Input({ placeholder, subtitle, value, onChange, isSecure }: InputProps) {
