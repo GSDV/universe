@@ -70,7 +70,10 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
     }, [router, post?.author.username]);
 
     useEffect(() => {
-        if (postData === undefined) return;
+        if (postData === undefined) {
+            if (post !== undefined) addPost(post);
+            return;
+        }
         setPost(postData);
     }, [postData]);
 
