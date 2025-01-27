@@ -76,7 +76,7 @@ export default function SettingsView() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title} >Settings</Text>
+            <Text style={styles.title}>Settings</Text>
 
             <CheckIfLoading loading={loading}>
                 <TouchableOpacity onPress={() => router.push('/settings/profile-edit')}>
