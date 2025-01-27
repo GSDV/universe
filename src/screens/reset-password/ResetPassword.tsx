@@ -1,10 +1,9 @@
-// Used for resetting password through onboarding, when logged out.
-
 import { useState } from 'react';
 
-import { View, Text, StyleSheet, Keyboard, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Keyboard } from 'react-native';
 
 import Button from '@components/Button';
+import Input from '@screens/onboarding/Input';
 import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
 
@@ -38,7 +37,6 @@ export default function ResetPassword() {
 
             <CheckIfLoading loading={loading}>
                 <Input
-                    title='Email'
                     placeholder='Email'
                     value={email}
                     onChange={(input: string) => setEmail(input.toLowerCase())}
@@ -48,24 +46,6 @@ export default function ResetPassword() {
             </CheckIfLoading>
 
             {alert && <Alert alert={alert} />}
-        </View>
-    );
-}
-
-
-
-function Input({ placeholder, value, onChange, title, subtitle, isSecure }: { placeholder: string, value: string, onChange: (input: string)=>void, title: string, subtitle?: string, isSecure?: boolean }) {
-    return (
-        <View style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <Text style={{fontSize: FONT_SIZES.m}}>{title}</Text>
-            <TextInput
-                style={{ padding: 7, paddingHorizontal: 10, borderRadius: 5, width: '100%', backgroundColor: 'white', fontSize: FONT_SIZES.m }}
-                placeholder={placeholder}
-                value={value}
-                onChangeText={onChange}
-                secureTextEntry={isSecure}
-            />
-            {subtitle && <Text style={{color: COLORS.gray, fontSize: FONT_SIZES.s}}>{subtitle}</Text>}
         </View>
     );
 }
