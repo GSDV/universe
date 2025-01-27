@@ -222,7 +222,7 @@ export default function ProfileEdit() {
                                 <View style={styles.inputContainer}>
                                     <Text style={styles.subtitle}>Bio</Text>
                                     <TextInput
-                                        style={[styles.input, styles.bioInput]}
+                                        style={styles.bioInput}
                                         numberOfLines={4}
                                         multiline={true}
                                         value={userData.bio}
@@ -285,19 +285,16 @@ const styles = StyleSheet.create({
         gap: 2,
         marginBottom: 10,
     },
-    input: {
-        borderRadius: 5,
+    bioInput: {
         padding: 10,
         width: '100%',
-        backgroundColor: 'white',
-        fontSize: FONT_SIZES.m,
-    },
-    bioInput: {
         height: 100,
-        textAlignVertical: 'top',
-        paddingTop: 10,
+        borderRadius: 5,
+        backgroundColor: 'white',
         borderWidth: 1,
         borderColor: COLORS.black,
+        fontSize: FONT_SIZES.m,
+        textAlignVertical: 'top'
     },
     buttonContainer: {
         marginTop: 20,
