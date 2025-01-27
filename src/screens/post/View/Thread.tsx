@@ -151,7 +151,23 @@ export default function Thread({
             replies.map((p) => removePost(p.id));
         });
         return unsubscribe;
-      }, [navigation]);
+    }, [navigation]);
+
+
+    useEffect(() => {
+        // Page just loaded, no need for animations:
+        if (ancestors.length == 0) return;
+
+        const targetIndex = ancestors.length;
+        const timer = setTimeout(() => {
+            flatListRef.current?.scrollToIndex({
+                index: targetIndex,
+                animated: true,
+                viewPosition: 0.1,
+            });
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [ancestors]);
 
     return (
         <FlatList
