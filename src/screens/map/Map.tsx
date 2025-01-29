@@ -69,14 +69,18 @@ export default function Map() {
     const mapRef = useRef<MapClusteredView>(null);
     const [mapRegion, setMapRegion] = useState<Region>(DEFAULT_REGION);
 
+    // Does PostStore have a current post?
+    // Used in previewing post to check if it is stored.
+    const psPosts = usePostStore(state => (state.posts));
+
     const [loading, setLoading] = useState<boolean>(false);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
     const slideAnim = useRef(new Animated.Value(0)).current;
 
-    // Every time we fetch new posts, remove current ones from PostStore
+    // Every time we fetch new posts, we neither remove current ones nor add new ones to PostStore.
+    // We only add and remove posts on opening and closing the preview, respectively.
     const fetchPosts = async () => {
-        posts.map(p => removePost(p.id));
         const screen_bl = {
             lat: mapRegion.latitude - (mapRegion.latitudeDelta/2),
             lng: mapRegion.longitude - (mapRegion.longitudeDelta/2) 
@@ -125,7 +129,11 @@ export default function Map() {
 
 
     const openPreview = (post: PostType) => {
-        addPost(post);
+        // Add post from PostStore when preview is opened.
+        // Only add if it does not already exist.
+        // If it does exist, then it is possible that the data may be overwritten.
+        // I.e. liking in another screen before opening preview results in like being gone, since preview would overwrite.
+        if (psPosts[post.id] === undefined) addPost(post);
         setSelectedPost(post);
         Animated.spring(slideAnim, {
             toValue: 1,
@@ -141,7 +149,11 @@ export default function Map() {
             useNativeDriver: true,
             speed: 2,
             bounciness: 1
-        }).start(() => setSelectedPost(null));
+        }).start(() => {
+            // Remove post from PostStore when preview is removed.
+            if (selectedPost) removePost(selectedPost.id);
+            setSelectedPost(null);
+        });
     }
 
     const handleMapPress = () => {
@@ -193,7 +205,7 @@ export default function Map() {
                         }] }
                     ]}
                 >
-                    <PostPreview post={selectedPost} closePreview={closePreview} />
+                    <PostPreview postId={selectedPost.id} closePreview={closePreview} />
                 </Animated.View>
             )}
             {loading && <LoadingSymbol />}
