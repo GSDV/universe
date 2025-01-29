@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
     StyleSheet,
@@ -12,7 +12,7 @@ import {
 
 import { useRouter } from 'expo-router';
 
-import { usePostStore } from '@hooks/PostStore';
+import { usePost, usePostStore } from '@hooks/PostStore';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -30,16 +30,17 @@ import { getUniqueString } from '@util/unique';
 
 
 interface PostPreviewProps {
-    post: PostType;
+    postId: string;
     closePreview: ()=>void;
 }
 
-
-
-export default function PostPreview({ post, closePreview }: PostPreviewProps) {
+export default function PostPreview({ postId, closePreview }: PostPreviewProps) {
     const router = useRouter();
 
     const addPost = usePostStore(state => state.addPost);
+
+    const postData = usePost(postId);
+    const [post, setPost] = useState<PostType | undefined>(postData);
 
     const maxHeight = Dimensions.get('screen').height * 0.4;
 
@@ -51,6 +52,7 @@ export default function PostPreview({ post, closePreview }: PostPreviewProps) {
     };
 
     const onPress = () => {
+        if (post === undefined) return;
         // In case the post has been removed elsewhere:
         addPost(post);
         router.navigate({
@@ -61,6 +63,18 @@ export default function PostPreview({ post, closePreview }: PostPreviewProps) {
             }
         });
     }
+
+    useEffect(() => {
+        if (postData === undefined) {
+            if (post !== undefined) addPost(post);
+            return;
+        }
+        setPost(postData);
+    }, [postData]);
+
+
+    // Should never happen, but for TypeScript:
+    if (post === undefined) return <Text>Something went wrong!</Text>;
 
     return (
         <ScrollView
@@ -93,7 +107,12 @@ export default function PostPreview({ post, closePreview }: PostPreviewProps) {
 
 
 
-function Header({ post, closePreview }: PostPreviewProps) {
+interface PreviewHeaderProps {
+    post: PostType;
+    closePreview: ()=>void;
+}
+
+function Header({ post, closePreview }: PreviewHeaderProps) {
     return (
         <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
