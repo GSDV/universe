@@ -1,7 +1,6 @@
 {
   "expo": {
-    "name": "UniVerse",
-    "displayName": "UniVerse Campus",
+    "name": "UniVerse Campus",
     "slug": "UniVerse",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,6 +14,7 @@
     },
     "ios": {
       "infoPlist": {
+        "displayName": "UniVerse",
         "CFBundleDisplayName": "UniVerse",
         "NSPhotoLibraryUsageDescription": "\"UniVerse\" needs access your photo library to allow you to upload videos."
       },
