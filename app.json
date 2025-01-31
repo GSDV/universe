@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "UniVerse",
+    "displayName": "UniVerse Campus",
     "slug": "UniVerse",
     "version": "1.0.0",
     "orientation": "portrait",
