@@ -87,7 +87,7 @@ export default function Verification() {
             <Text style={styles.title}>Verify Account</Text>
 
             <CheckIfLoading loading={loading}>
-                <Text style={styles.subtitle}>Enter the code sent to your email.</Text>
+                <Text style={styles.subtitle}>Enter the code sent to your email. It may be in your spam folder.</Text>
                 <View style={styles.inputContainer}>
                 {code.map((digit, index) => (
                     <TextInput
