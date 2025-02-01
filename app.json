@@ -20,7 +20,8 @@
       },
       "supportsTablet": false,
       "bundleIdentifier": "me.gsdv.UniVerse",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "developmentTeam": "TXL2BSFRST"
     },
     "android": {
       "adaptiveIcon": {
