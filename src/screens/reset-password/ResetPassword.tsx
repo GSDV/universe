@@ -40,6 +40,7 @@ export default function ResetPassword() {
                     placeholder='Email'
                     value={email}
                     onChange={(input: string) => setEmail(input.toLowerCase())}
+                    autoCap='none'
                 />
 
                 <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Send Email</Button>

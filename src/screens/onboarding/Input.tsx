@@ -10,9 +10,10 @@ interface InputProps {
     value: string;
     onChange: (input: string)=>void;
     isSecure?: boolean;
+    autoCap?: 'none' | 'sentences' | 'words' | 'characters';
 }
 
-export default function Input({ placeholder, subtitle, value, onChange, isSecure }: InputProps) {
+export default function Input({ placeholder, subtitle, value, onChange, isSecure, autoCap = 'sentences' }: InputProps) {
     return (
         <View style={styles.container}>
             <TextInput
@@ -21,6 +22,8 @@ export default function Input({ placeholder, subtitle, value, onChange, isSecure
                 value={value}
                 onChangeText={onChange}
                 secureTextEntry={isSecure}
+                autoCorrect={false}
+                autoCapitalize={autoCap}
             />
             {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
         </View>

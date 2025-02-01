@@ -217,6 +217,7 @@ export default function ProfileEdit() {
                                     subtitle='Username'
                                     value={userData.username}
                                     onChange={(input: string) => handleChange('username', input)}
+                                    autoCap='none'
                                 />
 
                                 <View style={styles.inputContainer}>

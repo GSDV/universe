@@ -84,6 +84,7 @@ export default function SignUp() {
                     subtitle='Username, a-z and 0-9'
                     value={userData.username}
                     onChange={(input: string) => handleChange('username', input)}
+                    autoCap='none'
                 />
 
                 <Input
@@ -91,6 +92,7 @@ export default function SignUp() {
                     subtitle='School email'
                     value={userData.email}
                     onChange={(input: string) => handleChange('email', input)}
+                    autoCap='none'
                 />
 
                 <Input
@@ -99,6 +101,7 @@ export default function SignUp() {
                     value={userData.password}
                     onChange={(input: string) => handleChange('password', input)}
                     isSecure={true}
+                    autoCap='none'
                 />
 
                 <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Sign Up</Button>

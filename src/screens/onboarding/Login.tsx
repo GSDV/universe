@@ -70,6 +70,7 @@ export default function Login() {
                     subtitle='Email'
                     value={userData.email}
                     onChange={(input: string) => handleChange('email', input)}
+                    autoCap='none'
                 />
 
                 <Input
@@ -78,6 +79,7 @@ export default function Login() {
                     value={userData.password}
                     onChange={(input: string) => handleChange('password', input)}
                     isSecure={true}
+                    autoCap='none'
                 />
 
                 <Button containerStyle={{ alignSelf: 'center' }} onPress={onSubmit}>Login</Button>
