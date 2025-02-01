@@ -143,8 +143,8 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '80%',
-        marginBottom: 20,
+        width: '100%',
+        marginBottom: 20
     },
     input: {
         borderWidth: 1,
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 10,
         fontSize: 18,
-        width: 40,
-        height: 50,
+        width: 35,
+        height: 45,
         marginHorizontal: 5,
         color: COLORS.black
     }
