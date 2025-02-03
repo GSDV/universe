@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#f5f5f5"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "infoPlist": {
@@ -25,7 +25,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/splash.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
