@@ -34,7 +34,7 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 
             {userPrisma.university && <University university={userPrisma.university} />}
 
-            <Bio bio={userPrisma.bio} />
+            {userPrisma.bio !== '' && <Bio bio={userPrisma.bio} />}
 
             <Connections user={userPrisma} ownAccount={ownAccount} />
 
