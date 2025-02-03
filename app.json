@@ -9,19 +9,24 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "infoPlist": {
-        "displayName": "UniVerse",
-        "CFBundleDisplayName": "UniVerse",
-        "NSPhotoLibraryUsageDescription": "\"UniVerse\" needs access your photo library to allow you to upload videos."
-      },
-      "supportsTablet": false,
-      "bundleIdentifier": "me.gsdv.UniVerse",
-      "buildNumber": "1.0.0",
-      "developmentTeam": "TXL2BSFRST"
+        "infoPlist": {
+            "displayName": "UniVerse",
+            "CFBundleDisplayName": "UniVerse",
+            "NSPhotoLibraryUsageDescription": "\"UniVerse\" needs access your photo library to allow you to upload videos."
+        },
+        "supportsTablet": false,
+        "bundleIdentifier": "me.gsdv.UniVerse",
+        "buildNumber": "1.0.0",
+        "developmentTeam": "TXL2BSFRST",
+        "splash": {
+            "image": "./assets/images/splash.png",
+            "resizeMode": "cover",
+            "backgroundColor": "#ffffff"
+        }
     },
     "android": {
       "adaptiveIcon": {
