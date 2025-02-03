@@ -48,7 +48,7 @@
     "react-native-maps": "^1.20.1",
     "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "^5.1.0",
-    "react-native-screens": "^4.5.0",
+    "react-native-screens": "~4.4.0",
     "react-native-web": "~0.19.13",
     "zod": "^3.23.8",
     "zustand": "^5.0.3"
