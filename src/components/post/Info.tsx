@@ -47,12 +47,12 @@ export default function Info({ post }: { post: PostType }) {
             <View style={styles.interactionContainer}>
                 <TouchableOpacity onPress={onPressLike} style={styles.infoContainers}>
                     <Text style={styles.info}>{formatInteraction(post.likeCount)} </Text>
-                    {post.isLiked ? <AntDesign name='heart' size={15} color='#ff578f' /> : <AntDesign name='hearto' size={15} color={COLORS.black} /> }
+                    {post.isLiked ? <AntDesign name='heart' size={14} color='#ff578f' /> : <AntDesign name='hearto' size={14} color={COLORS.black} /> }
                 </TouchableOpacity>
                 
                 <View style={styles.infoContainers}>
                     <Text style={styles.info}>{formatInteraction(post.replyCount)} </Text>
-                    <SimpleLineIcons name='bubble' size={15} color={COLORS.black} />
+                    <SimpleLineIcons name='bubble' size={14} color={COLORS.black} />
                 </View>
             </View>
 
@@ -65,30 +65,31 @@ export default function Info({ post }: { post: PostType }) {
 
 const styles = StyleSheet.create({
     uniName: {
-        flex: 2,
-        fontSize: FONT_SIZES.m,
+        flex: 6,
+        fontSize: FONT_SIZES.s
     },
     interactionContainer: {
+        flex: 4,
         flexDirection: 'row',
-        gap: 20
+        gap: 10
     },
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: 5
+        gap: 10
     },
     infoContainers: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: 0
     },
     info: {
-        fontSize: FONT_SIZES.m,
+        fontSize: FONT_SIZES.s,
         color: COLORS.black
     },
     date: {
-        flex: 1,
-        fontSize: FONT_SIZES.m,
+        fontSize: FONT_SIZES.s,
         color: COLORS.gray,
         textAlign: 'right'
     }
