@@ -26,7 +26,7 @@ import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
 
 import {
-    IMG_SIZE_LIMIT_TXT,
+    AVATAR_SIZE_LIMIT_TXT,
     isValidBio,
     isValidDisplayName,
     isValidUsername,
@@ -95,7 +95,7 @@ export default function ProfileEdit() {
                 const blob = await response.blob();
                 const avatarKey = await clientUploadPfp(blob);
                 if (!avatarKey) {
-                    setAlert({ msg: `Please upload photos under ${IMG_SIZE_LIMIT_TXT}.`, cStatus: 400 });
+                    setAlert({ msg: `Please upload photos under ${AVATAR_SIZE_LIMIT_TXT}.`, cStatus: 400 });
                     setLoading(false);
                     return;
                 }
