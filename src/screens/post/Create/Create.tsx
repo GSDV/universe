@@ -28,7 +28,7 @@ import { Alert, AlertType } from '@components/Alert';
 import { CheckIfLoading } from '@components/Loading';
 
 import { MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_POST_CONTENT_LENGTH } from '@util/global';
-import { COLORS, FONT_SIZES } from '@util/global-client';
+import { COLORS, FONT_SIZES, TAB_BAR_HEIGHT } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 import { getMediaKeys, promptMediaPermissions } from '@util/media/s3';
@@ -129,7 +129,7 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
 
     return (
         <Pressable onPress={Keyboard.dismiss} style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{ flex: 1, paddingBottom: useSafeAreaInsets().bottom }}>
+            <ScrollView contentContainerStyle={{ flex: 1, paddingBottom: (useSafeAreaInsets().bottom + TAB_BAR_HEIGHT + 10) }}>
                 <Header userPrisma={userPrisma} attemptPost={attemptPost} canSubmit={canSubmit} />
                 <CheckIfLoading loading={loading}>
                     <View style={{ flex: 1, padding: 20, gap: 30 }}>
