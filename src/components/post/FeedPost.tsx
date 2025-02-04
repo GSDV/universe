@@ -82,12 +82,12 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
     if (post === undefined) return <Text>Something went wrong!</Text>;
 
     return (
-        <TouchableOpacity onPress={onPress} style={{ paddingVertical: 10, paddingLeft: 10, width: '100%', flexDirection: 'row', backgroundColor: COLORS.background }}>
+        <TouchableOpacity onPress={onPress} style={{ paddingVertical: 5, paddingLeft: 10, width: '100%', flexDirection: 'row', backgroundColor: COLORS.background }}>
             <Pressable onPress={navigateToProfile} style={styles.pfpContainer}>
                 <Pfp pfpKey={post.author.pfpKey} style={styles.pfp} />
             </Pressable>
 
-            <View style={{ padding: 10, flex: 6, gap: 10 }}>
+            <View style={{ padding: 5, paddingTop: 5, flex: 6, gap: 10 }}>
                 <Header
                     post={post}
                     ownPost={userContext?.user?.id === post.author.id}
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     pfpContainer: {
         width: 35,
         height: 35,
-        marginTop: 10
+        marginTop: 5
     },
     pfp: {
         borderRadius: 50,
