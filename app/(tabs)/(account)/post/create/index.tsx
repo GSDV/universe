@@ -18,7 +18,7 @@ export default function Index() {
         <View style={{ flex: 1, backgroundColor: COLORS.background }}>
             <SafeAreaFull>
                 <CreatePostScreen userPrisma={userContext.user as RedactedUserType} />
-            </ SafeAreaFull>
+            </SafeAreaFull>
         </View>
     );
 }
