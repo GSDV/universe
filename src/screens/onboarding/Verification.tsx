@@ -122,6 +122,7 @@ export default function Verification() {
 const styles = StyleSheet.create({
     container: {
         padding: 15,
+        paddingHorizontal: 0,
         flex: 1,
         alignSelf: 'center',
         width: '80%',
@@ -152,10 +153,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 8,
         padding: 10,
-        fontSize: 18,
-        width: 35,
+        fontSize: 15,
+        width: 40,
         height: 45,
-        marginHorizontal: 5,
         color: COLORS.black
     }
 });
