@@ -1,7 +1,7 @@
 # UniVerse
 Connect with students, check out what's new on campus, and share your thoughts!
 
-<img src="https://github.com/GSDV/universe/blob/main/assets/thumbnail.png" alt="Thumbnail" style="width:100%;"/>
+<img src="https://github.com/GSDV/universe/blob/main/assets/images/thumbnail.png" alt="Thumbnail" style="width:100%;"/>
 
 
 ## Setup
