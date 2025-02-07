@@ -90,7 +90,11 @@ export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedU
         } = {}
         if (includesLocation) {
             const loc = await requestLocation();
-            if (!loc.granted || loc.location == null) return;
+            if (!loc.granted || loc.location == null) {
+                setLoading(true);
+                setAlert({ msg: `Turn on location in settings if you want your post to appear on the map.`, cStatus: 400 });
+                return;
+            }
             location.lat = loc.location.coords.latitude;
             location.lng = loc.location.coords.longitude;
         }
