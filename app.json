@@ -13,20 +13,21 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-        "infoPlist": {
-            "displayName": "UniVerse",
-            "CFBundleDisplayName": "UniVerse",
-            "NSPhotoLibraryUsageDescription": "\"UniVerse\" needs access your photo library to allow you to upload videos."
-        },
-        "supportsTablet": false,
-        "bundleIdentifier": "me.gsdv.UniVerse",
-        "buildNumber": "1.0.0",
-        "developmentTeam": "TXL2BSFRST",
-        "splash": {
-            "image": "./assets/images/splash.png",
-            "resizeMode": "cover",
-            "backgroundColor": "#ffffff"
-        }
+      "infoPlist": {
+        "displayName": "UniVerse",
+        "CFBundleDisplayName": "UniVerse",
+        "NSPhotoLibraryUsageDescription": "\"UniVerse\" needs access your photo library to allow you to upload videos.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "supportsTablet": false,
+      "bundleIdentifier": "me.gsdv.UniVerse",
+      "buildNumber": "1.0.0",
+      "developmentTeam": "TXL2BSFRST",
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#ffffff"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -35,8 +36,11 @@
       },
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "package": "me.gsdv.UniVerse"
     },
     "web": {
       "bundler": "metro",
@@ -70,6 +74,12 @@
       "eas": {
         "projectId": "b8fbf108-0761-46eb-b6fb-ef8bf609f083"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b8fbf108-0761-46eb-b6fb-ef8bf609f083"
     }
   }
 }
