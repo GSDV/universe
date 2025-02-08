@@ -81,9 +81,7 @@ export default function PostActionsMenu({ post, morePostsAvailable = true }: Pos
         showActionSheet(options, [0]);
     }
 
-    console.log('onEllipsisPres: ', userContext?.user?.id);
     const onEllipsisPres = (userContext?.user?.id === post.author.id) ? ownOptions : otherOptions;
-
 
     return (
         <Ionicons 
