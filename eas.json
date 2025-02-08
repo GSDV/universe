@@ -5,15 +5,33 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
+      "developmentClient": false,
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium",
+        "simulator": false
+      },
+      "channel": "preview",
+      "env": {
+        "EXPO_PUBLIC_DOMAIN": "https://joinuniverse.app"
+      }
     },
+
     "production": {
-      "autoIncrement": true
-    }
+        "distribution": "store",
+        "ios": {
+          "resourceClass": "m-medium",
+          "simulator": false
+        },
+        "channel": "production",
+        "autoIncrement": true,
+        "env": {
+          "EXPO_PUBLIC_DOMAIN": "https://joinuniverse.app"
+        }
+      }
   },
   "submit": {
     "production": {}
