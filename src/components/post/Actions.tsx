@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 
 import { usePostStore } from '@hooks/PostStore';
 import { useAccountPost } from '@providers/AccountPostProvider';
+import { useUser } from '@providers/UserProvider';
 
 import { Ionicons } from '@expo/vector-icons';
 
@@ -20,12 +21,12 @@ import { PostType } from '@util/types';
 
 interface PostActionsMenuProps {
     post: PostType;
-    ownPost?: boolean;
     morePostsAvailable?: boolean;
 }
 
-export default function PostActionsMenu({ post, ownPost, morePostsAvailable = true }: PostActionsMenuProps) {
+export default function PostActionsMenu({ post, morePostsAvailable = true }: PostActionsMenuProps) {
     const router = useRouter();
+    const userContext = useUser();
 
     const accountPostContext = useAccountPost();
 
@@ -44,7 +45,7 @@ export default function PostActionsMenu({ post, ownPost, morePostsAvailable = tr
                 redactPost(post.id);
                 accountPostContext.emitOperation({ name: 'DELETE', postId: post.id });
                 await fetchWithAuth(`post/${post.id}`, 'DELETE');
-                router.back();
+                if (router.canGoBack()) router.back();
             }, style: 'destructive' },
         ]);
     }
@@ -80,7 +81,8 @@ export default function PostActionsMenu({ post, ownPost, morePostsAvailable = tr
         showActionSheet(options, [0]);
     }
 
-    const onEllipsisPres = ownPost ? ownOptions : otherOptions;
+    console.log('onEllipsisPres: ', userContext?.user?.id);
+    const onEllipsisPres = (userContext?.user?.id === post.author.id) ? ownOptions : otherOptions;
 
 
     return (

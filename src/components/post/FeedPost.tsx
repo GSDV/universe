@@ -9,7 +9,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-nativ
 
 import { useRouter } from 'expo-router';
 
-import { useUser } from '@providers/UserProvider';
 import { usePost, usePostStore } from '@hooks/PostStore';
 
 import Entypo from '@expo/vector-icons/Entypo';
@@ -37,8 +36,6 @@ interface FeedPostProps {
 
 export function FeedPost({ postId, showPinned = false, morePostsAvailable }: FeedPostProps) {
     const router = useRouter();
-
-    const userContext = useUser();
 
     const addPost = usePostStore(state => state.addPost);
 
@@ -90,7 +87,6 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
             <View style={{ padding: 5, paddingTop: 5, flex: 6, gap: 10 }}>
                 <Header
                     post={post}
-                    ownPost={userContext?.user?.id === post.author.id}
                     showPinned={showPinned}
                     morePostsAvailable={morePostsAvailable}
                     navigateToProfile={navigateToProfile}
@@ -110,13 +106,12 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
 
 interface HeaderProps {
     post: PostType;
-    ownPost: boolean;
     showPinned?: boolean;
     morePostsAvailable?: boolean;
     navigateToProfile: ()=>void;
 }
 
-function Header({ post, ownPost, showPinned, morePostsAvailable, navigateToProfile }: HeaderProps) {
+function Header({ post, showPinned, morePostsAvailable, navigateToProfile }: HeaderProps) {
     return (
         <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
@@ -135,7 +130,7 @@ function Header({ post, ownPost, showPinned, morePostsAvailable, navigateToProfi
             <View style={{ width: 10 }} />
 
             {(showPinned && post.pinned) && <Entypo name='pin' size={20} color={COLORS.black} />}
-            <PostActionsMenu post={post} ownPost={ownPost} morePostsAvailable={morePostsAvailable} />
+            <PostActionsMenu post={post} morePostsAvailable={morePostsAvailable} />
         </View>
     );
 }

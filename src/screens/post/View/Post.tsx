@@ -31,17 +31,12 @@ const LEFT_COLUMN_WIDTH = PFP_SIZE + 10;
 
 
 
-interface ThreadPostType {
-    post: PostType;
-    ownPost?: boolean;
-}
-
 type LineType = 'up' | 'down' | 'full' | 'none';
 
 
 
 // Direct ancestor to post that was pressed on.
-export function AncestorPost({ postId, ownPost, openAncestor }: { postId: string, ownPost?: boolean, openAncestor: ()=>void }) {
+export function AncestorPost({ postId, openAncestor }: { postId: string, openAncestor: ()=>void }) {
     const postData = usePost(postId);
     const [post, setPost] = useState<PostType | undefined>(postData);
 
@@ -57,7 +52,7 @@ export function AncestorPost({ postId, ownPost, openAncestor }: { postId: string
     
     return (
         <TouchableOpacity onPress={openAncestor}>
-            <ThreadPost post={post} ownPost={ownPost} type={type} />
+            <ThreadPost post={post} type={type} />
         </TouchableOpacity>
     );
 }
@@ -65,7 +60,7 @@ export function AncestorPost({ postId, ownPost, openAncestor }: { postId: string
 
 
 // Post that was pressed on.
-export function FocusPost({ postId, ownPost }: { postId: string, ownPost?: boolean }) {
+export function FocusPost({ postId }: { postId: string }) {
     const postData = usePost(postId);
     const [post, setPost] = useState<PostType | undefined>(postData);
 
@@ -79,19 +74,19 @@ export function FocusPost({ postId, ownPost }: { postId: string, ownPost?: boole
      // Should never happen, but for TypeScript:
      if (post === undefined) return <ErrorPost />;
 
-    return <ThreadPost post={post} ownPost={ownPost} type={type} />;
+    return <ThreadPost post={post} type={type} />;
 }
 
 
 
 // "type" prop refers to the line on the left of the thread.
-function ThreadPost({ post, ownPost, type }: { post: PostType, ownPost?: boolean, type: LineType }) {
+function ThreadPost({ post, type }: { post: PostType, type: LineType }) {
     return (
         <View style={{ paddingLeft: 5, width: '100%', flexDirection: 'row' }}>
             <ThreadLine username={post.author.username} pfpKey={post.author.pfpKey} type={type} />
 
             <View style={{ paddingVertical: 15, padding: 10, flex: 6, gap: 10 }}>
-                <PostHeader post={post} ownPost={ownPost} />
+                <PostHeader post={post} />
 
                 <TextContent post={post} truncate={false} />
 
@@ -131,7 +126,7 @@ function ThreadLine({ username, pfpKey, type }: { username: string, pfpKey: stri
 
 
 
-function PostHeader({ post, ownPost }: ThreadPostType) {
+function PostHeader({ post }: { post: PostType }) {
     const router = useRouter();
     const navigateToProfile = () => {
         router.push({
@@ -156,7 +151,7 @@ function PostHeader({ post, ownPost }: ThreadPostType) {
             {/* Spacer */}
             <View style={{ width: 10 }} />
 
-            <PostActionsMenu post={post} ownPost={ownPost} />
+            <PostActionsMenu post={post} />
         </Pressable>
     );
 }
