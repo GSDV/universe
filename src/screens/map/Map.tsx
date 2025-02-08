@@ -38,7 +38,7 @@ import { StyleSheet, View, Animated, Dimensions } from 'react-native';
 import { usePostStore } from '@hooks/PostStore';
 
 import MapClusteredView from 'react-native-map-clustering';
-import { Region, Marker } from 'react-native-maps';
+import MapView, { Region, Marker } from 'react-native-maps';
 
 import PostPreview from './PostPreview';
 import PostMarker from './PostMarker';
@@ -66,7 +66,7 @@ export default function Map() {
     const addPost = usePostStore(state => state.addPost);
     const removePost = usePostStore(state => state.removePost);
 
-    const mapRef = useRef<MapClusteredView>(null);
+    const mapRef = useRef<MapView>(null);
     const [mapRegion, setMapRegion] = useState<Region>(DEFAULT_REGION);
 
     // Does PostStore have a current post?
@@ -117,9 +117,11 @@ export default function Map() {
             latitudeDelta: 0.02,
             longitudeDelta: 0.02,
         };
-        // TypeScript says "animateToRegion" does not exist on MapView, but it does.
-        // Ignore error with any.
-        (mapRef.current as any).animateToRegion(newRegion, 500);
+        // Failing animation, do regular set map region instead for now.
+        // (mapRef.current as any).animateToRegion(newRegion, 500);
+        // setMapRegion(newRegion);
+        mapRef.current?.animateToRegion(newRegion, 500);
+
         handleChangeRegion(newRegion);
     }
 
