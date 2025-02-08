@@ -1,7 +1,7 @@
 
 import { Alert as AlertPopUp } from 'react-native';
 
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 
 import { usePostStore } from '@hooks/PostStore';
 import { useAccountPost } from '@providers/AccountPostProvider';
@@ -28,6 +28,8 @@ export default function PostActionsMenu({ post, morePostsAvailable = true }: Pos
     const router = useRouter();
     const userContext = useUser();
 
+    const pathname = usePathname();
+
     const accountPostContext = useAccountPost();
 
     const redactPost = usePostStore((state) => state.redactPost);
@@ -45,7 +47,7 @@ export default function PostActionsMenu({ post, morePostsAvailable = true }: Pos
                 redactPost(post.id);
                 accountPostContext.emitOperation({ name: 'DELETE', postId: post.id });
                 await fetchWithAuth(`post/${post.id}`, 'DELETE');
-                if (router.canGoBack()) router.back();
+                if (pathname === `/post/${post.id}/view`) router.back();
             }, style: 'destructive' },
         ]);
     }
