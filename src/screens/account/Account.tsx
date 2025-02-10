@@ -42,10 +42,14 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 
             <Connections user={user} ownAccount={ownAccount} />
 
-            {user.isBlocked ?
-                <AccountBlocked />
+            {user.isBlocking ?
+                <AccountIsBlocked />
             :
-                <PostsAndReplies userId={userPrisma.id} />
+                <Fragment>{user.isBlockedBy ?
+                    <AccountBlockedYou />
+                :
+                    <PostsAndReplies userId={userPrisma.id} />
+                }</Fragment>
             }
         </View>
     );
@@ -63,7 +67,7 @@ function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
     const router = useRouter();
 
     const toggleBlock = () => {
-        const didBlock = !user.isBlocked;
+        const didBlock = !user.isBlocking;
         const body = JSON.stringify({ didBlock });
         fetchWithAuth(`user/${user.id}/block`, 'PUT', body);
         if (didBlock) {
@@ -84,7 +88,7 @@ function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
 
     const promptOtherOptions = () => {
         const options = [
-            { label: (user.isBlocked ? 'Unblock' : 'Block'), action: toggleBlock }
+            { label: (user.isBlocking ? 'Unblock' : 'Block'), action: toggleBlock }
         ];
         showActionSheet(options, [0])
     }
@@ -174,7 +178,7 @@ function Connections({ user, ownAccount }: { user: RedactedUserWithFollowAndBloc
             <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                 <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{user.followingCount} Following</Text>
                 <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{followerCount} Followers</Text>
-                {(!ownAccount && !user.isBlocked) && <Button
+                {(!ownAccount && !user.isBlocking && !user.isBlockedBy) && <Button
                     textStyle={{width: 100, fontSize: FONT_SIZES.m, backgroundColor: followButtonColor}} 
                     onPress={toggleFollow}
                 >
@@ -187,10 +191,18 @@ function Connections({ user, ownAccount }: { user: RedactedUserWithFollowAndBloc
 
 
 
-function AccountBlocked() {
+function AccountIsBlocked() {
     return (
         <View style={{ padding: 10, flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light_gray }}>
             <Text style={{ textAlign: 'center', color: COLORS.black, fontSize: FONT_SIZES.s }}>you blocked this account</Text>
+        </View>
+    );
+}
+
+function AccountBlockedYou() {
+    return (
+        <View style={{ padding: 10, flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light_gray }}>
+            <Text style={{ textAlign: 'center', color: COLORS.black, fontSize: FONT_SIZES.s }}>this account has blocked you</Text>
         </View>
     );
 }
