@@ -18,8 +18,11 @@ export interface RedactedUserWithFollow extends RedactedUserType {
     isFollowed: boolean;
 }
 
+// isBlocking: Logged in user is blocking this account
+// isBlockedBy: Logged in user is blocked by this account
 export interface RedactedUserWithFollowAndBlock extends RedactedUserWithFollow {
-    isBlocked: boolean;
+    isBlocking: boolean;
+    isBlockedBy: boolean;
 }
 
 

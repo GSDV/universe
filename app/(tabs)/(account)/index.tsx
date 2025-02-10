@@ -17,7 +17,8 @@ export default function Index() {
     const userPrisma: RedactedUserWithFollowAndBlock = {
         ...userContext.user as RedactedUserType,
         isFollowed: false,
-        isBlocked: false
+        isBlocking: false,
+        isBlockedBy: false
     }
 
     return (
