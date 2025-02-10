@@ -117,12 +117,10 @@ export default function Map() {
             latitudeDelta: 0.02,
             longitudeDelta: 0.02,
         };
-        // Failing animation, do regular set map region instead for now.
-        // (mapRef.current as any).animateToRegion(newRegion, 500);
-        // setMapRegion(newRegion);
-        mapRef.current?.animateToRegion(newRegion, 500);
-
-        handleChangeRegion(newRegion);
+           
+        setTimeout(() => {
+            mapRef.current?.animateToRegion(newRegion, 500);
+        }, 500);
     }
 
     useEffect(() => {
@@ -187,8 +185,13 @@ export default function Map() {
                                 zIndex={p.likeCount}
                                 tracksViewChanges={false}
                                 hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                                onPress={(e) => {
+                                    e.stopPropagation();
+                                    openPreview(p)
+                                }}
+                                    
                             >
-                                <PostMarker post={p} onPress={() => openPreview(p)} />
+                                <PostMarker post={p} />
                             </Marker>
                         );
                     })}
