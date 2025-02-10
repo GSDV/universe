@@ -16,7 +16,8 @@
       "infoPlist": {
         "displayName": "UniVerse",
         "CFBundleDisplayName": "UniVerse",
-        "NSPhotoLibraryUsageDescription": "\"UniVerse\" needs access your photo library to allow you to upload videos.",
+        "NSPhotoLibraryUsageDescription": "\"UniVerse\" would like to access your photo library to allow you to share photos and videos.",
+        "NSLocationWhenInUseUsageDescription": "\"UniVerse\" would like to access your location while using the app to allow you to interact with the map.",
         "ITSAppUsesNonExemptEncryption": false
       },
       "supportsTablet": false,
@@ -51,7 +52,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) needs your location for posts."
+          "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) needs your location to interact with the map."
         }
       ],
       "expo-font"
