@@ -143,11 +143,14 @@ function FeedUser({ user }: { user: RedactedUserWithFollow }) {
                     </View>
                     <Text style={account_feed_styles.username} numberOfLines={1} ellipsizeMode='tail'>@{user.username}</Text>
                 </View>
+
+                <View style={{ justifyContent: 'center' }}>
+                    {user.isFollowed && <Text style={{ color: COLORS.primary, fontSize: FONT_SIZES.s }}>Following</Text>}
+                </View>
             </View>
 
+            {user.university!=undefined && <Text numberOfLines={1} style={{ color: user.university.color, fontSize: FONT_SIZES.s }}>{user.university.name}</Text>}
             {user.bio!='' && <Text ellipsizeMode='tail' numberOfLines={1} style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>{user.bio}</Text>}
-
-            {user.isFollowed && <Text style={{ color: COLORS.gray, fontSize: FONT_SIZES.s }}>Following</Text>}
         </TouchableOpacity>
     );
 }
@@ -156,24 +159,24 @@ function FeedUser({ user }: { user: RedactedUserWithFollow }) {
 
 const account_feed_styles = StyleSheet.create({
     container: {
-        padding: 15,
-        paddingHorizontal: 20,
+        padding: 10,
         width: '100%',
-        gap: 10,
+        gap: 0,
         backgroundColor: COLORS.background
     },
     header: {
+        paddingBottom: 5,
         flexDirection: 'row',
         justifyContent: 'center',
-        gap: 10
+        gap: 5
     },
     pfp: {
         borderRadius: 50,
-        width: 50,
-        height: 50
+        width: 42,
+        height: 42
     },
     displayName: {
-        maxWidth: '50%',
+        maxWidth: '70%',
         color: COLORS.black,
         fontSize: FONT_SIZES.m,
         fontWeight: '500'
