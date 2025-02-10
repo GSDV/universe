@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, Fragment } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -17,28 +17,36 @@ import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { RedactedUserWithFollow, UniversityType } from '@util/types';
+import { RedactedUserWithFollowAndBlock, UniversityType } from '@util/types';
+import { showActionSheet } from '@util/action';
 
 
 
 // ownAccount (assumed false): Is the user viewing his own account
 interface AccountProps {
-    userPrisma: RedactedUserWithFollow
-    ownAccount?: boolean
+    userPrisma: RedactedUserWithFollowAndBlock;
+    ownAccount?: boolean;
+    blocked?: boolean;
 }
 
 export default function Account({ userPrisma, ownAccount = false }: AccountProps) {
+    const [user, setUser] = useState<RedactedUserWithFollowAndBlock>(userPrisma);
+
     return (
         <View style={{ flex: 1, gap: 5 }}>
-            <AccountHeader userPrisma={userPrisma} ownAccount={ownAccount} />
+            <AccountHeader user={user} ownAccount={ownAccount} setUser={setUser} />
 
             {userPrisma.university && <University university={userPrisma.university} />}
 
             {userPrisma.bio !== '' && <Bio bio={userPrisma.bio} />}
 
-            <Connections user={userPrisma} ownAccount={ownAccount} />
+            <Connections user={user} ownAccount={ownAccount} />
 
-            <PostsAndReplies userId={userPrisma.id} />
+            {user.isBlocked ?
+                <AccountBlocked />
+            :
+                <PostsAndReplies userId={userPrisma.id} />
+            }
         </View>
     );
 }
@@ -46,28 +54,56 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 
 
 interface AccountHeader {
-    userPrisma: RedactedUserWithFollow
-    ownAccount: boolean
+    user: RedactedUserWithFollowAndBlock;
+    ownAccount: boolean;
+    setUser: React.Dispatch<React.SetStateAction<RedactedUserWithFollowAndBlock>>
 }
 
-function AccountHeader({ userPrisma, ownAccount }: AccountHeader) {
+function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
     const router = useRouter();
+
+    const toggleBlock = () => {
+        const didBlock = !user.isBlocked;
+        const body = JSON.stringify({ didBlock });
+        fetchWithAuth(`user/${user.id}/block`, 'PUT', body);
+        if (didBlock) {
+            const newFollowerCount = (user.isFollowed) ? (user.followerCount - 1) : user.followerCount;
+            setUser(u => ({
+                ...u,
+                isBlocked: didBlock,
+                isFollowed: false,
+                followerCount: newFollowerCount
+            }));
+        } else {
+            setUser(u => ({
+                ...u,
+                isBlocked: didBlock
+            }));
+        }
+    }
+
+    const promptOtherOptions = () => {
+        const options = [
+            { label: (user.isBlocked ? 'Unblock' : 'Block'), action: toggleBlock }
+        ];
+        showActionSheet(options, [0])
+    }
 
     return (
         <View style={styles.header}>
             <View style={{ flex: 1, flexDirection: 'row', gap: 5, alignItems: 'center' }}>
-                <Pfp pfpKey={userPrisma.pfpKey} style={styles.pfp} />
+                <Pfp pfpKey={user.pfpKey} style={styles.pfp} />
                 <View style={{ flex: 1, gap: 2 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-                        <Text ellipsizeMode='tail' numberOfLines={1} style={styles.displayName}>{userPrisma.displayName}</Text>
-                        {userPrisma.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
+                        <Text ellipsizeMode='tail' numberOfLines={1} style={styles.displayName}>{user.displayName}</Text>
+                        {user.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
                     </View>
-                    <Text ellipsizeMode='tail' numberOfLines={1} style={styles.username}>@{userPrisma.username}</Text>
+                    <Text ellipsizeMode='tail' numberOfLines={1} style={styles.username}>@{user.username}</Text>
                 </View>
             </View>
 
-            {ownAccount && 
-            <>
+            {ownAccount ? 
+            <Fragment>
                 <TouchableOpacity onPress={() => router.push(`/post/create`)}>
                     <Ionicons name='add-outline' size={30} color={COLORS.primary} />
                 </TouchableOpacity>
@@ -75,7 +111,11 @@ function AccountHeader({ userPrisma, ownAccount }: AccountHeader) {
                 <TouchableOpacity onPress={() => router.push('/settings')}>
                     <Ionicons name='settings-outline' size={30} color={COLORS.primary} />
                 </TouchableOpacity>
-            </>
+            </Fragment>
+            :
+                <TouchableOpacity onPress={promptOtherOptions}>
+                    <Ionicons name='ellipsis-horizontal' size={25} color={COLORS.primary} />
+                </TouchableOpacity>
             }
         </View>
     );
@@ -103,7 +143,7 @@ function Bio({ bio }: { bio: string }) {
 
 
 
-function Connections({ user, ownAccount }: { user: RedactedUserWithFollow, ownAccount: boolean }) {
+function Connections({ user, ownAccount }: { user: RedactedUserWithFollowAndBlock, ownAccount: boolean }) {
     const userContext = useUser();
 
     const [isFollowing, setIsFollowing] = useState<boolean>(user.isFollowed);
@@ -134,13 +174,23 @@ function Connections({ user, ownAccount }: { user: RedactedUserWithFollow, ownAc
             <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                 <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{user.followingCount} Following</Text>
                 <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{followerCount} Followers</Text>
-                {!ownAccount && <Button
+                {(!ownAccount && !user.isBlocked) && <Button
                     textStyle={{width: 100, fontSize: FONT_SIZES.m, backgroundColor: followButtonColor}} 
                     onPress={toggleFollow}
                 >
                     {(isFollowing) ? 'Unfollow' : 'Follow'}
                 </Button>}
             </View>
+        </View>
+    );
+}
+
+
+
+function AccountBlocked() {
+    return (
+        <View style={{ padding: 10, flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light_gray }}>
+            <Text style={{ textAlign: 'center', color: COLORS.black, fontSize: FONT_SIZES.s }}>you blocked this account</Text>
         </View>
     );
 }
