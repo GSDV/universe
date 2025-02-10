@@ -133,24 +133,26 @@ function FeedUser({ user }: { user: RedactedUserWithFollow }) {
 
     return (
         <TouchableOpacity onPress={onPress} style={account_feed_styles.container}>
-            <View style={account_feed_styles.header}>
-                <Pfp pfpKey={user.pfpKey} style={account_feed_styles.pfp} />
+            <Pfp pfpKey={user.pfpKey} style={account_feed_styles.pfp} />
 
-                <View style={{ flex: 1, justifyContent: 'center', gap: 2 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                        <Text style={account_feed_styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{user.displayName}</Text>
-                        {user.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
+            <View style={{ padding: 5, paddingTop: 5, flex: 6, gap: 2 }}>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+                    <View style={{ flex: 1, justifyContent: 'center', gap: 0 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                            <Text style={account_feed_styles.displayName} numberOfLines={1} ellipsizeMode='tail'>{user.displayName}</Text>
+                            {user.verified && <MaterialCommunityIcons name='star-four-points' style={{ fontSize: FONT_SIZES.m }} color={COLORS.primary} />}
+                        </View>
+                        <Text style={account_feed_styles.username} numberOfLines={1} ellipsizeMode='tail'>@{user.username}</Text>
                     </View>
-                    <Text style={account_feed_styles.username} numberOfLines={1} ellipsizeMode='tail'>@{user.username}</Text>
+
+                    <View style={{ justifyContent: 'center' }}>
+                        {user.isFollowed && <Text style={{ color: COLORS.primary, fontSize: FONT_SIZES.s }}>Following</Text>}
+                    </View>
                 </View>
 
-                <View style={{ justifyContent: 'center' }}>
-                    {user.isFollowed && <Text style={{ color: COLORS.primary, fontSize: FONT_SIZES.s }}>Following</Text>}
-                </View>
+                {user.university!=undefined && <Text numberOfLines={1} style={{ color: user.university.color, fontSize: FONT_SIZES.s }}>{user.university.name}</Text>}
+                {user.bio!='' && <Text ellipsizeMode='tail' numberOfLines={1} style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>{user.bio}</Text>}
             </View>
-
-            {user.university!=undefined && <Text numberOfLines={1} style={{ color: user.university.color, fontSize: FONT_SIZES.s }}>{user.university.name}</Text>}
-            {user.bio!='' && <Text ellipsizeMode='tail' numberOfLines={1} style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>{user.bio}</Text>}
         </TouchableOpacity>
     );
 }
@@ -160,8 +162,9 @@ function FeedUser({ user }: { user: RedactedUserWithFollow }) {
 const account_feed_styles = StyleSheet.create({
     container: {
         padding: 10,
+        paddingVertical: 5,
         width: '100%',
-        gap: 0,
+        flexDirection: 'row',
         backgroundColor: COLORS.background
     },
     header: {
@@ -171,9 +174,10 @@ const account_feed_styles = StyleSheet.create({
         gap: 5
     },
     pfp: {
-        borderRadius: 50,
-        width: 42,
-        height: 42
+        marginTop: 5,
+        width: 35,
+        height: 35,
+        borderRadius: 50
     },
     displayName: {
         maxWidth: '70%',
