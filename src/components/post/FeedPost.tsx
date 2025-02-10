@@ -79,7 +79,7 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
     if (post === undefined) return <Text>Something went wrong!</Text>;
 
     return (
-        <TouchableOpacity onPress={onPress} style={{ paddingVertical: 5, paddingLeft: 10, width: '100%', flexDirection: 'row', backgroundColor: COLORS.background }}>
+        <TouchableOpacity onPress={onPress} style={styles.container}>
             <Pressable onPress={navigateToProfile} style={styles.pfpContainer}>
                 <Pfp pfpKey={post.author.pfpKey} style={styles.pfp} />
             </Pressable>
@@ -138,6 +138,13 @@ function Header({ post, showPinned, morePostsAvailable, navigateToProfile }: Hea
 
 
 const styles = StyleSheet.create({
+    container: {
+        paddingVertical: 5,
+        paddingLeft: 10,
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: COLORS.background
+    },
     pfpContainer: {
         width: 35,
         height: 35,
