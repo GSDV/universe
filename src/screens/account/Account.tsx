@@ -40,7 +40,7 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 
             {userPrisma.bio !== '' && <Bio bio={userPrisma.bio} />}
 
-            <Connections user={user} ownAccount={ownAccount} />
+            <Connections user={user} ownAccount={ownAccount} setUser={setUser} />
 
             {user.isBlocking ?
                 <AccountIsBlocked />
@@ -70,20 +70,13 @@ function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
         const didBlock = !user.isBlocking;
         const body = JSON.stringify({ didBlock });
         fetchWithAuth(`user/${user.id}/block`, 'PUT', body);
-        if (didBlock) {
-            const newFollowerCount = (user.isFollowed) ? (user.followerCount - 1) : user.followerCount;
-            setUser(u => ({
-                ...u,
-                isBlocked: didBlock,
-                isFollowed: false,
-                followerCount: newFollowerCount
-            }));
-        } else {
-            setUser(u => ({
-                ...u,
-                isBlocked: didBlock
-            }));
-        }
+
+        setUser(u => ({
+            ...u,
+            isBlocking: didBlock,
+            isFollowed: false,
+            followerCount: (user.isFollowed) ? (user.followerCount - 1) : user.followerCount
+        }));
     }
 
     const promptOtherOptions = () => {
@@ -147,19 +140,23 @@ function Bio({ bio }: { bio: string }) {
 
 
 
-function Connections({ user, ownAccount }: { user: RedactedUserWithFollowAndBlock, ownAccount: boolean }) {
+interface ConnectionsProps {
+    user: RedactedUserWithFollowAndBlock;
+    ownAccount: boolean;
+    setUser: React.Dispatch<React.SetStateAction<RedactedUserWithFollowAndBlock>>;
+}
+function Connections({ user, ownAccount, setUser }: ConnectionsProps) {
     const userContext = useUser();
-
-    const [isFollowing, setIsFollowing] = useState<boolean>(user.isFollowed);
-    const [followerCount, setFollowerCount] = useState<number>(user.followerCount);
-    const followButtonColor = isFollowing ? '#b8b8b8' : COLORS.primary;
+    const followButtonColor = user.isFollowed ? '#b8b8b8' : COLORS.primary;
 
     const toggleFollow = async () => {
-        const followed = !isFollowing;
-        setIsFollowing(followed);
+        const followed = !user.isFollowed;
 
-        if (followed) setFollowerCount(prev=>prev+1);
-        else setFollowerCount(prev=>prev-1);
+        setUser(u => ({
+            ...u,
+            isFollowed: followed,
+            followerCount: (followed) ? (u.followerCount+1) : (u.followerCount-1)
+        }));
 
         // For displaying on user's own account:
         userContext.setUser(prev => {
@@ -177,12 +174,12 @@ function Connections({ user, ownAccount }: { user: RedactedUserWithFollowAndBloc
         <View style={{ paddingVertical: 5, paddingHorizontal: 20, width: '100%', gap: 10 }}>
             <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                 <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{user.followingCount} Following</Text>
-                <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{followerCount} Followers</Text>
+                <Text style={{ fontSize: FONT_SIZES.m, color: COLORS.black }}>{user.followerCount} Followers</Text>
                 {(!ownAccount && !user.isBlocking && !user.isBlockedBy) && <Button
                     textStyle={{width: 100, fontSize: FONT_SIZES.m, backgroundColor: followButtonColor}} 
                     onPress={toggleFollow}
                 >
-                    {(isFollowing) ? 'Unfollow' : 'Follow'}
+                    {(user.isFollowed) ? 'Unfollow' : 'Follow'}
                 </Button>}
             </View>
         </View>
