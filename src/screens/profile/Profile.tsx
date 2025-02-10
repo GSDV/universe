@@ -9,14 +9,14 @@ import { CheckIfLoading } from '@components/Loading';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { RedactedUserWithFollow } from '@util/types';
+import { RedactedUserWithFollowAndBlock } from '@util/types';
 
 
 
 export default function Profile() {
     const { username } = useLocalSearchParams();
 
-    const [user, setUser] = useState<RedactedUserWithFollow>();
+    const [user, setUser] = useState<RedactedUserWithFollowAndBlock>();
     const [ownAccount, setOwnAccount] = useState<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -44,7 +44,7 @@ export default function Profile() {
     return (
         <CheckIfLoading loading={loading}>
             <CheckIfAlert alert={alert}>
-                <Acccount userPrisma={user as RedactedUserWithFollow} ownAccount={ownAccount} />
+                <Acccount userPrisma={user as RedactedUserWithFollowAndBlock} ownAccount={ownAccount} />
             </CheckIfAlert>
         </CheckIfLoading>
     );
