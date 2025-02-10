@@ -2,7 +2,7 @@
 // Useful for bypassing Vercel upload limit by uploading to S3 on client, not server.
 'use client';
 
-import { Alert as AlertPopUp, Linking } from 'react-native'
+import { Alert as AlertPopUp } from 'react-native'
 
 import * as ImagePicker from 'expo-image-picker';
 
@@ -18,10 +18,13 @@ export const promptMediaPermissions = async () => {
     if (!granted) {
         AlertPopUp.alert(
             'Permission Required',
-            'Please grant permission to access your photos.',
+            'To upload photos, this app must have permission to access your photo library.',
             [
-                { text: 'Open Settings', onPress: () => Linking.openSettings() },
-                { text: 'Cancel', style: 'cancel' }
+                {
+                    text: 'Ok',
+                    style: 'cancel',
+                    onPress: () => {}
+                }
             ]
         );
     }

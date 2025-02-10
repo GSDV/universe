@@ -1,26 +1,20 @@
-import { Alert, Linking, Platform } from 'react-native';
+import { Alert as AlertPopUp } from 'react-native';
 
 import * as Location from 'expo-location';
+
 
 
 export const requestLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-        Alert.alert(
+        AlertPopUp.alert(
             "Permission Required",
-            "This app needs access to location for posts. Would you like to enable it?",
+            "To use the map, this app needs access to your location.",
             [
                 {
-                    text: "Not Now",
+                    text: "Ok",
                     style: "cancel",
                     onPress: () => {}
-                },
-                {
-                    text: "Open Settings",
-                    onPress: async () => {
-                        await Location.requestForegroundPermissionsAsync();
-                        if (Platform.OS === 'ios') Linking.openSettings();
-                    }
                 }
             ]
         );
