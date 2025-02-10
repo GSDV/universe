@@ -10,7 +10,7 @@ import { PostType } from '@util/types';
 
 
 
-export default function PostMarker({ post, onPress }: { post: PostType; onPress: () => void }) {
+export default function PostMarker({ post, onPress }: { post: PostType, onPress: () => void }) {
     const score = post.likeCount + post.replyCount/3;
 
     return (
