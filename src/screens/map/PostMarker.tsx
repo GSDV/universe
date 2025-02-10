@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Pressable, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -10,13 +10,13 @@ import { PostType } from '@util/types';
 
 
 
-export default function PostMarker({ post, onPress }: { post: PostType, onPress: () => void }) {
+export default function PostMarker({ post }: { post: PostType }) {
     const score = post.likeCount + post.replyCount/3;
 
     return (
-        <Pressable onPress={onPress} style={styles.container}>
+        <View style={styles.container}>
             <Star score={score} />
-        </Pressable>
+        </View>
     );
 }
 
@@ -29,7 +29,7 @@ function Star({ score }: { score: number }) {
     if (score < 20) return (
         <>
             <MaterialCommunityIcons style={{ zIndex: 1, position: 'absolute' }} name='star-three-points' size={60} color={COLORS.black} />
-            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute', top: 11 }} name='star-three-points' size={40} color='#ffd970' />
+            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute', top: 11 }} name='star-three-points' size={40} color='#ffc970' />
         </>
     );
 
