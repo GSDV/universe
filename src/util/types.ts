@@ -18,6 +18,10 @@ export interface RedactedUserWithFollow extends RedactedUserType {
     isFollowed: boolean;
 }
 
+export interface RedactedUserWithFollowAndBlock extends RedactedUserWithFollow {
+    isBlocked: boolean;
+}
+
 
 
 export interface RedactedUserType {
