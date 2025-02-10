@@ -186,7 +186,6 @@ export default function Map() {
                                 coordinate={{ latitude: lat, longitude: lng }}
                                 zIndex={p.likeCount}
                                 tracksViewChanges={false}
-                                onPress={() => openPreview(p)}
                                 hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
                             >
                                 <PostMarker post={p} onPress={() => openPreview(p)} />
