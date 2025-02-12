@@ -16,7 +16,7 @@
       "infoPlist": {
         "displayName": "UniVerse",
         "CFBundleDisplayName": "UniVerse",
-        "NSPhotoLibraryUsageDescription": "Allow access to photos to upload photos and videos from your library.",
+        "NSPhotoLibraryUsageDescription": "Allow access to your photo library to share photos and videos in your posts.",
         "NSLocationWhenInUseUsageDescription": "Turning on location allows you to post on the map and view other map posts.",
         "ITSAppUsesNonExemptEncryption": false
       },
