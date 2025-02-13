@@ -71,7 +71,7 @@ export default function PostActionsMenu({ post, morePostsAvailable = true }: Pos
 
     const ownOptions = () => {
         const options = [{ label: 'Delete', action: handleDelete }];
-        if (post.replyToId !== '') {
+        if (post.replyToId === null || post.replyToId === '') {
             const label = (post.pinned) ? 'Unpin' : 'Pin';
             options.push({ label, action: handlePinChange });
         }
