@@ -92,6 +92,7 @@ export default function PostActionsMenu({ post, morePostsAvailable = true }: Pos
             size={25}
             color={COLORS.black}
             style={{ borderRadius: 10, overflow: 'hidden' }}
+            hitSlop={20}
         />
     );
 }
