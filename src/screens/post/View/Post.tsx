@@ -85,7 +85,7 @@ function ThreadPost({ post, type }: { post: PostType, type: LineType }) {
         <View style={{ paddingLeft: 5, width: '100%', flexDirection: 'row' }}>
             <ThreadLine username={post.author.username} pfpKey={post.author.pfpKey} type={type} />
 
-            <View style={{ paddingVertical: 15, padding: 10, flex: 6, gap: 10 }}>
+            <View style={{ paddingVertical: 15, paddingRight: 10, flex: 6, gap: 10 }}>
                 <PostHeader post={post} />
 
                 <TextContent post={post} truncate={false} />
