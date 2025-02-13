@@ -91,7 +91,7 @@ export default function CreatePost({ userPrisma }: { userPrisma: RedactedUserTyp
         if (includesLocation) {
             const loc = await requestLocation();
             if (!loc.granted || loc.location == null) {
-                setLoading(true);
+                setLoading(false);
                 setAlert({ msg: `Turn on location in settings if you want your post to appear on the map.`, cStatus: 400 });
                 return;
             }
