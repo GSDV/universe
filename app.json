@@ -22,7 +22,6 @@
       },
       "supportsTablet": false,
       "bundleIdentifier": "me.gsdv.UniVerse",
-      "buildNumber": "1.0.0",
       "splash": {
         "image": "./assets/images/splash.png",
         "resizeMode": "cover",
