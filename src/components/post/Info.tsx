@@ -45,7 +45,7 @@ export default function Info({ post }: { post: PostType }) {
             <Text style={[styles.uniName, { color: getUniColor() }]} numberOfLines={1} ellipsizeMode='tail'>{getUniName()}</Text>
 
             <View style={styles.interactionContainer}>
-                <TouchableOpacity onPress={onPressLike} style={styles.infoContainers}>
+                <TouchableOpacity onPress={onPressLike} style={styles.infoContainers} hitSlop={16}>
                     <Text style={styles.info}>{formatInteraction(post.likeCount)} </Text>
                     {post.isLiked ? <AntDesign name='heart' size={14} color='#ff578f' /> : <AntDesign name='hearto' size={14} color={COLORS.black} /> }
                 </TouchableOpacity>
