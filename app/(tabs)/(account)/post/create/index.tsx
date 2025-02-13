@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import { useUser } from '@providers/UserProvider';
 
-import CreatePostScreen from '@screens/post/Create/Create';
+import CreatePost from '@screens/post/Create/Create';
 import { SafeAreaFull } from '@components/SafeArea';
 
 import { COLORS } from '@util/global-client';
@@ -17,7 +17,7 @@ export default function Index() {
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.background }}>
             <SafeAreaFull>
-                <CreatePostScreen userPrisma={userContext.user as RedactedUserType} />
+                <CreatePost userPrisma={userContext.user as RedactedUserType} />
             </SafeAreaFull>
         </View>
     );

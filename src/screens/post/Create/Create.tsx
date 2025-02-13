@@ -40,7 +40,7 @@ import { PostDataInput, RedactedUserType } from '@util/types';
 
 
 
-export default function CreatePostScreen({ userPrisma }: { userPrisma: RedactedUserType }) {
+export default function CreatePost({ userPrisma }: { userPrisma: RedactedUserType }) {
     const router = useRouter();
 
     const accountPostContext = useAccountPost();
