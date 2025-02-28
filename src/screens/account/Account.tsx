@@ -100,15 +100,9 @@ function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
             </View>
 
             {ownAccount ? 
-            <Fragment>
-                <TouchableOpacity onPress={() => router.push(`/post/create`)}>
-                    <Ionicons name='add-outline' size={30} color={COLORS.primary} />
-                </TouchableOpacity>
-
                 <TouchableOpacity onPress={() => router.push('/settings')}>
                     <Ionicons name='settings-outline' size={30} color={COLORS.primary} />
                 </TouchableOpacity>
-            </Fragment>
             :
                 <TouchableOpacity onPress={promptOtherOptions}>
                     <Ionicons name='ellipsis-horizontal' size={25} color={COLORS.primary} />
