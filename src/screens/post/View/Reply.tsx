@@ -16,10 +16,11 @@ import { MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_REPLY_CONTENT_LENGTH } fro
 import { COLORS, FONT_SIZES, TAB_BAR_HEIGHT } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
-import { getMediaKeys, promptMediaPermissions } from '@util/media/s3';
-import { getMedia } from '@util/media/pick';
+import { getMediaKeys, hasCameraPermissions, hasMediaPermissions, promptCameraPermissions, promptMediaPermissions } from '@util/media/s3';
+import { getMedia, takeMedia } from '@util/media/pick';
 
 import { PostDataInput, PostType } from '@util/types';
+import { showActionSheet } from '@util/action';
 
 
 
@@ -192,20 +193,36 @@ function DraftArea({ inputRef, toggleExpand, isExpanded, addNewReply }: DraftAre
 
     const handleInput = (input: string) => setContent((input.length > MAX_POST_CONTENT_LENGTH) ? input.slice(0, MAX_POST_CONTENT_LENGTH) : input);
 
-    const uploadMedia = async () => {
-        setAlert(null);
-        if (media.length >= MAX_POST_MEDIA) return;
 
-        const havePermissions = await promptMediaPermissions();
-        if (!havePermissions) return;
 
+    const attemptTakeMedia = async () => {
+        const havePermissions = await hasCameraPermissions();
+        if (!havePermissions) await promptCameraPermissions();
         setLoadingMedia(true);
-        
+        const { optimizedMedia, resp } = await takeMedia();
+        if (optimizedMedia === null) setAlert(resp);
+        else setMedia((prev) => [...prev, ...optimizedMedia]);
+        setLoadingMedia(false);
+    }
+
+    const attemptGetMedia = async () => {
+        const havePermissions = await hasMediaPermissions();
+        if (!havePermissions) await promptMediaPermissions();
+        setLoadingMedia(true);
         const { optimizedMedia, resp } = await getMedia(MAX_POST_MEDIA-media.length);
         if (optimizedMedia === null) setAlert(resp);
         else setMedia((prev) => [...prev, ...optimizedMedia]);
-
         setLoadingMedia(false);
+    }
+
+    const mediaPrompt = async () => {
+        setAlert(null);
+        if (media.length >= MAX_POST_MEDIA) return;
+
+        showActionSheet([
+            { label: 'Use camera', action: attemptTakeMedia },
+            { label: 'Upload from library', action: attemptGetMedia }
+        ]);
     }
 
     const removeMedia = (index: number) => {
@@ -282,7 +299,7 @@ function DraftArea({ inputRef, toggleExpand, isExpanded, addNewReply }: DraftAre
 
                     <View style={{ padding: 10, gap: 15 }}>
                         <CheckIfLoading loading={loadingMedia}>
-                            <TouchableOpacity disabled={media.length==MAX_POST_MEDIA} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }} onPress={uploadMedia}>
+                            <TouchableOpacity disabled={media.length==MAX_POST_MEDIA} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }} onPress={mediaPrompt}>
                                 <Text style={{ fontSize: FONT_SIZES.l, color: (media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray) }}>Add Media</Text>
                                 <MaterialIcons name='add-photo-alternate' size={25} color={media.length<MAX_POST_MEDIA ? COLORS.primary : COLORS.gray} />
                             </TouchableOpacity>

@@ -14,6 +14,70 @@ import {
 
 
 
+export const optimizeMedia = async (asset: ImagePicker.ImagePickerAsset) => {
+    const isVideo = asset.type === 'video';
+    
+    // No optimizations for now.
+    if (isVideo) return { uri: asset.uri, type: (asset.mimeType as string) };
+
+    const optimized = await ImageManipulator.manipulateAsync(
+        asset.uri,
+        [{ resize: { width: 1080 } }],
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
+    );
+    return { uri: optimized.uri, type: (asset.mimeType as string) };
+}
+
+
+
+export const isValidAsset = (asset: ImagePicker.ImagePickerAsset) => {
+    const type = asset.mimeType;
+    if (type==undefined || !ACCEPTED_FILES.includes(type)) return `Please only upload png, jpg, webp, mp4, or mov files.`;
+    if (ACCEPTED_IMGS.includes(asset.type as string) && (asset.fileSize ? asset.fileSize : 0) > IMG_SIZE_LIMIT) return `Please upload pictures under ${IMG_SIZE_LIMIT_TXT}.`;
+    if (ACCEPTED_VIDS.includes(asset.type as string) && (asset.fileSize ? asset.fileSize : 0) > VID_SIZE_LIMIT) return `Please upload videos under ${VID_SIZE_LIMIT_TXT}.`;
+    return '';
+}
+
+
+
+export const takeMedia = async () => {
+    try {
+        const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ['videos', 'images'],
+            quality: 0.8,
+            videoMaxDuration: 60,
+            videoExportPreset: ImagePicker.VideoExportPreset.MediumQuality,
+            videoQuality: 1
+        });
+
+        if (!result || result.canceled || result.assets.length != 1) {
+            return {
+                optimizedMedia: [], 
+                resp: { msg: `User canceled.`, cStatus: 200 }
+            };
+        }
+        const asset = result.assets[0];
+
+        const validRes = isValidAsset(asset);
+        if (validRes !== '') return { optimizedMedia: [], resp: { msg: validRes, cStatus: 400} };
+
+        const optimizedAsset = await optimizeMedia(asset);
+        const optimizedMedia = [optimizedAsset];
+
+        return {
+            optimizedMedia,
+            resp: { msg: `Success.`, cStatus: 200 }
+        };
+    } catch (err) {
+        return {
+            optimizedMedia: null,
+            resp: { msg: `Something went wrong while uploading media.`, cStatus: 400 }
+        };
+    }
+}
+
+
+
 export const getMedia = async (selectionLimit: number) => {
     try {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -29,10 +93,7 @@ export const getMedia = async (selectionLimit: number) => {
         if (!result || result.canceled) {
             return {
                 optimizedMedia: [], 
-                resp: {
-                    msg: `User canceled.`,
-                    cStatus: 200
-                }
+                resp: { msg: `User canceled.`, cStatus: 200 }
             };
         }
 
@@ -40,49 +101,12 @@ export const getMedia = async (selectionLimit: number) => {
 
         for (let i = 0; i < assets.length; i++) {
             const asset = assets[i];
-            const type = asset.mimeType;
-            if (type==undefined || !ACCEPTED_FILES.includes(type)) {
-                return {
-                    optimizedMedia: null, 
-                    resp: {
-                        msg: `Please only upload png, jpg, webp, mp4, or mov files.`,
-                        cStatus: 400
-                    }
-                };
-            }
-            if (ACCEPTED_IMGS.includes(asset.type as string) && (asset.fileSize ? asset.fileSize : 0) > IMG_SIZE_LIMIT) {
-                return {
-                    optimizedMedia: null, 
-                    resp: {
-                        msg: `Please upload pictures under ${IMG_SIZE_LIMIT_TXT}.`,
-                        cStatus: 400
-                    }
-                };
-            }
-            if (ACCEPTED_VIDS.includes(asset.type as string) && (asset.fileSize ? asset.fileSize : 0) > VID_SIZE_LIMIT) {
-                return {
-                    optimizedMedia: null, 
-                    resp: { msg: `Please upload videos under ${VID_SIZE_LIMIT_TXT}.`, cStatus: 400 }
-                };
-            }
+            const validRes = isValidAsset(asset);
+            if (validRes !== '') return { optimizedMedia: [], resp: { msg: validRes, cStatus: 400} };
         }
 
         const optimizedMedia = await Promise.all(
-            assets.map(async (asset) => {
-                const isVideo = asset.type === 'video';
-    
-                if (isVideo) {
-                    return { uri: asset.uri, type: (asset.mimeType as string) };
-                } else {
-                    const optimized = await ImageManipulator.manipulateAsync(
-                        asset.uri,
-                        [{ resize: { width: 1080 } }],
-                        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
-                    );
-
-                    return { uri: optimized.uri, type: (asset.mimeType as string) };
-                }
-            })
+            assets.map(async (asset) => optimizeMedia(asset))
         );
 
         return {

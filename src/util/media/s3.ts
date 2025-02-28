@@ -9,9 +9,33 @@ import * as ImagePicker from 'expo-image-picker';
 import { UploadedAsset } from '@components/post/media/Display';
 
 import { IMG_SIZE_LIMIT_TXT, VID_SIZE_LIMIT_TXT } from '@util/global';
+
 import { fetchWithAuth } from '@util/fetch';
 
 
+
+export const hasCameraPermissions = async () => {
+    const { granted } = await ImagePicker.getCameraPermissionsAsync();
+    return granted;
+}
+
+export const hasMediaPermissions = async () => {
+    const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync();
+    return granted;
+}
+
+
+
+export const promptCameraPermissions = async () => {
+    const { granted } = await ImagePicker.requestCameraPermissionsAsync();
+    if (!granted) {
+        AlertPopUp.alert(
+            'Permission Required',
+            'To take photos, this app must have permission to access your camera.',
+            [ { text: 'Ok', style: 'cancel', onPress: () => {} } ]
+        );
+    }
+}
 
 export const promptMediaPermissions = async () => {
     const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -19,16 +43,9 @@ export const promptMediaPermissions = async () => {
         AlertPopUp.alert(
             'Permission Required',
             'To upload photos, this app must have permission to access your photo library.',
-            [
-                {
-                    text: 'Ok',
-                    style: 'cancel',
-                    onPress: () => {}
-                }
-            ]
+            [ { text: 'Ok', style: 'cancel', onPress: () => {} } ]
         );
     }
-    return granted;
 }
 
 
