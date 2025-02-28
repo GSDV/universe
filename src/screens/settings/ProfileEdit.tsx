@@ -38,7 +38,7 @@ import {
 } from '@util/global';
 import { COLORS, FONT_SIZES, pfpUri } from '@util/global-client';
 
-import { clientUploadPfp, promptMediaPermissions } from '@util/media/s3';
+import { clientUploadPfp, hasMediaPermissions, promptMediaPermissions } from '@util/media/s3';
 import { fetchWithAuth } from '@util/fetch';
 
 
@@ -150,8 +150,8 @@ export default function ProfileEdit() {
 
 
     const pickImage = async () => {
-        const havePermissions = await promptMediaPermissions();
-        if (!havePermissions) return;
+        const havePermissions = await hasMediaPermissions();
+        if (!havePermissions) return promptMediaPermissions();
 
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'images',
