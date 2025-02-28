@@ -6,7 +6,10 @@
   "build": {
     "development": {
       "developmentClient": false,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_DOMAIN": "https://joinuniverse.app"
+      }
     },
     "preview": {
       "distribution": "internal",
