@@ -19,7 +19,7 @@ Current Solution (with newArchEnabled = false):
 - No idea what features get removed with "newArchEnabled = false"
 */
 
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { StyleSheet, View, Animated, Dimensions } from 'react-native';
 
@@ -133,6 +133,7 @@ export default function Map() {
                 onRegionChangeComplete={fetchPosts}
                 mapType='standard'
                 onPress={selectedPost ? closePreview : () => {}}
+                userInterfaceStyle='light'
             >
                 {posts.map((p) => {
                     const lat = p.lat ? Number(p.lat) : null;
