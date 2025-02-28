@@ -7,7 +7,7 @@ import Svg, { RadialGradient, Defs, Rect, Stop } from 'react-native-svg';
 export default function PostMarker() {
     return (
         <View style={styles.container}>
-            <Svg height='100%' width='100%' style={styles.marker}>
+            <Svg style={styles.marker}>
                 <Defs>
                     <RadialGradient
                         id='gradient'
@@ -43,15 +43,16 @@ export default function PostMarker() {
 const styles = StyleSheet.create({
     container: {
         position: 'relative',
-        width: 50,
-        height: 50,
+        width: 55,
+        height: 55,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        borderRadius: 55
     },
     marker: {
         position: 'absolute',
         width: 30,
         height: 30,
-        borderRadius: 20
+        borderRadius: 20,
     }
 });
