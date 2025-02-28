@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { useUser } from '@providers/UserProvider';
 
 import CreatePost from '@screens/post/Create/Create';
+
 import { SafeAreaFull } from '@components/SafeArea';
 
 import { COLORS } from '@util/global-client';
