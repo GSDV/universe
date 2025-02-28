@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 
 import { ResizeMode, Video } from 'expo-av';
@@ -13,7 +13,7 @@ import { COLORS } from '@util/global-client';
 
 
 export function DisplayMedia({ media }: { media: string[] }) {
-    if (media.length === 0) return <></>;
+    if (media.length === 0) return <Fragment></Fragment>;
 
     const [selectedMedia, setSelectedMedia] = useState<string>('');
     const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
@@ -90,7 +90,7 @@ interface MediaDisplayProps {
 }
 
 export function DisplayUploadedMedia({ media, removeMedia }: MediaDisplayProps) {
-    if (media.length === 0) return <></>;
+    if (media.length === 0) return <Fragment></Fragment>;
 
     const [selectedMedia, setSelectedMedia] = useState<UploadedAsset | null>(null);
     const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
