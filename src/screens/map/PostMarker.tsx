@@ -1,52 +1,40 @@
-import React from 'react';
-
 import { View, StyleSheet } from 'react-native';
 
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-import { COLORS } from '@util/global-client';
-
-import { PostType } from '@util/types';
+import Svg, { RadialGradient, Defs, Rect, Stop } from 'react-native-svg';
 
 
 
-export default function PostMarker({ post }: { post: PostType }) {
-    const score = post.likeCount + post.replyCount/3;
-
+export default function PostMarker() {
     return (
         <View style={styles.container}>
-            <Star score={score} />
+            <Svg height='100%' width='100%' style={styles.marker}>
+                <Defs>
+                    <RadialGradient
+                        id='gradient'
+                        cx='50%'
+                        cy='50%'
+                        rx='50%'
+                        ry='50%'
+                        fx='50%'
+                        fy='50%'
+                        gradientUnits='userSpaceOnUse'
+                    >
+                        {/* Fully opaque for half of the circle */}
+                        <Stop offset='50%' stopColor='#ff6666' stopOpacity='1' />
+                        {/* Fully transparent at the edges */}
+                        <Stop offset='100%' stopColor='#ff6666' stopOpacity='0' />
+                    </RadialGradient>
+                </Defs>
+                <Rect
+                    x='0'
+                    y='0'
+                    width='100%'
+                    height='100%'
+                    fill='url(#gradient)'
+                    rx='50%'
+                />
+            </Svg>
         </View>
-    );
-}
-
-
-
-function Star({ score }: { score: number }) {
-    // New/Unpopular posts.
-    // Note: due to some internal padding in specifically the 'star-three-points' component, 
-    //      we must offset one by a few pixels to be centered.
-    if (score < 20) return (
-        <>
-            <MaterialCommunityIcons style={{ zIndex: 1, position: 'absolute' }} name='star-three-points' size={60} color={COLORS.black} />
-            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute', top: 11 }} name='star-three-points' size={40} color='#ffc970' />
-        </>
-    );
-
-    // Semi-popular posts.
-    if (score < 70) return (
-        <>
-            <MaterialCommunityIcons style={{ zIndex: 1, position: 'absolute' }} name='star-four-points' size={60} color={COLORS.black} />
-            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute' }} name='star-four-points' size={40} color='#ff9b61' />
-        </>
-    );
-
-    // Popular posts.
-    return (
-        <>
-            <MaterialCommunityIcons style={{ zIndex: 1, position: 'absolute' }} name='star' size={60} color={COLORS.black} />
-            <MaterialCommunityIcons style={{ zIndex: 2, position: 'absolute' }} name='star' size={40} color='#ff6666' />
-        </>
     );
 }
 
@@ -55,9 +43,15 @@ function Star({ score }: { score: number }) {
 const styles = StyleSheet.create({
     container: {
         position: 'relative',
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    marker: {
+        position: 'absolute',
+        width: 30,
+        height: 30,
+        borderRadius: 20
     }
 });
