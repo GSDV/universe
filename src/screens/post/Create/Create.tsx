@@ -18,7 +18,6 @@ import { useRouter } from 'expo-router';
 import { usePostStore } from '@hooks/PostStore';
 import { useAccountPost } from '@providers/AccountPostProvider';
 
-import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
@@ -119,16 +118,19 @@ export default function CreatePost({ userPrisma }: { userPrisma: RedactedUserTyp
             accountPostContext.emitOperation({ name: 'CREATE_POST', postData: resJson.post });
             addPost(resJson.post);
             router.replace({
-                pathname: `/post/[postId]/view`,
+                pathname: `/(tabs)/(account)/post/[postId]/view`,
                 params: {
                     postId: resJson.post.id,
                     viewId: getUniqueString(resJson.post.id)
                 }
             });
+            setMedia([]);
+            setContent('');
+            setIncludesLocation(true);
         } else {
             setAlert(resJson);
-            setLoading(false);
         }
+        setLoading(false);
     }
 
     return (
@@ -187,16 +189,10 @@ export default function CreatePost({ userPrisma }: { userPrisma: RedactedUserTyp
 
 
 function Header({ userPrisma, attemptPost, canSubmit }: { userPrisma: RedactedUserType, attemptPost: ()=>void, canSubmit: boolean }) {
-    const router = useRouter();
-
     const sendStyles = canSubmit ? COLORS.primary : COLORS.gray;
 
     return (
         <View style={styles.header}>
-            <TouchableOpacity onPress={router.back}>
-                <Ionicons name='chevron-back' size={25} color={COLORS.primary} />
-            </TouchableOpacity>
-
             <View style={{ flex: 1, display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'center' }}>
                 <Pfp pfpKey={userPrisma.pfpKey} style={styles.pfp} />
                 <View style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -217,12 +213,12 @@ function Header({ userPrisma, attemptPost, canSubmit }: { userPrisma: RedactedUs
 const styles = StyleSheet.create({
     header: {
         position: 'relative',
-        padding: 10,
+        padding: 20,
         paddingVertical: 5,
         display: 'flex',
         flexDirection: 'row',
-        gap: 15,
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: 15
     },
     pfp: {
         borderRadius: 50,
@@ -232,7 +228,7 @@ const styles = StyleSheet.create({
     displayName: {
         color: COLORS.black,
         fontSize: FONT_SIZES.m,
-        fontWeight: '500'
+        fontWeight: 500
     },
     username: {
         color: COLORS.gray,
