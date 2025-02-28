@@ -35,6 +35,7 @@ export default function TabLayout() {
     const tabs: TabType[] = [
         { fileName: '(map)', iconFocused: 'map', iconUnfocused: 'map-outline' },
         { fileName: '(feed)', iconFocused: 'chatbubbles', iconUnfocused: 'chatbubbles-outline' },
+        { fileName: '(create)', iconFocused: 'add-circle', iconUnfocused: 'add-circle-outline' },
         { fileName: '(search)', iconFocused: 'search', iconUnfocused: 'search-outline' },
         { fileName: '(account)', iconFocused: 'person', iconUnfocused: 'person-outline' }
     ];
