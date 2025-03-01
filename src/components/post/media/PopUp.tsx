@@ -1,11 +1,13 @@
 import { View, TouchableOpacity, Pressable, Modal, StyleSheet } from 'react-native';
 
-import { Video } from 'expo-av';
 import { Image } from 'expo-image';
+import { useVideoPlayer, VideoView } from 'expo-video'
+
 import { Entypo } from '@expo/vector-icons';
 
-import { ACCEPTED_IMGS, mediaUrl } from '@util/global';
 import { UploadedAsset } from './Display';
+
+import { ACCEPTED_IMGS, mediaUrl } from '@util/global';
 
 
 
@@ -28,12 +30,7 @@ export function MediaPopUp({ asset, isVisible, closeModal }: MediaPopUpProps) {
                                 style={styles.media}
                             />
                         :
-                            <Video
-                                source={{ uri: mediaUrl(asset) }}
-                                style={styles.media}
-                                useNativeControls 
-                                shouldPlay 
-                            />
+                            <Video uri={mediaUrl(asset)} />
                         }
                     </Pressable>
                 </View>
@@ -67,12 +64,7 @@ export function UploadedMediaPopUp({ asset, isVisible, closeModal }: UploadedMed
                                 style={styles.media}
                             />
                         :
-                            <Video
-                                source={{ uri: asset.uri }}
-                                style={styles.media}
-                                useNativeControls 
-                                shouldPlay 
-                            />
+                            <Video uri={asset.uri} />
                         }
                     </Pressable>
                 </View>
@@ -82,6 +74,24 @@ export function UploadedMediaPopUp({ asset, isVisible, closeModal }: UploadedMed
                 </TouchableOpacity>
             </Pressable>
         </Modal>
+    );
+}
+
+
+
+function Video({ uri }: { uri: string }) {
+    const player = useVideoPlayer({ uri }, player => {
+        player.loop = true;
+        player.play();
+    });
+
+    return (
+        <VideoView
+            style={styles.media}
+            player={player}
+            allowsFullscreen
+            nativeControls
+        />
     );
 }
 
