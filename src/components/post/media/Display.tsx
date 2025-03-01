@@ -1,7 +1,8 @@
-import { Fragment, useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
+import { Fragment, useEffect, useState } from 'react';
+import { View, TouchableOpacity, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 
 import { ResizeMode, Video } from 'expo-av';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 import { Image } from 'expo-image';
 import { Entypo } from '@expo/vector-icons';
 
@@ -9,6 +10,7 @@ import { MediaPopUp, UploadedMediaPopUp } from './PopUp';
 
 import { ACCEPTED_IMGS, mediaUrl } from '@util/global';
 import { COLORS } from '@util/global-client';
+import LoadingSymbol from '@screens/map/LoadingSymbol';
 
 
 
@@ -64,13 +66,7 @@ function Media({ asset, onPress }: { asset: string, onPress: ()=>void }) {
                         style={styles.asset}
                     />
                 :
-                    <Video
-                        source={{ uri: mediaUrl(asset) }}
-                        style={styles.asset}
-                        useNativeControls 
-                        shouldPlay 
-                        resizeMode={ResizeMode.COVER}
-                    />
+                    <VideoThumbnail uri={mediaUrl(asset)} />
                 }
             </View>
         </TouchableOpacity>
@@ -140,15 +136,45 @@ function UploadedMedia({ asset, remove, onPress }: { asset: UploadedAsset, remov
                 </Pressable>
                 
                 {ACCEPTED_IMGS.includes(asset.type) ?
-                    <Image source={{ uri: asset.uri }} style={styles.asset} />
-                :
-                    <Video 
-                        source={{ uri: asset.uri }} style={styles.asset} 
-                        resizeMode={ResizeMode.COVER}
+                    <Image
+                        source={{ uri: asset.uri }}
+                        style={styles.asset}
+                        contentFit='cover'
                     />
+                :
+                    <VideoThumbnail uri={asset.uri} />
                 }
             </View>
         </TouchableOpacity>
+    );
+}
+
+
+
+function VideoThumbnail({ uri }: { uri: string }) {
+    const [thumbnailUri, setThumbnailUri] = useState<string>('');
+
+    const loadThumbnail = async () => {
+        const { uri: thumbnail } = await VideoThumbnails.getThumbnailAsync(uri);
+        setThumbnailUri(thumbnail);
+    }
+
+    useEffect(() => {
+        loadThumbnail();
+    }, []);
+
+    if (thumbnailUri === '') return (
+        <View style={{ width: '100%', height: '100%', borderRadius: 8, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size='large' color={COLORS.primary} />
+        </View>
+    );
+
+    return (
+        <Image
+            source={{ uri: thumbnailUri }}
+            style={styles.asset}
+            contentFit='cover'
+        />
     );
 }
 
