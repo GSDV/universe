@@ -55,7 +55,8 @@
           "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) needs your location to interact with the map."
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true
