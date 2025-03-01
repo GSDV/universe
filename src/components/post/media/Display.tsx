@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 
-import { ResizeMode, Video } from 'expo-av';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { Image } from 'expo-image';
 import { Entypo } from '@expo/vector-icons';
@@ -10,7 +9,6 @@ import { MediaPopUp, UploadedMediaPopUp } from './PopUp';
 
 import { ACCEPTED_IMGS, mediaUrl } from '@util/global';
 import { COLORS } from '@util/global-client';
-import LoadingSymbol from '@screens/map/LoadingSymbol';
 
 
 
