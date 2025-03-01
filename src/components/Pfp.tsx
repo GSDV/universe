@@ -1,18 +1,33 @@
 import { Fragment } from 'react';
 
-import { Image, ImageStyle, StyleProp } from 'react-native';
+import { ImageStyle, StyleProp } from 'react-native';
+
+import { Image } from 'expo-image';
 
 import { COLORS, DEFAULT_PFP, imgUrl } from '@util/global-client';
 
 
 
-export default function Pfp({ pfpKey, style }: { pfpKey: string, style?: StyleProp<ImageStyle> }) {
+interface PfpProps {
+    pfpKey: string;
+    style?: StyleProp<ImageStyle>;
+    isOwnPfp?: boolean; // Is this the user's pfp? (used on account screen)
+}
+
+export default function Pfp({ pfpKey, style, isOwnPfp }: PfpProps) {
     return (
         <Fragment>
             {pfpKey=='' ? 
-                <Image style={[{backgroundColor: COLORS.background}, style]} source={DEFAULT_PFP} />
+                <Image
+                    style={[{backgroundColor: COLORS.background}, style]}
+                    source={DEFAULT_PFP}
+                />
             :
-                <Image style={[{backgroundColor: COLORS.background}, style]} source={{ uri: imgUrl(pfpKey) }} />
+                <Image
+                    style={[{backgroundColor: COLORS.background}, style]}
+                    source={{ uri: imgUrl(pfpKey) }}
+                    cachePolicy={isOwnPfp ? 'none' : 'memory-disk'}
+                />
             }
         </Fragment>
     );

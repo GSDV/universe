@@ -89,7 +89,7 @@ function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
     return (
         <View style={styles.header}>
             <View style={{ flex: 1, flexDirection: 'row', gap: 5, alignItems: 'center' }}>
-                <Pfp pfpKey={user.pfpKey} style={styles.pfp} />
+                <Pfp pfpKey={user.pfpKey} style={styles.pfp} isOwnPfp={ownAccount} />
                 <View style={{ flex: 1, gap: 2 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
                         <Text ellipsizeMode='tail' numberOfLines={1} style={styles.displayName}>{user.displayName}</Text>
