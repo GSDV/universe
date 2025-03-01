@@ -139,7 +139,7 @@ function Header({ post, showPinned, morePostsAvailable, navigateToProfile }: Hea
 
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 5,
+        padding: 5,
         paddingLeft: 10,
         width: '100%',
         flexDirection: 'row',
