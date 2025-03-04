@@ -2,7 +2,7 @@
   "expo": {
     "name": "UniVerse Campus",
     "slug": "UniVerse",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "gsdv-app-joinuniverse",
@@ -19,6 +19,7 @@
         "NSCameraUsageDescription": "Allow access to your camera to take photos and videos for your posts.",
         "NSPhotoLibraryUsageDescription": "Allow access to your photo library to share photos and videos in your posts.",
         "NSLocationWhenInUseUsageDescription": "Turning on location allows you to post on the map and view other map posts.",
+        "NSMicrophoneUsageDescription": "Allow access to your microphone to take videos for your posts.",
         "ITSAppUsesNonExemptEncryption": false
       },
       "supportsTablet": false,
