@@ -32,7 +32,7 @@ export default function SignUp() {
 
     const handleChange = (name: string, value: string) => {
         if (name == 'username') value = value.toLowerCase();
-        if (value.length > MAX_USERNAME_LENGTH) value = value.substring(0, MAX_USERNAME_LENGTH+1);
+        if (name == 'username' && value.length > MAX_USERNAME_LENGTH) value = value.substring(0, MAX_USERNAME_LENGTH+1);
 
         if (name == 'email') value = value.toLowerCase();
 
