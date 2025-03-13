@@ -21,6 +21,8 @@ export const requestLocation = async () => {
         return { granted: false, location: null };
     }
 
-    const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
+    let location = await Location.getLastKnownPositionAsync({ maxAge: 5000 });
+    if (!location) location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
+
     return { granted: true, location };
 }
