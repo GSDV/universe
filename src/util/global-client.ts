@@ -1,4 +1,4 @@
-import { PixelRatio } from 'react-native';
+import { Dimensions, PixelRatio } from 'react-native';
 
 
 
@@ -41,13 +41,24 @@ export const COLORS = {
     tint: PRIMARY
 };
 
-const baseFontSize = 16;
+
+
+const BASE_WDITH = 375;
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+const SCALED_FONT = (size: number): number => {
+    const scaleFactor = SCREEN_WIDTH / BASE_WDITH;
+    const newSize = size * scaleFactor;
+    console.log(Math.round(PixelRatio.roundToNearestPixel(newSize)));
+    return Math.round(PixelRatio.roundToNearestPixel(newSize));
+};
+
 export const FONT_SIZES = {
-    s: PixelRatio.getFontScale() * baseFontSize * 0.8,
-    m: PixelRatio.getFontScale() * baseFontSize,
-    l: PixelRatio.getFontScale() * baseFontSize * 1.2,
-    xl: PixelRatio.getFontScale() * baseFontSize * 1.4,
-    xxl: PixelRatio.getFontScale() * baseFontSize * 1.8
+    s: SCALED_FONT(12),
+    m: SCALED_FONT(16),
+    l: SCALED_FONT(18),
+    xl: SCALED_FONT(20),
+    xxl: SCALED_FONT(24)
 };
 
 
