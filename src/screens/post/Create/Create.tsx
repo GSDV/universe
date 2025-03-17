@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
     Switch,
@@ -31,12 +31,12 @@ import { COLORS, FONT_SIZES, TAB_BAR_HEIGHT } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 import { getMediaKeys, hasCameraPermissions, hasMediaPermissions, promptCameraPermissions, promptMediaPermissions } from '@util/media/s3';
-import { requestLocation } from '@util/location';
 import { getMedia, takeMedia } from '@util/media/pick';
 import { getUniqueString } from '@util/unique';
 
 import { PostDataInput, RedactedUserType } from '@util/types';
 import { showActionSheet } from '@util/action';
+import { useLocation } from '@providers/LocationProvider';
 
 
 
@@ -59,6 +59,11 @@ export default function CreatePost({ userPrisma }: { userPrisma: RedactedUserTyp
 
     const handleInput = (input: string) => setContent((input.length > MAX_POST_CONTENT_LENGTH) ? input.slice(0, MAX_POST_CONTENT_LENGTH) : input);
 
+    const { 
+        location: currentLocation, 
+        hasPermission: locationPermissionGranted,
+        getCurrentLocation
+    } = useLocation();
 
 
     const attemptTakeMedia = async () => {
@@ -100,19 +105,21 @@ export default function CreatePost({ userPrisma }: { userPrisma: RedactedUserTyp
         setAlert(null);
         Keyboard.dismiss();
 
-        let location: { 
-            lat?: number, 
-            lng?: number 
-        } = {}
+        let location: { lat?: number, lng?: number } = {};
+
         if (includesLocation) {
-            const loc = await requestLocation();
-            if (!loc.granted || loc.location == null) {
-                setLoading(false);
-                setAlert({ msg: `Turn on location in settings if you want your post to appear on the map.`, cStatus: 400 });
-                return;
+            if (locationPermissionGranted && currentLocation) {
+                location = { lat: currentLocation.coords.latitude, lng: currentLocation.coords.longitude };
+            } else {
+                // Fallback for if currentLocation is null.
+                const loc = await getCurrentLocation();
+                if (!loc.granted || loc.location == null) {
+                    setLoading(false);
+                    setAlert({ msg: `Turn on location in settings if you want your post to appear on the map.`, cStatus: 400 });
+                    return;
+                }
+                location = { lat: loc.location.coords.latitude, lng: loc.location.coords.longitude };
             }
-            location.lat = loc.location.coords.latitude;
-            location.lng = loc.location.coords.longitude;
         }
 
         const { mediaKeys, resp } = await getMediaKeys(media);
