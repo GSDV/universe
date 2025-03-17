@@ -3,7 +3,7 @@
 // Note: Even though the post schema has a "pinned" field, we need a separate one so that pins do not show up in search, maps, etc.
 // morePostsAvailable is only used for resorting after un/pinning.
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, memo } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 
@@ -165,3 +165,9 @@ const styles = StyleSheet.create({
         fontSize: FONT_SIZES.m
     }
 });
+
+
+export const MemoizedFeedPost = memo(FeedPost, (prevProps, nextProps) => {
+    // Only re-render if the postId changes
+    return prevProps.postId === nextProps.postId;
+  });
