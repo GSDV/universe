@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 
 import { useLocalSearchParams } from 'expo-router';
 
@@ -97,7 +97,7 @@ export default function PostView() {
     if (focusPost === undefined) return <SomethingWentWrong />;
 
     return (
-        <>
+        <Fragment>
             <Thread
                 focusPost={focusPost}
                 ancestors={ancestors}
@@ -109,6 +109,6 @@ export default function PostView() {
                 moreRepliesAvailable={moreRepliesAvailable}
             />
             <ReplyInput addNewReply={addNewReply} />
-        </>
+        </Fragment>
     );
 }
