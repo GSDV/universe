@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState } from 'react';
+import {
+    createContext,
+    useContext,
+    useState,
+    Dispatch,
+    SetStateAction,
+    ReactNode
+} from 'react';
 
 import { RedactedUserType } from '@util/types';
 
@@ -6,7 +13,7 @@ import { RedactedUserType } from '@util/types';
 
 interface UserContextType {
     user: RedactedUserType | null;
-    setUser: React.Dispatch<React.SetStateAction<RedactedUserType | null>>;
+    setUser: Dispatch<SetStateAction<RedactedUserType | null>>;
 }
 
 
@@ -18,7 +25,7 @@ const UserContext = createContext<UserContextType>({
 
 
 
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<RedactedUserType | null>(null);
 
     return (
