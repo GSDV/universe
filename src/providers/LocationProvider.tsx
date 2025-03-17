@@ -73,7 +73,7 @@ export const LocationProvider = ({ children }: { children: ReactNode }) => {
             if (!granted) return { granted: false, location: null };
         }
         setLoading(true);
-        const currentLocation = await Location.getCurrentPositionAsync({ accuracy: 5 });
+        const currentLocation = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
         setLocation(currentLocation);
         setLastUpdated(Date.now());
         locationGlobal.location = currentLocation;
