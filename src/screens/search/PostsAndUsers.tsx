@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -8,7 +8,7 @@ import { usePostStore } from '@hooks/PostStore';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { FeedPost } from '@components/post/FeedPost';
+import { MemoizedFeedPost } from '@components/post/FeedPost';
 import { CheckIfLoading } from '@components/Loading';
 import List from '@components/List';
 import Pfp from '@components/Pfp';
@@ -23,9 +23,7 @@ import { PostType, RedactedUserWithFollow } from '@util/types';
 
 export default function PostsAndUsers({ query }: { query: string }) {
     const addPost = usePostStore(state => state.addPost);
-
     const [view, setView] = useState<'posts' | 'users'>('posts');
-
     const [loading, setLoading] = useState<boolean>(true);
 
     const [posts, setPosts] = useState<PostType[]>([]);
@@ -36,8 +34,7 @@ export default function PostsAndUsers({ query }: { query: string }) {
     const [usersCursor, setUsersCursor] = useState<string>('');
     const [moreUsersAvailable, setMoreUsersAvailable] = useState<boolean>(false);
 
-
-    const fetchAndUpdatePosts = async (cursor: string, oldPosts: PostType[]) => {
+    const fetchAndUpdatePosts = useCallback(async (cursor: string, oldPosts: PostType[]) => {
         const params = new URLSearchParams({ query, cursor });
         const resJson = await fetchWithAuth(`search/posts?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
@@ -46,9 +43,9 @@ export default function PostsAndUsers({ query }: { query: string }) {
             setPosts([...oldPosts, ...resJson.posts]);
             setMorePostsAvailable(resJson.moreAvailable);
         }
-    }
+    }, [query, addPost]);
 
-    const fetchAndUpdateUsers = async (cursor: string, oldUsers: RedactedUserWithFollow[]) => {
+    const fetchAndUpdateUsers = useCallback(async (cursor: string, oldUsers: RedactedUserWithFollow[]) => {
         const params = new URLSearchParams({ query, cursor });
         const resJson = await fetchWithAuth(`search/users?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
@@ -56,24 +53,28 @@ export default function PostsAndUsers({ query }: { query: string }) {
             setUsers([...oldUsers, ...resJson.users]);
             setMoreUsersAvailable(resJson.moreAvailable);
         }
-    }
+    }, [query]);
 
-    const renderPost = (post: PostType) => <FeedPost postId={post.id} />;
+    const renderPost = useCallback((post: PostType) => {
+        return <MemoizedFeedPost postId={post.id} />;
+    }, []);
 
-    const renderUser = (user: RedactedUserWithFollow) => <FeedUser user={user} />;
+    const renderUser = useCallback((user: RedactedUserWithFollow) => {
+        return <MemoizedFeedUser user={user} />;
+    }, []);
 
-    const intialFetch = async () => {
+    const intialFetch = useCallback(async () => {
         setLoading(true);
         await Promise.all([
             fetchAndUpdatePosts('', []),
             fetchAndUpdateUsers('', [])
         ]);
         setLoading(false);
-    }
+    }, [fetchAndUpdatePosts, fetchAndUpdateUsers]);
 
     useEffect(() => {
         intialFetch();
-    }, [query]);
+    }, [query, intialFetch]);
 
     return (
         <>
@@ -93,7 +94,8 @@ export default function PostsAndUsers({ query }: { query: string }) {
 
             <CheckIfLoading loading={loading}>
                 <>
-                    {view === 'posts' ?
+                    {/* Keep both lists mounted but only show the active one */}
+                    <View style={{ display: view === 'posts' ? 'flex' : 'none', flex: 1 }}>
                         <List<PostType> 
                             items={posts} 
                             cursor={postsCursor} 
@@ -103,7 +105,9 @@ export default function PostsAndUsers({ query }: { query: string }) {
                             allowRefresh={false}
                             noResultsText='no posts found'
                         />
-                    :
+                    </View>
+                    
+                    <View style={{ display: view === 'users' ? 'flex' : 'none', flex: 1 }}>
                         <List<RedactedUserWithFollow> 
                             items={users} 
                             cursor={usersCursor} 
@@ -113,7 +117,7 @@ export default function PostsAndUsers({ query }: { query: string }) {
                             allowRefresh={false}
                             noResultsText='no accounts found'
                         />
-                    }
+                    </View>
                 </>
             </CheckIfLoading>
         </>
@@ -121,15 +125,17 @@ export default function PostsAndUsers({ query }: { query: string }) {
 }
 
 
+const MemoizedFeedUser = memo(FeedUser);
 
 function FeedUser({ user }: { user: RedactedUserWithFollow }) {
     const router = useRouter();
-    const onPress = () => {
+    
+    const onPress = useCallback(() => {
         router.push({
             pathname: '/profile/[username]/view',
             params: { username: user.username }
         });
-    }
+    }, [router, user.username]);
 
     return (
         <TouchableOpacity onPress={onPress} style={account_feed_styles.container}>
@@ -156,8 +162,6 @@ function FeedUser({ user }: { user: RedactedUserWithFollow }) {
         </TouchableOpacity>
     );
 }
-
-
 
 const account_feed_styles = StyleSheet.create({
     container: {

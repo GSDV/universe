@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import { View, Text, TouchableOpacity } from 'react-native';
 
 import { usePostStore } from '@hooks/PostStore';
 
-import { FeedPost } from '@components/post/FeedPost';
+import { MemoizedFeedPost } from '@components/post/FeedPost';
 import List from '@components/List';
 import { CheckIfLoading } from '@components/Loading';
 
@@ -18,9 +18,7 @@ import { PostType } from '@util/types';
 
 export default function Feed() {
     const addPost = usePostStore(state => state.addPost);
-
     const [view, setView] = useState<'hot' | 'new' | 'following' | 'school'>('hot');
-
     const [loading, setLoading] = useState<boolean>(true);
 
     const [hotPosts, setHotPosts] = useState<PostType[]>([]);
@@ -39,7 +37,7 @@ export default function Feed() {
     const [schoolCursor, setSchoolCursor] = useState<string>('');
     const [moreSchoolAvailable, setMoreSchoolAvailable] = useState<boolean>(false);
 
-    const fetchAndUpdateHot = async (cursor: string, oldPosts: PostType[]) => {
+    const fetchAndUpdateHot = useCallback(async (cursor: string, oldPosts: PostType[]) => {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`feed/hot?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
@@ -48,9 +46,9 @@ export default function Feed() {
             setHotPosts([...oldPosts, ...resJson.posts]);
             setMoreHotAvailable(resJson.moreAvailable);
         }
-    }
+    }, [addPost]);
 
-    const fetchAndUpdateNew = async (cursor: string, oldPosts: PostType[]) => {
+    const fetchAndUpdateNew = useCallback(async (cursor: string, oldPosts: PostType[]) => {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`feed/new?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
@@ -59,9 +57,9 @@ export default function Feed() {
             setNewPosts([...oldPosts, ...resJson.posts]);
             setMoreNewAvailable(resJson.moreAvailable);
         }
-    }
+    }, [addPost]);
 
-    const fetchAndUpdateFollowing = async (cursor: string, oldPosts: PostType[]) => {
+    const fetchAndUpdateFollowing = useCallback(async (cursor: string, oldPosts: PostType[]) => {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`feed/following?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
@@ -70,9 +68,9 @@ export default function Feed() {
             setFollowingPosts([...oldPosts, ...resJson.posts]);
             setMoreFollowingAvailable(resJson.moreAvailable);
         }
-    }
+    }, [addPost]);
 
-    const fetchAndUpdateSchool = async (cursor: string, oldPosts: PostType[]) => {
+    const fetchAndUpdateSchool = useCallback(async (cursor: string, oldPosts: PostType[]) => {
         const params = new URLSearchParams({ cursor });
         const resJson = await fetchWithAuth(`feed/school?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
@@ -81,11 +79,13 @@ export default function Feed() {
             setSchoolPosts([...oldPosts, ...resJson.posts]);
             setMoreSchoolAvailable(resJson.moreAvailable);
         }
-    }
+    }, [addPost]);
 
-    const renderPost = (post: PostType) => <FeedPost postId={post.id} />;
+    const renderPost = useCallback((post: PostType) => {
+        return <MemoizedFeedPost postId={post.id} />;
+    }, []);
 
-    const intialFetch = async () => {
+    const intialFetch = useCallback(async () => {
         setLoading(true);
         await Promise.all([
             fetchAndUpdateNew('', []),
@@ -93,11 +93,11 @@ export default function Feed() {
             fetchAndUpdateSchool('', [])
         ]);
         setLoading(false);
-    }
+    }, [fetchAndUpdateNew, fetchAndUpdateHot, fetchAndUpdateSchool]);
 
     useEffect(() => {
         intialFetch();
-    }, []);
+    }, [intialFetch]);
 
     return (
         <>
@@ -128,9 +128,9 @@ export default function Feed() {
             <View style={{ width: '100%', height: 5, backgroundColor: COLORS.light_gray }} />
 
             <CheckIfLoading loading={loading}>
-                <>{
-                    {
-                    'hot':
+                <>
+                    {/* Keep all lists mounted but only show the active one */}
+                    <View style={{ display: view === 'hot' ? 'flex' : 'none', flex: 1 }}>
                         <List<PostType> 
                             items={hotPosts} 
                             cursor={hotCursor} 
@@ -138,8 +138,10 @@ export default function Feed() {
                             fetchAndUpdate={fetchAndUpdateHot} 
                             renderItem={renderPost}
                             noResultsText='no posts yet'
-                        />,
-                    'new':
+                        />
+                    </View>
+                    
+                    <View style={{ display: view === 'new' ? 'flex' : 'none', flex: 1 }}>
                         <List<PostType> 
                             items={newPosts} 
                             cursor={newCursor} 
@@ -147,8 +149,10 @@ export default function Feed() {
                             fetchAndUpdate={fetchAndUpdateNew} 
                             renderItem={renderPost}
                             noResultsText='no posts yet'
-                        />,
-                    'following':
+                        />
+                    </View>
+                    
+                    <View style={{ display: view === 'following' ? 'flex' : 'none', flex: 1 }}>
                         <List<PostType> 
                             items={followingPosts} 
                             cursor={followingCursor} 
@@ -156,8 +160,10 @@ export default function Feed() {
                             fetchAndUpdate={fetchAndUpdateFollowing} 
                             renderItem={renderPost}
                             noResultsText='no posts yet'
-                        />,
-                    'school':
+                        />
+                    </View>
+                    
+                    <View style={{ display: view === 'school' ? 'flex' : 'none', flex: 1 }}>
                         <List<PostType> 
                             items={schoolPosts} 
                             cursor={schoolCursor} 
@@ -166,8 +172,8 @@ export default function Feed() {
                             renderItem={renderPost}
                             noResultsText='no posts yet'
                         />
-                    }[view]
-                }</>
+                    </View>
+                </>
             </CheckIfLoading>
         </>
     );
