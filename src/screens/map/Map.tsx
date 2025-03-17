@@ -1,14 +1,25 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
+
 import { StyleSheet, View, Animated, Dimensions } from 'react-native';
+
+import * as Location from 'expo-location';
+
 import { usePostStore } from '@hooks/PostStore';
+
 import MapView, { Marker, Region } from 'react-native-maps';
+
 import PostPreview from './PostPreview';
 import PostMarker from './PostMarker';
 import LoadingSymbol from './LoadingSymbol';
+
 import { COLORS, TAB_BAR_HEIGHT } from '@util/global-client';
+
 import { fetchWithAuth } from '@util/fetch';
-import { requestLocation } from '@util/location';
+
 import { PostType } from '@util/types';
+import { useLocation } from '@providers/LocationProvider';
+
+
 
 export default function Map() {
     const addPost = usePostStore(state => state.addPost);
@@ -24,6 +35,13 @@ export default function Map() {
     const [posts, setPosts] = useState<PostType[]>([]);
     const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
     const slideAnim = useRef(new Animated.Value(0)).current;
+
+    const {
+        location: currentLocation,
+        hasPermission: locationPermissionGranted,
+        requestPermission
+    } = useLocation();
+    
 
     // Every time we fetch new posts, we neither remove current ones nor add new ones to PostStore.
     // We only add and remove posts on opening and closing the preview, respectively.
@@ -44,45 +62,41 @@ export default function Map() {
         setLoading(false);
     }
 
+
     const moveToUser = async () => {
-        const { granted, location } = await requestLocation();
-        if (!granted || !location) return;
+        const userLocation: { lat?: number, lng?: number } = {};
+        if (locationPermissionGranted && currentLocation) {
+            userLocation.lat = currentLocation.coords.latitude
+            userLocation.lng = currentLocation.coords.longitude
+        } else {
+            // Fallback for if currentLocation is null.
+            const granted = await requestPermission();
+            if (!granted) return;
+            const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+            userLocation.lat = loc.coords.latitude
+            userLocation.lng = loc.coords.longitude
+        }
 
         const newRegion: Region = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.02,
-            longitudeDelta: 0.02,
+            latitude: userLocation.lat,
+            longitude: userLocation.lng,
+            latitudeDelta: 0.04,
+            longitudeDelta: 0.04,
         };
 
         if (mapReady.current && mapRef.current) {
-            mapRef.current.animateToRegion(newRegion, 500);
+            mapRef.current.animateToRegion(newRegion, 1700);
         } else {
             setTimeout(() => {
-                if (mapRef.current) {
-                    mapRef.current.animateToRegion(newRegion, 500);
-                }
+                if (mapRef.current) mapRef.current.animateToRegion(newRegion, 700);
             }, 1000);
         }
     }
 
-    // Called when map is ready
     const onMapReady = () => {
         mapReady.current = true;
         moveToUser();
     }
-
-    // Effect for initial mounting
-    useEffect(() => {
-        // Map might not be ready yet, so we'll also set it up
-        // to be called from onMapReady
-        moveToUser();
-        
-        return () => {
-            // Cleanup if needed
-            mapReady.current = false;
-        };
-    }, []);
 
     const openPreview = (post: PostType) => {
         // Add post from PostStore when preview is opened.
