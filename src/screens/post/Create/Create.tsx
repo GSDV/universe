@@ -59,8 +59,8 @@ export default function CreatePost({ userPrisma }: { userPrisma: RedactedUserTyp
 
     const handleInput = (input: string) => setContent((input.length > MAX_POST_CONTENT_LENGTH) ? input.slice(0, MAX_POST_CONTENT_LENGTH) : input);
 
-    const { 
-        location: currentLocation, 
+    const {
+        location: currentLocation,
         hasPermission: locationPermissionGranted,
         getCurrentLocation
     } = useLocation();
