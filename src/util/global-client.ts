@@ -49,7 +49,6 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SCALED_FONT = (size: number): number => {
     const scaleFactor = SCREEN_WIDTH / BASE_WDITH;
     const newSize = size * scaleFactor;
-    console.log(Math.round(PixelRatio.roundToNearestPixel(newSize)));
     return Math.round(PixelRatio.roundToNearestPixel(newSize));
 };
 
