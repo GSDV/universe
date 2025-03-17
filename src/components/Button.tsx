@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native'
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
@@ -5,7 +7,7 @@ import { COLORS, FONT_SIZES } from '@util/global-client';
 
 
 interface ButtonProps {
-    children: React.ReactNode;
+    children: ReactNode;
     onPress: () => void;
     disabled?: boolean;
     containerStyle?: ViewStyle;

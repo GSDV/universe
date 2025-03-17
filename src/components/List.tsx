@@ -1,6 +1,10 @@
-import { useState, useCallback, memo } from 'react';
+import { ReactElement, useState, useCallback, memo } from 'react';
+
 import { View, Text, FlatList, RefreshControl, ActivityIndicator } from 'react-native';
+
 import { COLORS, FONT_SIZES, TAB_BAR_HEIGHT } from '@util/global-client';
+
+
 
 interface ListItem {
     id: string;
@@ -11,7 +15,7 @@ interface ListProps<T extends ListItem> {
     cursor: string;
     moreAvailable: boolean;
     fetchAndUpdate: (cursor: string, oldItems: T[]) => Promise<void>;
-    renderItem: (item: T) => React.ReactElement;
+    renderItem: (item: T) => ReactElement;
     allowRefresh?: boolean;
     noResultsText: string;
 }

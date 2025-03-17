@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { Text, View, StyleSheet } from 'react-native';
 
 import { FONT_SIZES } from '@util/global-client';
@@ -24,7 +26,7 @@ export function Alert({ alert }: { alert: AlertType }) {
 
 interface CheckIfAlertType {
     alert: AlertType | null | undefined;
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export function CheckIfAlert({ alert, children }: CheckIfAlertType) {

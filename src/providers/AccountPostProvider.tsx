@@ -1,7 +1,7 @@
 // Operations for only the Account screen.
 // May be called from anywhere.
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import { ACCOUNT_POSTS_PER_BATCH } from '@util/global';
 import { POST_OPERATION_EVENT_KEY } from '@util/global-client';
@@ -75,7 +75,7 @@ const AccountPostContext = createContext<AccountPostContextType | null>(null);
 
 
 
-export function AccountPostProvider({ children }: { children: React.ReactNode }) {
+export function AccountPostProvider({ children }: { children: ReactNode }) {
     const [lastOperation, setLastOperation] = useState<OperationType | null>(null);
 
     useEffect(() => {

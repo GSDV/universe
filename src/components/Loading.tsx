@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment, ReactNode } from 'react';
 
 import { View, ActivityIndicator } from 'react-native';
 
@@ -12,14 +12,14 @@ export function Loading({ size = 'large' }: { size?: 'large' | 'small' }) {
 
 
 
-export function CheckIfLoading({ loading, children }: { loading: boolean, children: React.ReactNode }) {
+export function CheckIfLoading({ loading, children }: { loading: boolean, children: ReactNode }) {
     return (
-        <>{loading ?
+        <Fragment>{loading ?
             <View style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Loading />
             </View>
         :
-            <>{children}</>
-        }</>
+            <Fragment>{children}</Fragment>
+        }</Fragment>
     );
 }

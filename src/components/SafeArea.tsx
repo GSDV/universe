@@ -1,9 +1,12 @@
+import { ReactNode } from 'react';
+
 import { View } from 'react-native';
+
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 
-export function SafeAreaFull({ children }: { children: React.ReactNode }) {
+export function SafeAreaFull({ children }: { children: ReactNode }) {
     return (
         <View style={{ flex: 1 }}>
             <SafeAreaTop/>

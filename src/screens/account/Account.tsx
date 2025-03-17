@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { Dispatch, SetStateAction, useState, Fragment } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -60,7 +60,7 @@ export default function Account({ userPrisma, ownAccount = false }: AccountProps
 interface AccountHeader {
     user: RedactedUserWithFollowAndBlock;
     ownAccount: boolean;
-    setUser: React.Dispatch<React.SetStateAction<RedactedUserWithFollowAndBlock>>
+    setUser: Dispatch<SetStateAction<RedactedUserWithFollowAndBlock>>
 }
 
 function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
@@ -137,7 +137,7 @@ function Bio({ bio }: { bio: string }) {
 interface ConnectionsProps {
     user: RedactedUserWithFollowAndBlock;
     ownAccount: boolean;
-    setUser: React.Dispatch<React.SetStateAction<RedactedUserWithFollowAndBlock>>;
+    setUser: Dispatch<SetStateAction<RedactedUserWithFollowAndBlock>>;
 }
 function Connections({ user, ownAccount, setUser }: ConnectionsProps) {
     const userContext = useUser();

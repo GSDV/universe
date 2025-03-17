@@ -1,3 +1,5 @@
+import { ComponentProps } from 'react';
+
 import { StyleSheet, Animated } from 'react-native';
 
 import { Tabs, usePathname } from 'expo-router';
@@ -13,7 +15,7 @@ export const tabBarAnimation = new Animated.Value(0);
 
 
 
-type IconName = React.ComponentProps<typeof Ionicons>['name'];
+type IconName = ComponentProps<typeof Ionicons>['name'];
 
 interface TabType {
     fileName: string;

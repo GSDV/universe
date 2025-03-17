@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext, useRef } from 'react';
+import { ReactNode, createContext, useState, useEffect, useContext, useRef } from 'react';
 
 import { AppState, AppStateStatus } from 'react-native';
 
@@ -43,7 +43,7 @@ const LocationContext = createContext<LocationContextType | undefined>(undefined
 
 
 
-export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const LocationProvider = ({ children }: { children: ReactNode }) => {
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [lastUpdated, setLastUpdated] = useState<number | null>(null);

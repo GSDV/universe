@@ -1,5 +1,18 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Animated, Keyboard, Dimensions, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useState, useRef, RefObject } from 'react';
+
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Animated,
+    Keyboard,
+    Dimensions,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView
+} from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
@@ -16,7 +29,13 @@ import { MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_REPLY_CONTENT_LENGTH } fro
 import { COLORS, FONT_SIZES, TAB_BAR_HEIGHT } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
-import { getMediaKeys, hasCameraPermissions, hasMediaPermissions, promptCameraPermissions, promptMediaPermissions } from '@util/media/s3';
+import {
+    getMediaKeys,
+    hasCameraPermissions,
+    hasMediaPermissions,
+    promptCameraPermissions,
+    promptMediaPermissions
+} from '@util/media/s3';
 import { getMedia, takeMedia } from '@util/media/pick';
 
 import { PostDataInput, PostType } from '@util/types';
@@ -170,7 +189,7 @@ function Button({ toggleExpand }: { toggleExpand: ()=>void }) {
 
 
 interface DraftAreaProps {
-    inputRef: React.RefObject<TextInput>;
+    inputRef: RefObject<TextInput>;
     toggleExpand: () => void;
     isExpanded: boolean;
     addNewReply: (reply: PostType)=>void;
