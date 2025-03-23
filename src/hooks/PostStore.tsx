@@ -1,3 +1,6 @@
+// PostStore is used for ensuring two instances of the same post are synced.
+// e.g. if the user likes one instance, the other should also appear as liked.
+
 import { create } from 'zustand';
 
 import { PostType } from '@util/types';
