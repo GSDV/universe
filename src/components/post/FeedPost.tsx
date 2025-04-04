@@ -79,7 +79,7 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
     if (post === undefined) return <Text>Something went wrong!</Text>;
 
     return (
-        <TouchableOpacity onPress={onPress} style={styles.container}>
+        <Pressable onPress={onPress} style={styles.container}>
             <Pressable onPress={navigateToProfile} style={styles.pfpContainer}>
                 <Pfp pfpKey={post.author.pfpKey} style={styles.pfp} />
             </Pressable>
@@ -98,7 +98,7 @@ export function FeedPost({ postId, showPinned = false, morePostsAvailable }: Fee
 
                 <Info post={post} />
             </View>
-        </TouchableOpacity>
+        </Pressable>
     );
 }
 

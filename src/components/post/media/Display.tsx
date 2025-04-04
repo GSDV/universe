@@ -55,7 +55,7 @@ const Media = memo(({ asset, onPress }: { asset: string, onPress: ()=>void }) =>
     const isImage = asset.includes('-image');
     
     return (
-        <TouchableOpacity onPress={onPress} style={styles.container}>
+        <Pressable onPress={onPress} style={styles.container}>
             <View style={{ position: 'relative', flex: 1 }}>
                 {isImage ?
                     <Image
@@ -68,7 +68,7 @@ const Media = memo(({ asset, onPress }: { asset: string, onPress: ()=>void }) =>
                     <VideoThumbnail uri={mediaUrl(asset)} />
                 }
             </View>
-        </TouchableOpacity>
+        </Pressable>
     );
 });
 
@@ -186,7 +186,7 @@ const UploadedMedia = memo(({ asset, remove, onPress }: { asset: UploadedAsset, 
     const isImage = ACCEPTED_IMGS.includes(asset.type);
     
     return (
-        <TouchableOpacity onPress={onPress} style={styles.container}>
+        <Pressable onPress={onPress} style={styles.container}>
             <View style={{ position: 'relative', flex: 1 }}>
                 <Pressable onPress={remove} style={{ position: 'absolute', right: -10, top: -10, borderRadius: 50, backgroundColor: COLORS.background, overflow: 'hidden', zIndex: 5 }}>
                     <Entypo name='circle-with-minus' size={25} color='red' />
@@ -203,7 +203,7 @@ const UploadedMedia = memo(({ asset, remove, onPress }: { asset: UploadedAsset, 
                     <VideoThumbnail uri={asset.uri} />
                 }
             </View>
-        </TouchableOpacity>
+        </Pressable>
     );
 });
 
