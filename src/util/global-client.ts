@@ -57,7 +57,8 @@ export const FONT_SIZES = {
     m: SCALED_FONT(16),
     l: SCALED_FONT(18),
     xl: SCALED_FONT(20),
-    xxl: SCALED_FONT(24)
+    xxl: SCALED_FONT(24),
+    xxxl: SCALED_FONT(30)
 };
 
 
