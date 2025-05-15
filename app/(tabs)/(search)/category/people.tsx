@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 
-import { SafeAreaTop } from '@components/SafeArea';
+import Search from '@screens/search/Search';
 
-import Search from '@screens/search/Selection';
+import { SafeAreaTop } from '@components/SafeArea';
 
 
 
@@ -10,7 +10,7 @@ export default function Index() {
     return (
         <View style={{ flex: 1 }}>
             <SafeAreaTop />
-            <Search />
+            <Search tag='search students' type='USERS' />
         </View>
     );
 }

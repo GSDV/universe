@@ -22,6 +22,21 @@ export default function SearchStack() {
                 options={{ headerShown: false, contentStyle }}
                 getId={({ params }) => params?.viewId}
             />
+            <Stack.Screen
+                name='category/campuses'
+                options={{ headerShown: false, contentStyle }}
+                getId={({ params }) => params?.viewId}
+            />
+            <Stack.Screen
+                name='category/people'
+                options={{ headerShown: false, contentStyle }}
+                getId={({ params }) => params?.viewId}
+            />
+            <Stack.Screen
+                name='category/posts'
+                options={{ headerShown: false, contentStyle }}
+                getId={({ params }) => params?.viewId}
+            />
         </Stack>
     );
 }
