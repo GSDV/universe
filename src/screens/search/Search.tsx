@@ -10,15 +10,28 @@ import {
     Pressable
 } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
 import { Ionicons, Feather } from '@expo/vector-icons';
 
-import PostsAndUsers from './PostsAndUsers';
+import UserSearch from './category/UserSearch';
+import UniSearch from './category/UniSearch';
+import PostSearch from './category/PostSearch';
 
 import { COLORS, FONT_SIZES } from '@util/global-client';
 
 
 
-export default function Search() {
+type SearchType = 'USERS' | 'SCHOOLS' | 'POSTS';
+
+interface SearchProps {
+    type: SearchType;
+    tag: string;
+}
+
+export default function Search({ type, tag }: SearchProps) {
+    const router = useRouter();
+
     const [input, setInput] = useState<string>('');
     const [query, setQuery] = useState<string>('');
 
@@ -26,32 +39,39 @@ export default function Search() {
 
     return (
         <Pressable style={{ flex: 1, backgroundColor: COLORS.white }} onPress={Keyboard.dismiss}>
-            <View style={styles.searchContainer}>
-                <Ionicons name='search' size={20} color={COLORS.gray} style={styles.searchIcon} />
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder='Search...'
-                    value={input}
-                    onChangeText={setInput}
-                    placeholderTextColor={COLORS.gray}
-                    autoCapitalize='none'
-                    autoCorrect={false}
-                    returnKeyType='search'
-                    onSubmitEditing={onSubmit}
-                />
-                {input.trim() && 
-                    <TouchableOpacity onPress={onSubmit}>
-                        <Feather name='send' size={24} color={COLORS.primary} />
-                    </TouchableOpacity>
-                }
+            <View style={{ width: '100%', alignItems: 'center', paddingHorizontal: 5, flexDirection: 'row', gap: 5 }}>
+            
+            <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={router.back}>
+                <Ionicons name='chevron-back' size={30} color={COLORS.primary} />
+            </TouchableOpacity>
+
+                <View style={styles.searchContainer}>
+                    <Ionicons name='search' size={20} color={COLORS.gray} style={styles.searchIcon} />
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder='Search...'
+                        value={input}
+                        onChangeText={setInput}
+                        placeholderTextColor={COLORS.gray}
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                        returnKeyType='search'
+                        onSubmitEditing={onSubmit}
+                    />
+                    {input.trim() && 
+                        <TouchableOpacity onPress={onSubmit}>
+                            <Feather name='send' size={24} color={COLORS.primary} />
+                        </TouchableOpacity>
+                    }
+                </View>
             </View>
 
             {(query === '') ? 
                 <View style={{ flex: 1, backgroundColor: COLORS.light_gray, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>search posts and accounts</Text>
+                    <Text style={{ color: COLORS.black, fontSize: FONT_SIZES.s }}>{tag}</Text>
                 </View>
             :
-                <PostsAndUsers query={query} />
+                <DecideSearch type={type} query={query} />
             }
         </Pressable>
     );
@@ -59,12 +79,20 @@ export default function Search() {
 
 
 
+function DecideSearch({ type, query }: { type: SearchType, query: string }) {
+    if (type === 'USERS') return <UserSearch query={query} />;
+    if (type === 'SCHOOLS') return <UniSearch query={query} />;
+    return <PostSearch query={query} />;
+}
+
+
+
 const styles = StyleSheet.create({
     searchContainer: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: COLORS.light_gray,
-        marginHorizontal: 16,
         marginVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 20,
