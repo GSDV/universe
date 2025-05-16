@@ -23,6 +23,11 @@ export default function SearchStack() {
                 getId={({ params }) => params?.viewId}
             />
             <Stack.Screen
+                name='uni/[uniId]]/view'
+                options={{ headerShown: false, contentStyle }}
+                getId={({ params }) => params?.viewId}
+            />
+            <Stack.Screen
                 name='category/campuses'
                 options={{ headerShown: false, contentStyle }}
                 getId={({ params }) => params?.viewId}
