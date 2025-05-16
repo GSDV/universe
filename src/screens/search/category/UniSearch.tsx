@@ -25,7 +25,7 @@ export default function UniSearch({ query }: { query: string }) {
 
     const fetchAndUpdateUniversities = useCallback(async (cursor: string, oldUnis: UniversityWithoutUsers[]) => {
         const params = new URLSearchParams({ query, cursor });
-        const resJson = await fetchWithAuth(`search/school?${params.toString()}`, 'GET');
+        const resJson = await fetchWithAuth(`search/uni?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
             setUniversitiesCursor(resJson.nextCursor);
             setUniversities([...oldUnis, ...resJson.universities]);
@@ -56,7 +56,7 @@ export default function UniSearch({ query }: { query: string }) {
                 fetchAndUpdate={fetchAndUpdateUniversities} 
                 renderItem={renderUni}
                 allowRefresh={false}
-                noResultsText='no accounts found'
+                noResultsText='no campuses found'
             />
         </CheckIfLoading>
     );
@@ -67,7 +67,7 @@ const MemoizedFeedUni = memo(FeedUni);
 
 function FeedUni({ uni }: { uni : UniversityWithoutUsers }) {
     const router = useRouter();
-    
+
     const onPress = useCallback(() => {
         router.push({
             pathname: '/uni/[uniId]/view',
@@ -80,23 +80,24 @@ function FeedUni({ uni }: { uni : UniversityWithoutUsers }) {
 
     return (
         <TouchableOpacity onPress={onPress} style={styles.container}>
-            <Text style={{ fontSize: FONT_SIZES.l, color: uni.color, textAlign: 'center' }}>{uni.name}</Text>
+            <Text style={[styles.uniText, { color: uni.color }]}>{uni.name}</Text>
         </TouchableOpacity>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         padding: 10,
         paddingVertical: 5,
         width: '100%',
         flexDirection: 'row',
         backgroundColor: COLORS.background
     },
-    header: {
-        paddingBottom: 5,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        gap: 5
+    uniText: {
+        paddingVertical: 10,
+        flex: 1,
+        fontSize: FONT_SIZES.l,
+        textAlign: 'center'
     }
 });
