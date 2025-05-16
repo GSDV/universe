@@ -50,6 +50,15 @@ export interface UniversityType {
 
 
 
+export interface UniversityWithoutUsers {
+    id: string;
+    domain: string;
+    name: string;
+    color: string;
+}
+
+
+
 export interface PostType {
     createdAt: string;
     id: string;
