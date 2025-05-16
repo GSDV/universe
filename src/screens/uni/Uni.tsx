@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { View } from 'react-native';
 
@@ -10,7 +10,7 @@ import { CheckIfLoading } from '@components/Loading';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { PostType, UniversityWithoutUsers } from '@util/types';
+import { PostType } from '@util/types';
 import { FeedPost } from '@components/post/FeedPost';
 import { usePostStore } from '@hooks/PostStore';
 
@@ -20,7 +20,7 @@ import { usePostStore } from '@hooks/PostStore';
 export default function Uni() {
     const { uniId } = useLocalSearchParams();
 
-    const [uni, setUni] = useState<UniversityWithoutUsers>();
+    const domainRef = useRef<string | null>(null);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [alert, setAlert] = useState<AlertType>();
@@ -32,8 +32,13 @@ export default function Uni() {
     const addPost = usePostStore(state => state.addPost);
 
     const fetchAndUpdatePosts = async (cursor: string, oldPosts: PostType[]) => {
+        if (!domainRef.current) {
+            setAlert({ msg: 'Something went wrong.', cStatus: 400 });
+            return;
+        }
+
         const params = new URLSearchParams({ cursor });
-        const resJson = await fetchWithAuth(`uni/posts/${uni!.domain}?${params.toString()}`, 'GET');
+        const resJson = await fetchWithAuth(`uni/posts/${domainRef.current}?${params.toString()}`, 'GET');
         if (resJson.cStatus == 200) {
             resJson.posts.map((p: any) => addPost(p));
             setPostsCursor(resJson.nextCursor);
@@ -49,17 +54,16 @@ export default function Uni() {
     const fetchInitialPosts = async () => {
         setLoading(true);
         try {
-            const res = await fetchWithAuth(`uni/[${uniId}]`, 'GET');
-            const resJson = await res.json();
+            const resJson = await fetchWithAuth(`uni/${uniId}`, 'GET');
             if (resJson.cStatus == 200) {
-                setUni(resJson.uni);
+                domainRef.current = resJson.uni.domain;
             } else {
                 setAlert(resJson);
                 setLoading(false);
             }
             await fetchAndUpdatePosts('', []);
             setLoading(false);
-        } catch {
+        } catch (err) {
             setAlert({ msg: 'Something went wrong.', cStatus: 400 });
             setLoading(false);
         }
