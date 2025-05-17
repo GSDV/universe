@@ -78,7 +78,7 @@ export default function Uni() {
     return (
         <CheckIfLoading loading={loading}>
             <CheckIfAlert alert={alert}>
-                <View style={{ flex: 1, flexDirection: 'column' }}>
+                <View style={{ flex: 1, paddingTop: 10, flexDirection: 'column' }}>
                     <List<PostType>
                         items={posts}
                         cursor={postsCursor}
