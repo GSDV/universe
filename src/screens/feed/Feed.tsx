@@ -18,7 +18,7 @@ import { PostType } from '@util/types';
 
 export default function Feed() {
     const addPost = usePostStore(state => state.addPost);
-    const [view, setView] = useState<'hot' | 'new' | 'following' | 'school'>('hot');
+    const [view, setView] = useState<'hot' | 'new' | 'following'>('hot');
     const [loading, setLoading] = useState<boolean>(true);
 
     const [hotPosts, setHotPosts] = useState<PostType[]>([]);
@@ -32,10 +32,6 @@ export default function Feed() {
     const [followingPosts, setFollowingPosts] = useState<PostType[]>([]);
     const [followingCursor, setFollowingCursor] = useState<string>('');
     const [moreFollowingAvailable, setMoreFollowingAvailable] = useState<boolean>(false);
-
-    const [schoolPosts, setSchoolPosts] = useState<PostType[]>([]);
-    const [schoolCursor, setSchoolCursor] = useState<string>('');
-    const [moreSchoolAvailable, setMoreSchoolAvailable] = useState<boolean>(false);
 
     const fetchAndUpdateHot = useCallback(async (cursor: string, oldPosts: PostType[]) => {
         const params = new URLSearchParams({ cursor });
@@ -70,17 +66,6 @@ export default function Feed() {
         }
     }, [addPost]);
 
-    const fetchAndUpdateSchool = useCallback(async (cursor: string, oldPosts: PostType[]) => {
-        const params = new URLSearchParams({ cursor });
-        const resJson = await fetchWithAuth(`feed/school?${params.toString()}`, 'GET');
-        if (resJson.cStatus == 200) {
-            resJson.posts.map((p: any) => addPost(p));
-            setSchoolCursor(resJson.nextCursor);
-            setSchoolPosts([...oldPosts, ...resJson.posts]);
-            setMoreSchoolAvailable(resJson.moreAvailable);
-        }
-    }, [addPost]);
-
     const renderPost = useCallback((post: PostType) => {
         return <MemoizedFeedPost postId={post.id} />;
     }, []);
@@ -90,10 +75,10 @@ export default function Feed() {
         await Promise.all([
             fetchAndUpdateNew('', []),
             fetchAndUpdateHot('', []),
-            fetchAndUpdateSchool('', [])
+            fetchAndUpdateFollowing('', [])
         ]);
         setLoading(false);
-    }, [fetchAndUpdateNew, fetchAndUpdateHot, fetchAndUpdateSchool]);
+    }, [fetchAndUpdateNew, fetchAndUpdateHot, fetchAndUpdateFollowing]);
 
     useEffect(() => {
         intialFetch();
@@ -116,12 +101,6 @@ export default function Feed() {
 
                 <TouchableOpacity onPress={() => setView('following')}>
                     <Text style={{ color: ((view==='following') ? COLORS.black : COLORS.gray), fontSize: FONT_SIZES.m }}>Following</Text>
-                </TouchableOpacity>
-
-                <Text style={{ color: COLORS.gray, fontSize: FONT_SIZES.m }}>|</Text>
-
-                <TouchableOpacity onPress={() => setView('school')}>
-                    <Text style={{ color: ((view==='school') ? COLORS.black : COLORS.gray), fontSize: FONT_SIZES.m }}>My School</Text>
                 </TouchableOpacity>
             </View>
 
@@ -158,17 +137,6 @@ export default function Feed() {
                             cursor={followingCursor} 
                             moreAvailable={moreFollowingAvailable} 
                             fetchAndUpdate={fetchAndUpdateFollowing} 
-                            renderItem={renderPost}
-                            noResultsText='no posts yet'
-                        />
-                    </View>
-                    
-                    <View style={{ display: view === 'school' ? 'flex' : 'none', flex: 1 }}>
-                        <List<PostType> 
-                            items={schoolPosts} 
-                            cursor={schoolCursor} 
-                            moreAvailable={moreSchoolAvailable} 
-                            fetchAndUpdate={fetchAndUpdateSchool} 
                             renderItem={renderPost}
                             noResultsText='no posts yet'
                         />
