@@ -33,19 +33,10 @@ export interface RedactedUserType {
     displayName: string;
     pfpKey: string;
     bio: string;
-    university?: UniversityType;
+    university?: UniversityWithoutUsers;
     followerCount: number;
     followingCount: number;
     verified: boolean;
-}
-
-
-
-export interface UniversityType {
-    domain: string;
-    name: string;
-    color: string;
-    users: RedactedUserType[];
 }
 
 

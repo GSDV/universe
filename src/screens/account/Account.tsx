@@ -17,7 +17,7 @@ import { COLORS, FONT_SIZES } from '@util/global-client';
 
 import { fetchWithAuth } from '@util/fetch';
 
-import { RedactedUserWithFollowAndBlock, UniversityType } from '@util/types';
+import { RedactedUserWithFollowAndBlock, UniversityWithoutUsers } from '@util/types';
 import { showActionSheet } from '@util/action';
 
 
@@ -114,7 +114,7 @@ function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
 
 
 
-function University({ university }: { university: UniversityType }) {
+function University({ university }: { university: UniversityWithoutUsers }) {
     return (
         <View style={{ width: '100%', paddingHorizontal: 20 }}>
             <Text style={{ fontSize: FONT_SIZES.m, color: university.color }}>{university.name}</Text>
