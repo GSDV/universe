@@ -19,6 +19,7 @@ import { fetchWithAuth } from '@util/fetch';
 
 import { RedactedUserWithFollowAndBlock, UniversityWithoutUsers } from '@util/types';
 import { showActionSheet } from '@util/action';
+import { getUniqueString } from '@util/unique';
 
 
 
@@ -115,9 +116,24 @@ function AccountHeader({ user, ownAccount, setUser }: AccountHeader) {
 
 
 function University({ university }: { university: UniversityWithoutUsers }) {
+    const router = useRouter();
+
+    const goToUni = () => {
+        if (!university) return;
+        router.push({
+            pathname: '/uni/[uniId]/view',
+            params: {
+                uniId: university.id,
+                viewId: getUniqueString(university.id)
+            }
+        });
+    }
+
     return (
         <View style={{ width: '100%', paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: FONT_SIZES.m, color: university.color }}>{university.name}</Text>
+            <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={goToUni} hitSlop={5}>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={{ fontSize: FONT_SIZES.m, color: university.color }}>{university.name}</Text>
+            </TouchableOpacity>
         </View>
     );
 }

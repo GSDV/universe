@@ -1,5 +1,7 @@
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
 import { usePostStore } from '@hooks/PostStore';
 
 import { AntDesign, SimpleLineIcons } from '@expo/vector-icons';
@@ -9,10 +11,13 @@ import { COLORS, FONT_SIZES, formatInteraction, formatPostDate } from '@util/glo
 import { fetchWithAuth } from '@util/fetch';
 
 import { PostType } from '@util/types';
+import { getUniqueString } from '@util/unique';
 
 
 
 export default function Info({ post }: { post: PostType }) {
+    const router = useRouter();
+
     const addPost = usePostStore(state => state.addPost);
 
     const university = post.author.university;
@@ -40,9 +45,25 @@ export default function Info({ post }: { post: PostType }) {
         fetchWithAuth(`post/${post.id}/like`, 'POST', body);
     }
 
+
+    const goToUni = () => {
+        if (!university) return;
+        router.push({
+            pathname: '/uni/[uniId]/view',
+            params: {
+                uniId: university.id,
+                viewId: getUniqueString(university.id)
+            }
+        });
+    }
+
     return (
         <View style={styles.container}>
-            <Text style={[styles.uniName, { color: getUniColor() }]} numberOfLines={1} ellipsizeMode='tail'>{getUniName()}</Text>
+            <View style={{ flex: 6, zIndex: 10 }}>
+                <TouchableOpacity onPress={goToUni} style={styles.uniNameContainer} hitSlop={7}>
+                    <Text style={[styles.uniName, { color: getUniColor() }]} numberOfLines={1} ellipsizeMode='tail'>{getUniName()}</Text>
+                </TouchableOpacity>
+            </View>
 
             <View style={styles.interactionContainer}>
                 <TouchableOpacity onPress={onPressLike} style={styles.infoContainers} hitSlop={16}>
@@ -64,8 +85,10 @@ export default function Info({ post }: { post: PostType }) {
 
 
 const styles = StyleSheet.create({
+    uniNameContainer: {
+        alignSelf: 'flex-start'
+    },
     uniName: {
-        flex: 6,
         fontSize: FONT_SIZES.s
     },
     interactionContainer: {
