@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import { useUser } from '@providers/UserProvider';
 
-import Acccount from '@screens/account/Account';
+import Account from '@screens/account/Account';
 
 import { SafeAreaTop } from '@components/SafeArea';
 
@@ -24,7 +24,7 @@ export default function Index() {
     return (
         <View style={{ flex: 1 }}>
             <SafeAreaTop />
-            <Acccount userPrisma={userPrisma} ownAccount={true} />
+            <Account userPrisma={userPrisma} ownAccount={true} />
         </View>
     );
 }
