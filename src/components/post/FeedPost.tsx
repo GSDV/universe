@@ -170,4 +170,4 @@ const styles = StyleSheet.create({
 export const MemoizedFeedPost = memo(FeedPost, (prevProps, nextProps) => {
     // Only re-render if the postId changes
     return prevProps.postId === nextProps.postId;
-  });
+});
